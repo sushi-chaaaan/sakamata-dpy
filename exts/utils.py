@@ -39,6 +39,7 @@ class Utils(commands.Cog):
         date: str = "20220101",
         time: str = "1200",
     ):
+        """日付をDiscordで使用できるタイムスタンプに変換します。"""
         logger.info(f"{interaction.user} used timestamp command")
         await interaction.response.defer(ephemeral=True)
         _date = datetime.strptime(date, "%Y%m%d")
