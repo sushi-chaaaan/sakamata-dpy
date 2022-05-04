@@ -68,6 +68,7 @@ class Deal(commands.Cog):
             )
             return
         text = f"{target.mention} was kicked"
+        context = await commands.Context.from_interaction(interaction)
         try:
             await interaction.guild.kick(target)  # type: ignore -> checked by Discord server side
         except discord.Forbidden as e:
@@ -78,6 +79,7 @@ class Deal(commands.Cog):
             logger.error(text, exc_info=e)
         finally:
             await interaction.followup.send(content=text)
+            return
 
 
 async def setup(bot: commands.Bot):

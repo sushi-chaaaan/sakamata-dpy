@@ -10,7 +10,10 @@ class Confirm(commands.Cog):
         self.bot = bot
         load_dotenv()
 
-    async def confirm(self,target:discord.abc.Snowflake):
+    async def confirm(
+        self, ctx: commands.Context, target: discord.abc.Snowflake
+    ) -> bool:
+        pass
 
 
 async def setup(bot: commands.Bot):
