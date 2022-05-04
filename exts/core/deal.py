@@ -26,6 +26,7 @@ class Deal(commands.Cog):
         ctx: commands.Context,
         target: discord.Member | discord.User,
     ):
+        logger.info(f"{ctx.author} used user command")
         """ユーザー情報照会用コマンド"""
         avatar_url = (
             target.default_avatar.url
@@ -75,6 +76,7 @@ class Deal(commands.Cog):
     async def kick(
         self, interaction: discord.Interaction, target: discord.Member | discord.User
     ):
+        logger.info(f"{interaction.user} used kick command")
         await interaction.response.defer()
 
         # get channel and role
