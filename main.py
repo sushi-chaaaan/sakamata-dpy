@@ -6,14 +6,18 @@ from discord.ext import commands
 from dotenv import load_dotenv
 
 from model.color import Color
+from tools.dt import dt_to_str
 from tools.logger import getMyLogger
-from tools.now import dt_to_str
 
 logger = getMyLogger(__name__)
 
 token = os.environ["DISCORD_BOT_TOKEN"]
 
-EXT_LIST = ["exts.test"]
+EXT_LIST = [
+    "exts.test",
+    "exts.core.entrance",
+    "exts.core.deal",
+]
 
 intents = discord.Intents.all()
 intents.typing = False
@@ -40,6 +44,8 @@ class MyBot(commands.Bot):
             except Exception as e:
                 logger.error(f"Failed to load extension {ext}", exc_info=e)
                 self.failed_extensions.append(ext)
+            else:
+                logger.info(f"Loaded extension {ext}")
         if not self.failed_extensions:
             self.failed_extensions = ["None"]
 
