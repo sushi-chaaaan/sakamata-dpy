@@ -26,8 +26,8 @@ class Deal(commands.Cog):
         ctx: commands.Context,
         target: discord.Member | discord.User,
     ):
-        logger.info(f"{ctx.author} used user command")
         """ユーザー情報照会用コマンド"""
+        logger.info(f"{ctx.author} used user command")
         avatar_url = (
             target.default_avatar.url
             if target.default_avatar == target.display_avatar
@@ -76,6 +76,7 @@ class Deal(commands.Cog):
     async def kick(
         self, interaction: discord.Interaction, target: discord.Member | discord.User
     ):
+        """kick用コマンド"""
         logger.info(f"{interaction.user} used kick command")
         await interaction.response.defer()
 
