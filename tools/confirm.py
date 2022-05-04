@@ -1,3 +1,5 @@
+import asyncio
+
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -39,6 +41,8 @@ class Confirm:
         await target.add_reaction(reject_emoji)
 
         # wait for reaction
+        result = False
+
         def check(payload: discord.RawReactionActionEvent):
             return (
                 payload.message_id == target.id
@@ -49,13 +53,18 @@ class Confirm:
                 is not None
             )
 
-        payload: discord.RawReactionActionEvent = await self.bot.wait_for(
-            "raw_reaction_add", check=check
-        )
-        self._done = True
-        if payload.emoji.name == accept_emoji:
-            # accept
-            return True
+        try:
+            payload: discord.RawReactionActionEvent = await self.bot.wait_for(
+                "raw_reaction_add", check=check, timeout=900.0
+            )
+        except asyncio.TimeoutError:
+            await ctx.send(content="タイムアウトしたため処理を停止します。")
+            result = False
         else:
-            # reject
-            return False
+            if payload.emoji.name == accept_emoji:
+                # accept
+                result = True
+            else:
+                # reject
+                result = False
+        return result
