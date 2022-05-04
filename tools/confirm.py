@@ -58,7 +58,7 @@ class Confirm:
 
         try:
             payload: discord.RawReactionActionEvent = await self.bot.wait_for(
-                "raw_reaction_add", check=check, timeout=900.0
+                "raw_reaction_add", check=check, timeout=600.0
             )
         except asyncio.TimeoutError as e:
             await ctx.send(content="タイムアウトしたため処理を停止します。")
