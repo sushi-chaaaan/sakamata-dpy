@@ -17,24 +17,28 @@ class Entrance(commands.Cog):
 
     @commands.Cog.listener(name="on_member_join")
     async def on_join(self, member: discord.Member):
-        status = "参加"
-        await self.send_member_log(member, status)
-        return
-
-    @commands.Cog.listener(name="on_member_remove")
-    async def on_leave(self, member: discord.Member):
-        status = "退出"
-        await self.send_member_log(member, status)
-        return
-
-    async def send_member_log(self, member: discord.Member, status):
         channel = self.bot.get_channel(self.entrance_channel)
         if not channel:
             channel = await self.bot.fetch_channel(self.entrance_channel)
         if not isinstance(channel, discord.abc.Messageable):
             logger.error("Failed to get Messageable channel")
             return
-        send_msg = f"時刻: {dt_to_str()}\n{status}メンバー名: {member.name} (ID:{member.id})\nメンション: {member.mention}\nアカウント作成時刻: {dt_to_str(member.created_at)}\n現在のメンバー数:{member.guild.member_count}\n"
+        send_msg = f"時刻: {dt_to_str()}\n参加メンバー名: {member.name} (ID:{member.id})\nメンション: {member.mention}\nアカウント作成時刻: {dt_to_str(member.created_at)}\n現在のメンバー数:{member.guild.member_count}"
+        await channel.send(send_msg)
+        return
+
+    @commands.Cog.listener(name="on_raw_member_remove")
+    async def on_leave(self, payload: discord.RawMemberRemoveEvent):
+        guild = self.bot.get_guild(payload.guild_id)
+        if not guild:
+            guild = await self.bot.fetch_guild(payload.guild_id)
+        channel = self.bot.get_channel(self.entrance_channel)
+        if not channel:
+            channel = await self.bot.fetch_channel(self.entrance_channel)
+        if not isinstance(channel, discord.abc.Messageable):
+            logger.error("Failed to get Messageable channel")
+            return
+        send_msg = f"時刻: {dt_to_str()}\n参加メンバー名: {payload.user.name} (ID:{payload.user.id})\nメンション: {payload.user.mention}\nアカウント作成時刻: {dt_to_str(payload.user.created_at)}\n現在のメンバー数:{guild.member_count}"
         await channel.send(send_msg)
         return
 
