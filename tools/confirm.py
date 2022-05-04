@@ -1,8 +1,13 @@
 import asyncio
+from asyncio.log import logger
 
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
+
+from tools.logger import getMyLogger
+
+logger = getMyLogger(__name__)
 
 accept_emoji = "\N{Heavy Large Circle}"
 reject_emoji = "\N{Cross Mark}"
@@ -41,7 +46,6 @@ class Confirm:
         await target.add_reaction(reject_emoji)
 
         # wait for reaction
-        result = False
 
         def check(payload: discord.RawReactionActionEvent):
             return (
@@ -57,8 +61,9 @@ class Confirm:
             payload: discord.RawReactionActionEvent = await self.bot.wait_for(
                 "raw_reaction_add", check=check, timeout=900.0
             )
-        except asyncio.TimeoutError:
+        except asyncio.TimeoutError as e:
             await ctx.send(content="タイムアウトしたため処理を停止します。")
+            logger.exception("Confirm timeout", exc_info=e)
             result = False
         else:
             if payload.emoji.name == accept_emoji:
