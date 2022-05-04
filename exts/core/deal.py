@@ -62,7 +62,9 @@ class Deal(commands.Cog):
     @app_commands.guilds(discord.Object(id=int(os.environ["GUILD_ID"])))
     @app_commands.guild_only()
     @app_commands.describe(target="Choose user to kick")
-    async def kick(self, interaction: discord.Interaction, target: discord.Member):
+    async def kick(
+        self, interaction: discord.Interaction, target: discord.Member | discord.User
+    ):
         await interaction.response.defer()
 
         # get channel and role
