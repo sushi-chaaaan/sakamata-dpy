@@ -35,7 +35,7 @@ class JapaneseHelpCommand(commands.DefaultHelpCommand):
         return "各コマンドの説明: //help <コマンド名>\n"
 
 
-CORE_EXTENSION_LIST = [
+EXTENSION_LIST = [
     "Core.ban",
     "Core.confirm",
     "Core.dm",
@@ -47,9 +47,6 @@ CORE_EXTENSION_LIST = [
     "Core.membership",
     "Core.timeout",
     "Core.utils",
-]
-
-EXTENSION_LIST = [
     "Cogs.entrance",
     "Cogs.inquiry",
     "Cogs.member_count",
@@ -62,12 +59,9 @@ EXTENSION_LIST = [
     "Cogs.thread",
     "Cogs.tool",
     "Event.birth_mishmash",
+    "SongDB.main",
 ]
 
-
-SONG_DB_EXTENSION_LIST = [
-    # "SongDB.main",
-]
 
 intents = discord.Intents.all()
 intents.typing = False
@@ -81,13 +75,6 @@ class MyBot(commands.Bot):
             help_command=JapaneseHelpCommand(),
         )
         self.persistent_views_added = False
-        for cog in CORE_EXTENSION_LIST:
-            try:
-                self.load_extension(cog)
-            except Exception:
-                traceback.print_exc()
-            else:
-                print(f"Core extension [{cog}] is loaded!")
         for cog in EXTENSION_LIST:
             try:
                 self.load_extension(cog)
@@ -95,16 +82,6 @@ class MyBot(commands.Bot):
                 traceback.print_exc()
             else:
                 print(f"extension [{cog}] is loaded!")
-        for cog in SONG_DB_EXTENSION_LIST:
-            try:
-                self.load_extension(cog)
-            except Exception:
-                traceback.print_exc()
-            else:
-                print(f"extension for SongDB [{cog}] is loaded!")
-
-    async def on_connect(self):
-        await self.sync_commands(force=True)
 
     async def on_ready(self):
         if not self.persistent_views_added:
