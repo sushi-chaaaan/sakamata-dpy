@@ -66,6 +66,9 @@ class Deal(commands.Cog):
         await interaction.response.defer()
 
         # get channel and role
+        if not isinstance(target, discord.Member):
+            await interaction.followup.send(content="対象が見つかりませんでした")
+            return
         ctx = await commands.Context.from_interaction(interaction)
         channel = ctx.channel
         if not isinstance(channel, discord.abc.Messageable):
