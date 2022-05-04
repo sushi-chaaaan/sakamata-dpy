@@ -14,7 +14,6 @@ logger = getMyLogger(__name__)
 token = os.environ["DISCORD_BOT_TOKEN"]
 
 EXT_LIST = [
-    "exts.test",
     "exts.core.entrance",
     "exts.core.deal",
 ]
