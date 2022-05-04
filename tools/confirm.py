@@ -1,5 +1,4 @@
 import asyncio
-from asyncio.log import logger
 
 import discord
 from discord.ext import commands
