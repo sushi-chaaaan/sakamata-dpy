@@ -1,10 +1,10 @@
 import os
 import platform
 
-import discord
-from discord.ext import commands
 from dotenv import load_dotenv
 
+import discord
+from discord.ext import commands
 from model.color import Color
 from tools.dt import dt_to_str
 from tools.logger import getMyLogger
@@ -17,6 +17,7 @@ EXT_LIST = [
     "exts.core.entrance",
     "exts.core.deal",
     "exts.core.error",
+    "exts.utils",
 ]
 
 intents = discord.Intents.all()
