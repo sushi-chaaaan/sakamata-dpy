@@ -16,6 +16,7 @@ token = os.environ["DISCORD_BOT_TOKEN"]
 EXT_LIST = [
     "exts.core.entrance",
     "exts.core.deal",
+    "exts.core.error",
 ]
 
 intents = discord.Intents.all()
