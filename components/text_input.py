@@ -98,7 +98,7 @@ class FollowupButton(discord.ui.Button):
         super().__init__(*args, **kwargs)
 
     async def callback(self, interaction: discord.Interaction):
-        content = "このボタンは既に使用されています。\nもう一度コマンドを実行してください。"
+        content = "このボタンは既に使用されています。\nもう一度はじめからコマンドを実行してください。"
         if interaction.response.is_done():
             await interaction.followup.send(content=content, ephemeral=True)
         else:
