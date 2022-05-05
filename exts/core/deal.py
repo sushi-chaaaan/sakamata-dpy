@@ -27,7 +27,7 @@ class Deal(commands.Cog):
         target: discord.Member | discord.User,
     ):
         """ユーザー情報照会用コマンド"""
-        logger.info(f"{ctx.author} used user command")
+        logger.info(f"{ctx.author}[ID: {ctx.author.id}] used user command")
         avatar_url = (
             target.default_avatar.url
             if target.default_avatar == target.display_avatar
@@ -77,7 +77,7 @@ class Deal(commands.Cog):
         self, interaction: discord.Interaction, target: discord.Member | discord.User
     ):
         """kick用コマンド"""
-        logger.info(f"{interaction.user} used kick command")
+        logger.info(f"{interaction.user}[ID: {interaction.user.id}] used kick command")
         await interaction.response.defer()
 
         # get channel and role
@@ -124,6 +124,7 @@ class Deal(commands.Cog):
     async def ban(
         self, interaction: discord.Interaction, target: discord.Member | discord.User
     ):
+        logger.info(f"{interaction.user}[ID: {interaction.user.id}] used ban command")
         pass
 
     @app_commands.command(name="timeout")
@@ -134,6 +135,9 @@ class Deal(commands.Cog):
     async def timeout(
         self, interaction: discord.Interaction, target: discord.Member, time: int
     ):
+        logger.info(
+            f"{interaction.user}[ID: {interaction.user.id}] used timeout command"
+        )
         pass
 
 
