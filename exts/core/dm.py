@@ -28,6 +28,7 @@ class DMSys(commands.Cog):
         attachment: discord.Attachment | None = None,
     ):
         """ダイレクトメッセージの送信を行います。"""
+        logger.info(f"{interaction.user} used send-dm command")
         await interaction.response.defer(thinking=True)
         ctx = await commands.Context.from_interaction(interaction)
         tracker = TextInputTracker()
@@ -81,6 +82,7 @@ class DMSys(commands.Cog):
             )
             return
         else:
+            logger.info(f"DM was sent to {target}")
             await interaction.followup.send(content="DM送信に成功しました。")
             return
 
