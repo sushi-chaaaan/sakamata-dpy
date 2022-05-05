@@ -104,16 +104,16 @@ class MyBot(commands.Bot):
     def _get_embed(self) -> discord.Embed:
         embed = discord.Embed(
             title="Booted",
-            description=f"起動日時: {dt_to_str()}",
+            description=f"Time: {dt_to_str()}",
             color=Color.basic.value,
         )
         embed.add_field(
-            name="loadできなかったExtension",
+            name="Extensions failed to load",
             value="\n".join(self.failed_extensions),
             inline=False,
         )
         embed.add_field(
-            name="add_viewできなかったView",
+            name="Views failed to add",
             value="\n".join(self.failed_views),
             inline=False,
         )
