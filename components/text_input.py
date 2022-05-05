@@ -63,15 +63,43 @@ class MessageInputView(ui.View):
             max_length=self.max,
         )
         if interaction.message:
-            view = ui.View.from_message(interaction.message, timeout=None)
-            for c in view.children:
-                if isinstance(c, ui.Button):
-                    c.disabled = True
+            view = self.to_unavailable(self)
             await interaction.message.edit(view=view)
         await interaction.response.send_modal(modal)
         await modal.wait()
         self.value = modal.content
         self.stop()
+
+    def to_unavailable(self, view: ui.View) -> ui.View:
+        new_view = discord.ui.View(timeout=view.timeout)
+        for c in view.children:
+            if isinstance(c, ui.Button):
+                _c = FollowupButton(
+                    style=c.style,
+                    label=c.label,
+                    disabled=False,
+                    custom_id="unavailable_" + c.custom_id if c.custom_id else None,
+                    url=c.url,
+                    emoji=c.emoji,
+                    row=c.row,
+                )
+                new_view.add_item(_c)
+            else:
+                new_view.add_item(c)
+        return new_view
+
+
+class FollowupButton(discord.ui.Button):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    async def callback(self, interaction: discord.Interaction):
+        content = "このボタンは既に使用されています。\nもう一度コマンドを実行してください。"
+        if interaction.response.is_done():
+            await interaction.followup.send(content=content, ephemeral=True)
+        else:
+            await interaction.response.send_message(content=content, ephemeral=True)
+        return
 
 
 class MessageInput(ui.Modal):
