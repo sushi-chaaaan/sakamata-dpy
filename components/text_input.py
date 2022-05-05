@@ -63,30 +63,34 @@ class MessageInputView(ui.View):
             max_length=self.max,
         )
         if interaction.message:
-            view = self.to_unavailable(self)
+            view = to_unavailable(self)
             await interaction.message.edit(view=view)
         await interaction.response.send_modal(modal)
         await modal.wait()
         self.value = modal.content
         self.stop()
 
-    def to_unavailable(self, view: ui.View) -> ui.View:
-        new_view = discord.ui.View(timeout=view.timeout)
-        for c in view.children:
-            if isinstance(c, ui.Button):
-                _c = FollowupButton(
-                    style=c.style,
-                    label=c.label,
-                    disabled=False,
-                    custom_id="unavailable_" + c.custom_id if c.custom_id else None,
-                    url=c.url,
-                    emoji=c.emoji,
-                    row=c.row,
-                )
-                new_view.add_item(_c)
-            else:
-                new_view.add_item(c)
-        return new_view
+
+def to_unavailable(view: ui.View) -> ui.View:
+    new_view = discord.ui.View(timeout=view.timeout)
+    for c in view.children:
+        if isinstance(c, ui.Button):
+            _c = FollowupButton(
+                style=c.style,
+                label=c.label,
+                disabled=False,
+                custom_id="unavailable_" + c.custom_id if c.custom_id else None,
+                url=c.url,
+                emoji=c.emoji,
+                row=c.row,
+            )
+            new_view.add_item(_c)
+        elif isinstance(c, ui.Select):
+            c.disabled = True
+            new_view.add_item(c)
+        else:
+            new_view.add_item(c)
+    return new_view
 
 
 class FollowupButton(discord.ui.Button):
