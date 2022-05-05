@@ -93,11 +93,11 @@ class Deal(commands.Cog):
             return
 
         # do confirm
-        text = f"{target.mention}をkickしますか？"
+        header = f"{target.mention}をkickしますか？"
         res = await self.confirm.confirm(
             ctx=ctx,
             watch_role=role,
-            text=text,
+            header=header,
             run_num=1,
             stop_num=1,
         )
@@ -111,7 +111,7 @@ class Deal(commands.Cog):
                 text = "Failed to kick member: Unknown error"
                 logger.error(text, exc_info=e)
             finally:
-                await ctx.send(content=text)
+                await ctx.send(content=header)
                 return
         else:
             await ctx.send(content="Canceled")

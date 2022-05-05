@@ -22,7 +22,8 @@ class Confirm:
         *,
         ctx: commands.Context,
         watch_role: discord.Role | list[discord.Role],
-        text: str,
+        header: str,
+        text: str | None = None,
         run_num: int,
         stop_num: int,
     ) -> bool:
@@ -35,11 +36,14 @@ class Confirm:
         watch_mentions = "\n".join([f"{role.mention}" for role in watch_roles])
 
         # send message to watch
-        send_text = (
-            "【コマンド実行確認】\n------------------------\n"
-            + text
-            + f"\n------------------------\nコマンド承認:{watch_mentions}\n実行に必要な承認人数: {str(run_num)}\n中止に必要な承認人数: {str(stop_num)}"
-        )
+        suffix = f"\n------------------------\nコマンド承認:{watch_mentions}\n実行に必要な承認人数: {str(run_num)}\n中止に必要な承認人数: {str(stop_num)}"
+
+        if not text:
+            send_text = f"【コマンド実行確認】\n{header}" + suffix
+        else:
+            send_text = (
+                f"【コマンド実行確認】\n{header}\n------------------------\n{text}" + suffix
+            )
         target = await ctx.send(content=send_text)
         await target.add_reaction(accept_emoji)
         await target.add_reaction(reject_emoji)
