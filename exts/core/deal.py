@@ -117,6 +117,25 @@ class Deal(commands.Cog):
             await ctx.send(content="Canceled")
             return
 
+    @app_commands.command(name="ban")
+    @app_commands.guilds(discord.Object(id=int(os.environ["GUILD_ID"])))
+    @app_commands.guild_only()
+    @app_commands.describe(target="Choose user to ban")
+    async def ban(
+        self, interaction: discord.Interaction, target: discord.Member | discord.User
+    ):
+        pass
+
+    @app_commands.command(name="timeout")
+    @app_commands.guilds(discord.Object(id=int(os.environ["GUILD_ID"])))
+    @app_commands.guild_only()
+    @app_commands.describe(target="Choose user to timeout")
+    @app_commands.describe(time="Choose time to timeout")
+    async def timeout(
+        self, interaction: discord.Interaction, target: discord.Member, time: int
+    ):
+        pass
+
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Deal(bot))

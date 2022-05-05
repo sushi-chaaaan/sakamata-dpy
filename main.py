@@ -1,10 +1,10 @@
 import os
 import platform
 
-from dotenv import load_dotenv
-
 import discord
 from discord.ext import commands
+from dotenv import load_dotenv
+
 from model.color import Color
 from tools.dt import dt_to_str
 from tools.logger import getMyLogger
@@ -16,6 +16,7 @@ token = os.environ["DISCORD_BOT_TOKEN"]
 EXT_LIST = [
     "exts.core.entrance",
     "exts.core.deal",
+    "exts.core.dm",
     "exts.core.error",
     "exts.utils",
 ]
