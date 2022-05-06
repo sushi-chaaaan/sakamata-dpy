@@ -19,7 +19,7 @@ class ThreadSys(commands.Cog):
     @commands.Cog.listener(name="on_thread_create")
     async def thread_create(self, thread: discord.Thread):
         embed = discord.Embed(
-            title="スレッドが作成されました。",
+            title="New Thread Created",
             colour=Color.basic.value,
         )
         embed.set_footer(text=f"{dt_to_str()}")
@@ -56,7 +56,9 @@ class ThreadSys(commands.Cog):
     @app_commands.command(name="thread-board")
     @app_commands.guilds(discord.Object(id=int(os.environ["GUILD_ID"])))
     @app_commands.guild_only()
-    @app_commands.describe(category="Choose category to make board")
+    @app_commands.describe(
+        category="Choose category to make board. defaults to current category"
+    )
     async def thread_board(
         self,
         interaction: discord.Interaction,
