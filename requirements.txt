@@ -11,14 +11,14 @@ cffi==1.15.0
 charset-normalizer==2.0.12
 click==8.1.3
 discord-handler==0.0.5
-discord.py @ git+https://github.com/Rapptz/discord.py.git@b9b6dc960f61d3187510e8908cae58512e8b3c94
+discord.py @ git+https://github.com/Rapptz/discord.py.git@bd3ce597e1e66dac6baa014c6301445ee1b555fb
+dispander @ git+https://github.com/sushi-chaaaan/dispander.git@cde35b1ebf9b31c0ebdb03ceafdc32187a6bf714
 flake8==4.0.1
 frozenlist==1.3.0
 idna==3.3
 mccabe==0.6.1
 multidict==6.0.2
 mypy-extensions==0.4.3
-newdispanderfixed @ git+https://github.com/sushi-chaaaan/dispander.git@4c309a09399d98c2d974d53a86982d273fe367e5
 orjson==3.6.8
 pathspec==0.9.0
 pip-autoremove==0.10.0
