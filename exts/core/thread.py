@@ -1,4 +1,7 @@
+import os
+
 import discord
+from discord import app_commands, ui
 from discord.ext import commands
 from dotenv import load_dotenv
 from model.color import Color
@@ -49,6 +52,81 @@ class ThreadSys(commands.Cog):
             return
         else:
             return
+
+    @app_commands.command(name="thread-board")
+    @app_commands.guilds(discord.Object(id=int(os.environ["GUILD_ID"])))
+    @app_commands.guild_only()
+    @app_commands.describe(category="Choose category to make board")
+    async def thread_board(
+        self,
+        interaction: discord.Interaction,
+        category: discord.CategoryChannel | None = None,
+    ):
+        logger.info(
+            f"{interaction.user}[ID: {interaction.user.id}] used thread-board command"
+        )
+        await interaction.response.defer(ephemeral=True)
+
+        # get category
+        if not category:
+            if (
+                not interaction.channel
+                or not isinstance(interaction.channel, discord.abc.GuildChannel)
+                or not (_category := interaction.channel.category)
+            ):
+                await interaction.followup.send(
+                    content="有効なカテゴリを認識できませんでした。", ephemeral=True
+                )
+                return
+            category = _category
+
+        # get threads
+        channels = sorted(category.channels, key=lambda channel: channel.position)
+        parsed_channels = [
+            ch for ch in channels if not isinstance(ch, discord.CategoryChannel)
+        ]
+        board_text = "\n\n".join([self.parse_thread(ch) for ch in parsed_channels])
+        view = EscapeWithCodeBlock(text=board_text)
+        await interaction.followup.send(content=board_text, view=view, ephemeral=True)
+        return
+
+    def parse_thread(
+        self,
+        channel: discord.TextChannel
+        | discord.VoiceChannel
+        | discord.StageChannel
+        | discord.ForumChannel,
+    ) -> str:
+        if not isinstance(channel, discord.TextChannel):
+            return channel.mention
+        if not channel.threads or not (
+            escaped_threads := [t for t in channel.threads if not t.is_private()]
+        ):
+            return channel.mention
+        threads = sorted(escaped_threads, key=lambda thread: len(thread.name))
+        if len(threads) == 1:
+            return f"{channel.mention}\n┗{threads[0].mention}"
+        return (
+            "\n┣".join([f"{channel.mention}"] + [t.mention for t in threads[:-1]])
+            + f"\n┗{threads[-1].mention}"
+        )
+
+
+class EscapeWithCodeBlock(ui.View):
+    def __init__(self, *, text: str, timeout: float | None = None):
+        super().__init__(timeout=timeout)
+        self.text = text
+
+    @ui.button(
+        label="Escape",
+        style=discord.ButtonStyle.blurple,
+        custom_id="exts.core.thread.EscapeWithCodeBlock",
+        row=0,
+    )
+    async def escape(self, interation: discord.Interaction, button: ui.Button):
+        await interation.response.defer(ephemeral=True)
+        await interation.followup.send(content=f"```\n{self.text}\n```", ephemeral=True)
+        return
 
 
 async def setup(bot: commands.Bot):

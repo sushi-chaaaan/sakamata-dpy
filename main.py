@@ -18,6 +18,7 @@ EXT_LIST = [
     "exts.core.deal",
     "exts.core.dm",
     "exts.core.error",
+    "exts.core.thread",
     "exts.utils",
 ]
 
@@ -121,6 +122,10 @@ class MyBot(commands.Bot):
             name="loaded app_commands",
             value=self.synced_commands,
             inline=False,
+        )
+        embed.add_field(
+            name="Latency",
+            value=f"{self.latency * 1000:.2f}ms",
         )
         embed.add_field(
             name="Python",
