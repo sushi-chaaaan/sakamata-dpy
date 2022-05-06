@@ -1,7 +1,8 @@
 import os
 
 import discord
-from discord import app_commands, ui
+from components.escape import EscapeWithCodeBlock
+from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
 from model.color import Color
@@ -112,23 +113,6 @@ class ThreadSys(commands.Cog):
             "\n┣".join([f"{channel.mention}"] + [t.mention for t in threads[:-1]])
             + f"\n┗{threads[-1].mention}"
         )
-
-
-class EscapeWithCodeBlock(ui.View):
-    def __init__(self, *, text: str, timeout: float | None = None):
-        super().__init__(timeout=timeout)
-        self.text = text
-
-    @ui.button(
-        label="Escape",
-        style=discord.ButtonStyle.blurple,
-        custom_id="exts.core.thread.EscapeWithCodeBlock",
-        row=0,
-    )
-    async def escape(self, interation: discord.Interaction, button: ui.Button):
-        await interation.response.defer(ephemeral=True)
-        await interation.followup.send(content=f"```\n{self.text}\n```", ephemeral=True)
-        return
 
 
 async def setup(bot: commands.Bot):
