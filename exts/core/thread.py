@@ -88,7 +88,11 @@ class ThreadSys(commands.Cog):
         parsed_channels = [
             ch for ch in channels if not isinstance(ch, discord.CategoryChannel)
         ]
+
+        # parse threads
         board_text = "\n\n".join([self.parse_thread(ch) for ch in parsed_channels])
+
+        # send board
         view = EscapeWithCodeBlock(text=board_text)
         await interaction.followup.send(content=board_text, view=view, ephemeral=True)
         return
