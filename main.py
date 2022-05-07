@@ -64,7 +64,7 @@ class MyBot(commands.Bot):
             logger.error(f"Failed to sync command tree: {e}")
 
         # add persistent_view
-        VIEWS = []
+        VIEWS: list[discord.ui.View] = []
         if not self.persistent_views_added:
             for v in VIEWS:
                 try:
@@ -73,18 +73,18 @@ class MyBot(commands.Bot):
                     logger.error(
                         f"[TypeError]\nFailed to add persistent view {v}", exc_info=e
                     )
-                    self.failed_views.append(v)
+                    self.failed_views.append(v.__str__())
                 except ValueError as e:
                     logger.error(
                         f"[ValueError]\nFailed to add persistent view {v}", exc_info=e
                     )
-                    self.failed_views.append(v)
+                    self.failed_views.append(v.__str__())
                 except Exception as e:
                     logger.error(
                         f"[Unknown Exception]\nFailed to add persistent view {v}",
                         exc_info=e,
                     )
-                    self.failed_views.append(v)
+                    self.failed_views.append(v.__str__())
         if not self.failed_views:
             self.failed_views = ["None"]
         self.persistent_views_added = True
