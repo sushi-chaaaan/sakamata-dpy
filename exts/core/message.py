@@ -6,7 +6,10 @@ from discord import app_commands
 from discord.ext import commands
 from dispander import dispand
 from dotenv import load_dotenv
+from tools.confirm import Confirm
 from tools.logger import getMyLogger
+
+from .messanger import Messanger
 
 logger = getMyLogger(__name__)
 
@@ -42,9 +45,13 @@ class MessageSys(commands.Cog):
     async def send_message(
         self,
         interaction: discord.Interaction,
-        channel: discord.TextChannel | discord.VoiceChannel | discord.Thread,
+        channel: discord.TextChannel | discord.VoiceChannel,
         attachment: discord.Attachment | None = None,
     ):
+        logger.info(
+            f"{interaction.user}[ID: {interaction.user.id}] used send-message command"
+        )
+
         # get text
         ctx = await commands.Context.from_interaction(interaction)
         tracker = TextInputTracker(ctx)
@@ -55,18 +62,34 @@ class MessageSys(commands.Cog):
             max_length=2000,
         )
         if not value:
-            await interaction.followup.send(content="正しく入力されませんでした。")
+            await ctx.send(content="正しく入力されませんでした。")
             return
 
-        # send text
-        try:
-            if attachment:
-                await channel.send(content=value, file=await attachment.to_file())
-            else:
-                await channel.send(content=value)
-        except Exception as e:
-            logger.error(f"failed to send message to {channel.name}", exc_info=e)
-            await interaction.followup.send()
+        # prepare for do confirm
+        check = Confirm(self.bot)
+        role = ctx.guild.get_role(int(os.environ["ADMIN"]))  # type: ignore -> checked by Discord server side
+        if not role:
+            await ctx.send(content="承認ロールを取得できませんでした。")
+            return
+        header = (
+            f"{channel.mention}へ次のメッセージを送信します。"
+            if not attachment
+            else f"{channel.mention}へ次のメッセージを送信します。\n添付ファイルの数は1件です。"
+        )
+
+        # do confirm
+        res = await check.confirm(
+            ctx=ctx, watch_role=role, header=header, text=value, run_num=1, stop_num=1
+        )
+
+        if not res:
+            await ctx.send(content="承認されませんでした。\n実行をキャンセルします。")
+            return
+
+        # send text (approved)
+        messanger = Messanger(ctx)
+        await messanger.send_message(target=channel, value=value, attachment=attachment)
+        return
 
 
 async def setup(bot: commands.Bot):

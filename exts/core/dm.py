@@ -42,7 +42,7 @@ class DMSys(commands.Cog):
             timeout=None,
         )
         if not value:
-            await interaction.followup.send(content="実行をキャンセルします。")
+            await ctx.send(content="実行をキャンセルします。")
             return
 
         # confirm
@@ -51,9 +51,9 @@ class DMSys(commands.Cog):
             return
         check = Confirm(self.bot)
         header = (
-            f"{target}へ次のダイレクトメッセージを送信します。"
+            f"{target.mention}へ次のダイレクトメッセージを送信します。"
             if not attachment
-            else f"{target}へ次のダイレクトメッセージを送信します。\n添付ファイルの数は1件です。"
+            else f"{target.mention}へ次のダイレクトメッセージを送信します。\n添付ファイルの数は1件です。"
         )
         res = await check.confirm(
             ctx=ctx,
@@ -66,11 +66,11 @@ class DMSys(commands.Cog):
 
         # cancel
         if not res:
-            await interaction.followup.send(content="実行をキャンセルします。")
+            await ctx.send(content="実行をキャンセルします。")
             return
 
         # send
-        await interaction.followup.send(content="実行を開始します。")
+        await ctx.send(content="実行を開始します。")
         try:
             if attachment:
                 await target.send(content=value, file=await attachment.to_file())
@@ -78,13 +78,11 @@ class DMSys(commands.Cog):
                 await target.send(content=value)
         except Exception as e:
             logger.exception(f"Failed to send DM to {target}", exc_info=e)
-            await interaction.followup.send(
-                content="DM送信に失敗しました。\n対象がDMを受け取らない設定になっている可能性があります。"
-            )
+            await ctx.send(content="DM送信に失敗しました。\n対象がDMを受け取らない設定になっている可能性があります。")
             return
         else:
             logger.info(f"DM was sent to {target}")
-            await interaction.followup.send(content="DM送信に成功しました。")
+            await ctx.send(content="DM送信に成功しました。")
             return
 
 

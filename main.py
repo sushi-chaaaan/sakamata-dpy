@@ -18,6 +18,7 @@ EXT_LIST = [
     "exts.core.deal",
     "exts.core.dm",
     "exts.core.error",
+    "exts.core.message",
     "exts.core.thread",
     "exts.utils",
 ]
