@@ -92,7 +92,7 @@ class ThreadSys(commands.Cog):
             # メンションを生成
             m = f"<@{member.id}>"
 
-            # 追加後の文字数が2000文字以下なら_chunkに直接追加する
+            # 追加後の文字数が2000文字未満なら_chunkに直接追加する
             # そうでなければ現在の_chunkをchunkに追加したあと,あたらしい_chunkをmで初期化
             if len(_chunk) + len(m) < 2000:
                 _chunk += m
