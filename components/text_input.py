@@ -4,13 +4,13 @@ from discord.ext import commands
 
 
 class TextInputTracker:
-    def __init__(self) -> None:
+    def __init__(self, ctx: commands.Context) -> None:
+        self.ctx = ctx
         pass
 
     async def track_modal(
         self,
         *,
-        ctx: commands.Context,
         title: str,
         custom_id: str,
         min_length: int,
@@ -24,7 +24,7 @@ class TextInputTracker:
             min_length=min_length,
             max_length=max_length,
         )
-        await ctx.send(view=view)
+        await self.ctx.send(view=view)
         await view.wait()
         if not view.value:
             return None
@@ -46,7 +46,6 @@ class MessageInputView(ui.View):
         self.custom_id = custom_id
         self.min = min_length
         self.max = max_length
-        self.value = None
 
     @ui.button(
         label="入力",

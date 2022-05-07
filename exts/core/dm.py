@@ -33,9 +33,8 @@ class DMSys(commands.Cog):
         )
         await interaction.response.defer(thinking=True)
         ctx = await commands.Context.from_interaction(interaction)
-        tracker = TextInputTracker()
+        tracker = TextInputTracker(ctx)
         value = await tracker.track_modal(
-            ctx=ctx,
             title="DM内容入力",
             custom_id="exts.core.dm.send_dm_track_modal",
             min_length=1,
@@ -78,7 +77,7 @@ class DMSys(commands.Cog):
             else:
                 await target.send(content=value)
         except Exception as e:
-            logger.exception("Failed to send DM", exc_info=e)
+            logger.exception(f"Failed to send DM to {target}", exc_info=e)
             await interaction.followup.send(
                 content="DM送信に失敗しました。\n対象がDMを受け取らない設定になっている可能性があります。"
             )
