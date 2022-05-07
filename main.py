@@ -55,10 +55,10 @@ class MyBot(commands.Bot):
 
         # sync command
         try:
-            cmds = await self.tree.sync(
+            cmd = await self.tree.sync(
                 guild=discord.Object(id=int(os.environ["GUILD_ID"]))
             )
-            self.synced_commands = len(cmds)
+            self.synced_commands = len(cmd)
             logger.info(f"{self.synced_commands} commands synced")
         except Exception as e:
             logger.error(f"Failed to sync command tree: {e}")
