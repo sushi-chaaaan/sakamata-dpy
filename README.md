@@ -11,7 +11,7 @@
 ### 開発環境及び使用ライブラリ
 Python 3.10.4  
 [discord.py](https://github.com/Rapptz/discord.py) 2.0.0a  
-[dispander](https://github.com/sushi-chaaaan/dispanderfixed/tree/for2.0)([DiscordBotPortalJP様のライブラリ](https://github.com/DiscordBotPortalJP/dispander)をforkさせていただきました)  
+[dispander](https://github.com/sushi-chaaaan/dispander/tree/for2.0)([DiscordBotPortalJP様のライブラリ](https://github.com/DiscordBotPortalJP/dispander)をforkさせていただきました)  
 
 
 ### 機能追加履歴
