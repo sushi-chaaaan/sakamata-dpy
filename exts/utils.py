@@ -51,6 +51,12 @@ class Utils(commands.Cog):
         await interaction.followup.send(f"```{timestamp}```", ephemeral=True)
         return
 
+    @commands.hybrid_command(name="ping")
+    @app_commands.guilds(discord.Object(id=int(os.environ["GUILD_ID"])))
+    async def ping(self, ctx: commands.Context):
+        await ctx.send(content=f"pong!\nping is {self.bot.latency * 1000:.2f}ms")
+        return
+
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Utils(bot))
