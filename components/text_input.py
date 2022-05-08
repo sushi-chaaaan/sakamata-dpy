@@ -86,8 +86,7 @@ def to_unavailable(view: ui.View) -> ui.View:
             _c = FollowupButton(
                 style=c.style,
                 label=c.label,
-                disabled=False,
-                custom_id="unavailable_" + c.custom_id if c.custom_id else None,
+                disabled=True,
                 url=c.url,
                 emoji=c.emoji,
                 row=c.row,
