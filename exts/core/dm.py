@@ -5,7 +5,7 @@ from components.text_input import TextInputTracker
 from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
-from tools.confirm import Confirm
+from tools.confirm import Checker
 from tools.logger import getMyLogger
 
 logger = getMyLogger(__name__)
@@ -49,13 +49,13 @@ class DMSys(commands.Cog):
         role = ctx.guild.get_role(int(os.environ["ADMIN"]))  # type: ignore -> checked by Discord server side
         if not role:
             return
-        check = Confirm(self.bot)
+        check = Checker(self.bot)
         header = (
             f"{target.mention}へ次のダイレクトメッセージを送信します。"
             if not attachment
             else f"{target.mention}へ次のダイレクトメッセージを送信します。\n添付ファイルの数は1件です。"
         )
-        res = await check.confirm(
+        res = await check.check_role(
             ctx=ctx,
             watch_role=role,
             header=header,
