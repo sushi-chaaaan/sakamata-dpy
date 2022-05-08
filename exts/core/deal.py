@@ -17,23 +17,35 @@ class Deal(commands.Cog):
         self.bot = bot
         self.confirm = Confirm(bot)
         load_dotenv()
+        self.ctx_menu_user = app_commands.ContextMenu(
+            name="user",
+            callback=self.ctx_user,
+            guild_ids=[int(os.environ["GUILD_ID"])],
+        )
+        self.bot.tree.add_command(self.ctx_menu_user)
 
-    @commands.hybrid_command(name="user")
-    @app_commands.guilds(discord.Object(id=int(os.environ["GUILD_ID"])))
-    @app_commands.describe(target="Choose user to search information")
-    async def user(
-        self,
-        ctx: commands.Context,
-        target: discord.Member | discord.User,
-    ):
-        """ユーザー情報照会用コマンド"""
-        logger.info(f"{ctx.author}[ID: {ctx.author.id}] used user command")
+    async def cog_unload(self) -> None:
+        self.bot.tree.remove_command(
+            self.ctx_menu_user.name,
+            type=self.ctx_menu_user.type,
+        )
+
+    @app_commands.guild_only()
+    async def ctx_user(
+        self, interaction: discord.Interaction, user: discord.Member
+    ) -> None:
+        await interaction.response.defer(ephemeral=True)
+        embed = self.user_logic(user)
+        await interaction.followup.send(embeds=[embed], ephemeral=True)
+        return
+
+    def user_logic(self, target: discord.Member | discord.User) -> discord.Embed:
         avatar_url = (
             target.default_avatar.url
             if target.default_avatar == target.display_avatar
             else target.display_avatar.replace(size=1024, static_format="webp")
         )
-        await ctx.defer()
+
         embed = discord.Embed(
             title="ユーザー情報照会結果",
             description=f"対象ユーザー: {target.mention}",
@@ -66,6 +78,20 @@ class Deal(commands.Cog):
             embed.description = (
                 f"\N{Warning Sign}このサーバーにいないユーザーです。\n対象ユーザー: {target.mention}"
             )
+        return embed
+
+    @commands.hybrid_command(name="user")
+    @app_commands.guilds(discord.Object(id=int(os.environ["GUILD_ID"])))
+    @app_commands.describe(target="Choose user to search information")
+    async def user(
+        self,
+        ctx: commands.Context,
+        target: discord.Member | discord.User,
+    ):
+        """ユーザー情報照会用コマンド"""
+        logger.info(f"{ctx.author}[ID: {ctx.author.id}] used user command")
+        await ctx.defer()
+        embed = self.user_logic(target)
         await ctx.send(embeds=[embed])
         return
 
