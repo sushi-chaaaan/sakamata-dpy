@@ -19,7 +19,9 @@ EXT_LIST = [
     "exts.core.dm",
     "exts.core.error",
     "exts.core.message",
+    "exts.core.report",
     "exts.core.thread",
+    "exts.test",
     "exts.utils",
 ]
 
