@@ -1,10 +1,6 @@
 # sakamatabot
 
-![GitHub commit activity](https://img.shields.io/github/commit-activity/m/sushi-chaaaan/sakamata-alpha-pycord?style=flat-square)
-[![CodeFactor](https://www.codefactor.io/repository/github/sushi-chaaaan/sakamata-alpha-pycord/badge)](https://www.codefactor.io/repository/github/sushi-chaaaan/sakamata-alpha-pycord)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dispanderfixed?style=flat-square)](https://www.python.org/downloads/release/python-3101/)
-[![PyPI](https://img.shields.io/badge/pycord-2.0.0a-orange?style=flat-square)](https://github.com/Pycord-Development/pycord)
-[![iroiro](https://img.shields.io/badge/discord--ext--ui-3.1.3-orange?style=flat-square)](https://github.com/sizumita/discord-ext-ui)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/sushi-chaaaan/sakamata-dpy?style=flat-square)
 ![Discord](https://img.shields.io/discord/915910043461890078?color=blueviolet&label=Discord&logo=Discord&logoColor=white&style=flat-square)
 
 ### このリポジトリは？
