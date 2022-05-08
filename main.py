@@ -21,7 +21,7 @@ EXT_LIST = [
     "exts.core.message",
     "exts.core.report",
     "exts.core.thread",
-    "exts.test",
+    # "exts.test",
     "exts.utils",
 ]
 
