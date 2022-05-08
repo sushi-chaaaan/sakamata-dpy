@@ -6,7 +6,7 @@ from discord.ext import commands
 class TextInputTracker:
     def __init__(self, ctx: commands.Context) -> None:
         self.ctx = ctx
-        pass
+        self.origin_interaction = self.ctx.interaction
 
     async def track_modal(
         self,
@@ -16,6 +16,7 @@ class TextInputTracker:
         min_length: int,
         max_length: int,
         timeout: float | None = None,
+        ephemeral: bool = False,
     ) -> str | None:
         view = MessageInputView(
             timeout=timeout,
@@ -23,8 +24,9 @@ class TextInputTracker:
             custom_id=custom_id,
             min_length=min_length,
             max_length=max_length,
+            origin_interaction=self.origin_interaction,
         )
-        await self.ctx.send(view=view)
+        await self.ctx.send(view=view, ephemeral=ephemeral)
         await view.wait()
         if not view.value:
             return None
@@ -40,12 +42,14 @@ class MessageInputView(ui.View):
         custom_id: str,
         min_length: int,
         max_length: int,
+        origin_interaction: discord.Interaction | None = None,
     ):
         super().__init__(timeout=timeout)
         self.title = title
         self.custom_id = custom_id
         self.min = min_length
         self.max = max_length
+        self.origin_interaction = origin_interaction
 
     @ui.button(
         label="入力",
@@ -61,9 +65,14 @@ class MessageInputView(ui.View):
             min_length=self.min,
             max_length=self.max,
         )
-        if interaction.message:
-            view = to_unavailable(self)
-            await interaction.message.edit(view=view)
+        view = to_unavailable(self)
+        if not self.origin_interaction or self.origin_interaction.is_expired():
+            if not interaction.message:
+                pass
+            else:
+                await interaction.message.edit(view=view)
+        else:
+            await self.origin_interaction.edit_original_message(view=view)
         await interaction.response.send_modal(modal)
         await modal.wait()
         self.value = modal.content
