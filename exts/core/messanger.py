@@ -6,28 +6,32 @@ logger = getMyLogger(__name__)
 
 
 class Messanger:
-    def __init__(self, ctx: commands.Context) -> None:
+    def __init__(
+        self,
+        ctx: commands.Context,
+        channel: discord.TextChannel | discord.VoiceChannel | discord.Thread,
+    ) -> None:
         self.ctx = ctx
+        self.channel = channel
         pass
 
     async def send_message(
         self,
-        *,
-        target: discord.TextChannel | discord.VoiceChannel | discord.Thread,
         content: str,
+        *,
         attachment: discord.Attachment | None = None,
         **kwargs,
     ) -> None:
         try:
             if attachment:
-                await target.send(
+                await self.channel.send(
                     content=content, file=await attachment.to_file(), **kwargs
                 )
             else:
-                await target.send(content=content, **kwargs)
+                await self.channel.send(content=content, **kwargs)
         except discord.Forbidden as e:
             logger.exception(
-                f"failed to send message to {target.mention}\n\nMissing Permission",
+                f"failed to send message to {self.channel.mention}\n\nMissing Permission",
                 exc_info=e,
             )
             await self.ctx.send(content="メッセージの送信に失敗しました。権限が不足しています。")
@@ -36,7 +40,7 @@ class Messanger:
             match e.code:
                 case 50008:
                     logger.exception(
-                        f"failed to send message to {target.mention}\n\nText in Voice is not enabled yet in this server: {target.guild.name}(ID: {target.guild.id})",
+                        f"failed to send message to {self.channel.mention}\n\nText in Voice is not enabled yet in this server: {self.channel.guild.name}(ID: {self.channel.guild.id})",
                         exc_info=e,
                     )
                     await self.ctx.send(
@@ -45,7 +49,7 @@ class Messanger:
                     return
                 case _:
                     logger.exception(
-                        f"failed to send message to {target.mention}\n\nHTTPException(plz check log)",
+                        f"failed to send message to {self.channel.mention}\n\nHTTPException(plz check log)",
                         exc_info=e,
                     )
                     await self.ctx.send(
@@ -53,12 +57,14 @@ class Messanger:
                     )
                     return
         except Exception as e:
-            logger.exception(f"failed to send message to {target.name}", exc_info=e)
+            logger.exception(
+                f"failed to send message to {self.channel.name}", exc_info=e
+            )
             await self.ctx.send(
                 content="メッセージの送信に失敗しました。\n権限が不足している可能性があります。\nまた、ボイスチャンネルに送信する場合は、サーバーで\nText in Voiceが有効化されているか予め確認してください。"
             )
             return
         else:
-            logger.info(f"message sent to {target.name}")
+            logger.info(f"message sent to {self.channel.name}")
             await self.ctx.send(content="メッセージ送信に成功しました。")
             return

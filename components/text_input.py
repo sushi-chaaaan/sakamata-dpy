@@ -80,27 +80,17 @@ class MessageInputView(ui.View):
 
 
 def to_unavailable(view: ui.View) -> ui.View:
-    new_view = discord.ui.View(timeout=view.timeout)
+    _view = discord.ui.View(timeout=view.timeout)
     for c in view.children:
-        if isinstance(c, ui.Button):
-            _c = FollowupButton(
-                style=c.style,
-                label=c.label,
-                disabled=True,
-                url=c.url,
-                emoji=c.emoji,
-                row=c.row,
-            )
-            new_view.add_item(_c)
-        elif isinstance(c, ui.Select):
+        if isinstance(c, ui.Button) or isinstance(c, ui.Select):
             c.disabled = True
-            new_view.add_item(c)
+            _view.add_item(c)
         else:
-            new_view.add_item(c)
-    return new_view
+            _view.add_item(c)
+    return _view
 
 
-class FollowupButton(discord.ui.Button):
+class FollowupButton(ui.Button):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -138,4 +128,3 @@ class MessageInput(ui.Modal):
         self.content = self._content.value
         self.interaction = interaction
         self.stop()
-        return

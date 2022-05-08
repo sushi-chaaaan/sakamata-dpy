@@ -12,12 +12,12 @@ accept_emoji = "\N{Heavy Large Circle}"
 reject_emoji = "\N{Cross Mark}"
 
 
-class Confirm:
+class Checker:
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         load_dotenv()
 
-    async def confirm(
+    async def check_role(
         self,
         *,
         ctx: commands.Context,

@@ -5,7 +5,7 @@ from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
 from model.color import Color
-from tools.confirm import Confirm
+from tools.confirm import Checker
 from tools.dt import dt_to_str
 from tools.logger import getMyLogger
 
@@ -15,7 +15,6 @@ logger = getMyLogger(__name__)
 class Deal(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.confirm = Confirm(bot)
         load_dotenv()
         self.ctx_menu_user = app_commands.ContextMenu(
             name="user",
@@ -119,8 +118,9 @@ class Deal(commands.Cog):
             return
 
         # do confirm
+        checker = Checker(self.bot)
         header = f"{target.mention}をkickしますか？"
-        res = await self.confirm.confirm(
+        res = await checker.check_role(
             ctx=ctx,
             watch_role=role,
             header=header,

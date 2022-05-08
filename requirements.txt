@@ -11,7 +11,7 @@ cffi==1.15.0
 charset-normalizer==2.0.12
 click==8.1.3
 discord-handler==0.0.5
-discord.py @ git+https://github.com/Rapptz/discord.py.git@bd3ce597e1e66dac6baa014c6301445ee1b555fb
+discord.py @ git+https://github.com/Rapptz/discord.py.git@b2929513cc63626f03b1c993b5a9b0109d60240b
 dispander @ git+https://github.com/sushi-chaaaan/dispander.git@cde35b1ebf9b31c0ebdb03ceafdc32187a6bf714
 flake8==4.0.1
 frozenlist==1.3.0

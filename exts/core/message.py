@@ -6,7 +6,7 @@ from discord import app_commands
 from discord.ext import commands
 from dispander import dispand
 from dotenv import load_dotenv
-from tools.confirm import Confirm
+from tools.confirm import Checker
 from tools.logger import getMyLogger
 
 from .messanger import Messanger
@@ -67,7 +67,7 @@ class MessageSys(commands.Cog):
             return
 
         # prepare for do confirm
-        check = Confirm(self.bot)
+        checker = Checker(self.bot)
         role = ctx.guild.get_role(int(os.environ["ADMIN"]))  # type: ignore -> checked by Discord server side
         if not role:
             await ctx.send(content="承認ロールを取得できませんでした。")
@@ -79,7 +79,7 @@ class MessageSys(commands.Cog):
         )
 
         # do confirm
-        res = await check.confirm(
+        res = await checker.check_role(
             ctx=ctx, watch_role=role, header=header, text=value, run_num=1, stop_num=1
         )
 
@@ -88,8 +88,8 @@ class MessageSys(commands.Cog):
             return
 
         # send text (approved)
-        messanger = Messanger(ctx)
-        await messanger.send_message(target=channel, value=value, attachment=attachment)
+        messanger = Messanger(ctx, channel)
+        await messanger.send_message(content=value, attachment=attachment)
         return
 
 
