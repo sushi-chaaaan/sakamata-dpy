@@ -60,6 +60,7 @@ class MessageSys(commands.Cog):
             custom_id="exts.core.message.send_message_track_modal",
             min_length=1,
             max_length=2000,
+            ephemeral=False,
         )
         if not value:
             await ctx.send(content="正しく入力されませんでした。")
