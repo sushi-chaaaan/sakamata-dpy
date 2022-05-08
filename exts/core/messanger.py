@@ -14,14 +14,17 @@ class Messanger:
         self,
         *,
         target: discord.TextChannel | discord.VoiceChannel | discord.Thread,
-        value: str,
+        content: str,
         attachment: discord.Attachment | None = None,
+        **kwargs,
     ) -> None:
         try:
             if attachment:
-                await target.send(content=value, file=await attachment.to_file())
+                await target.send(
+                    content=content, file=await attachment.to_file(), **kwargs
+                )
             else:
-                await target.send(content=value)
+                await target.send(content=content, **kwargs)
         except discord.Forbidden as e:
             logger.exception(
                 f"failed to send message to {target.mention}\n\nMissing Permission",

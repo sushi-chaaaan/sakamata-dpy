@@ -168,12 +168,12 @@ class ThreadSys(commands.Cog):
 
         # get threads
         channels = sorted(category.channels, key=lambda channel: channel.position)
-        parsed_channels = [
+        filtered_channels = [
             ch for ch in channels if not isinstance(ch, discord.CategoryChannel)
         ]
 
         # parse threads
-        board_text = "\n\n".join([self.parse_thread(ch) for ch in parsed_channels])
+        board_text = "\n\n".join([self.parse_thread(ch) for ch in filtered_channels])
 
         # send board
         view = EscapeWithCodeBlock(text=board_text)

@@ -32,14 +32,15 @@ class Report(commands.Cog):
         tracker = TextInputTracker(ctx=ctx)
 
         # get text input
-        res = await tracker.track_modal(
+        value = await tracker.track_modal(
             title=f"{user}を管理者に通報しますか？",
             custom_id="exts.core.report.report",
             min_length=1,
             max_length=2000,
             ephemeral=True,
         )
-        if not res:
+        if not value:
+            await ctx.send(content="正しく入力されませんでした。")
             return
 
         await ctx.send(f"{user}を管理者に通報しました。", ephemeral=True)

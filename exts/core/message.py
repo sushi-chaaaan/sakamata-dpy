@@ -56,7 +56,7 @@ class MessageSys(commands.Cog):
         ctx = await commands.Context.from_interaction(interaction)
         tracker = TextInputTracker(ctx)
         value = await tracker.track_modal(
-            title="メッセージ入力",
+            title="メッセージの内容を入力してください。",
             custom_id="exts.core.message.send_message_track_modal",
             min_length=1,
             max_length=2000,
