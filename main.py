@@ -11,7 +11,6 @@ from tools.logger import getMyLogger
 
 logger = getMyLogger(__name__)
 
-token = os.environ["DISCORD_BOT_TOKEN"]
 
 EXT_LIST = [
     "exts.core.entrance",
@@ -144,4 +143,8 @@ class MyBot(commands.Bot):
 if __name__ == "__main__":
     load_dotenv()
     bot = MyBot(intents=intents, application_id=int(os.environ["APP_ID"]))
-    bot.run(token)
+    token = os.environ["DISCORD_BOT_TOKEN"]
+    try:
+        bot.run(token)
+    except Exception as e:
+        logger.exception("Failed to run bot", exc_info=e)
