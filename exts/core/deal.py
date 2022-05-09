@@ -2,6 +2,7 @@ import os
 
 import discord
 from discord import app_commands
+from discord.app_commands import Choice
 from discord.ext import commands
 from dotenv import load_dotenv
 from model.color import Color
@@ -116,8 +117,7 @@ class Deal(commands.Cog):
         await interaction.response.defer()
 
         ctx = await commands.Context.from_interaction(interaction)
-        channel = ctx.channel
-        if not isinstance(channel, discord.abc.Messageable):
+        if not isinstance(ctx.channel, discord.abc.Messageable):
             return
         role = ctx.guild.get_role(int(os.environ["ADMIN"]))  # type: ignore -> checked by Discord server side
         if not role:
@@ -142,8 +142,8 @@ class Deal(commands.Cog):
             except Exception as e:
                 text = "Failed to kick member: Unknown error"
                 logger.error(text, exc_info=e)
-            finally:
-                await ctx.send(content=header)
+            else:
+                await ctx.send(content=f"{target.mention}をkickしました")
                 return
         else:
             await ctx.send(content="Canceled")
@@ -153,11 +153,63 @@ class Deal(commands.Cog):
     @app_commands.guilds(discord.Object(id=int(os.environ["GUILD_ID"])))
     @app_commands.guild_only()
     @app_commands.describe(target="Choose user to ban")
+    @app_commands.choices(
+        delete_message_days=[
+            Choice(name="Don't delete any", value=0),
+            Choice(name="1 day", value=1),
+            Choice(name="2 days", value=2),
+            Choice(name="3 days", value=3),
+            Choice(name="7 days", value=7),
+        ]
+    )
     async def ban(
-        self, interaction: discord.Interaction, target: discord.Member | discord.User
+        self,
+        interaction: discord.Interaction,
+        target: discord.Member | discord.User,
+        delete_message_days: int = 3,
+        reason: str | None = None,
     ):
         logger.info(f"{interaction.user}[ID: {interaction.user.id}] used ban command")
-        pass
+        if not isinstance(target, discord.Member):
+            await interaction.response.send_message(content="対象がサーバー内に見つかりませんでした")
+            return
+
+        await interaction.response.defer()
+
+        ctx = await commands.Context.from_interaction(interaction)
+        if not isinstance(ctx.channel, discord.abc.Messageable):
+            return
+        role = ctx.guild.get_role(int(os.environ["ADMIN"]))  # type: ignore -> checked by Discord server side
+        if not role:
+            return
+
+        # do confirm
+        checker = Checker(self.bot)
+        header = f"{target.mention}をbanしますか？"
+        res = await checker.check_role(
+            ctx=ctx,
+            watch_role=role,
+            header=header,
+            run_num=1,
+            stop_num=1,
+        )
+        if res:
+            try:
+                await interaction.guild.ban(target, reason=reason, delete_message_days=delete_message_days)  # type: ignore -> checked by Discord server side
+            except discord.Forbidden as e:
+                text = "Failed to ban member: Missing permissions"
+                logger.error(text, exc_info=e)
+            except Exception as e:
+                text = "Failed to ban member: Unknown error"
+                logger.error(text, exc_info=e)
+            else:
+                await ctx.send(
+                    content=f"{target.mention}をbanしました。\nメッセージ削除期間: {str(delete_message_days)}日間"
+                )
+                return
+        else:
+            await ctx.send(content="Canceled")
+            return
 
     @app_commands.command(name="timeout")
     @app_commands.guilds(discord.Object(id=int(os.environ["GUILD_ID"])))
