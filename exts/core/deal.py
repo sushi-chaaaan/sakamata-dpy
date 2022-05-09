@@ -33,6 +33,9 @@ class Deal(commands.Cog):
     async def ctx_user(
         self, interaction: discord.Interaction, user: discord.Member
     ) -> None:
+        logger.info(
+            f"{interaction.user} [ID: {interaction.user.id}] used contex_user command"
+        )
         await interaction.response.defer(ephemeral=True)
         embed = self.user_logic(user)
         await interaction.followup.send(embeds=[embed], ephemeral=True)
@@ -99,16 +102,19 @@ class Deal(commands.Cog):
     @app_commands.guild_only()
     @app_commands.describe(target="Choose user to kick")
     async def kick(
-        self, interaction: discord.Interaction, target: discord.Member | discord.User
+        self,
+        interaction: discord.Interaction,
+        target: discord.Member | discord.User,
+        reason: str | None = None,
     ):
         """kick用コマンド"""
         logger.info(f"{interaction.user}[ID: {interaction.user.id}] used kick command")
+        if not isinstance(target, discord.Member):
+            await interaction.response.send_message(content="対象が見つかりませんでした")
+            return
+
         await interaction.response.defer()
 
-        # get channel and role
-        if not isinstance(target, discord.Member):
-            await interaction.followup.send(content="対象が見つかりませんでした")
-            return
         ctx = await commands.Context.from_interaction(interaction)
         channel = ctx.channel
         if not isinstance(channel, discord.abc.Messageable):
@@ -129,7 +135,7 @@ class Deal(commands.Cog):
         )
         if res:
             try:
-                await interaction.guild.kick(target)  # type: ignore -> checked by Discord server side
+                await interaction.guild.kick(target, reason=reason)  # type: ignore -> checked by Discord server side
             except discord.Forbidden as e:
                 text = "Failed to kick member: Missing permissions"
                 logger.error(text, exc_info=e)
