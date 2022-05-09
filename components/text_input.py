@@ -1,5 +1,5 @@
 import discord
-from discord import ui
+from discord import Interaction, ui
 from discord.ext import commands
 
 
@@ -17,20 +17,41 @@ class TextInputTracker:
         max_length: int,
         timeout: float | None = None,
         ephemeral: bool = False,
+        direct: bool = False,
     ) -> str | None:
-        view = MessageInputView(
-            timeout=timeout,
-            title=title,
-            custom_id=custom_id,
-            min_length=min_length,
-            max_length=max_length,
-            origin_interaction=self.origin_interaction,
-        )
-        await self.ctx.send(view=view, ephemeral=ephemeral)
-        await view.wait()
-        if not view.value:
-            return None
-        return view.value
+        if not direct:
+            view = MessageInputView(
+                timeout=timeout,
+                title=title,
+                custom_id=custom_id,
+                min_length=min_length,
+                max_length=max_length,
+                origin_interaction=self.ctx.interaction,
+            )
+            await self.ctx.send(view=view, ephemeral=ephemeral)
+            await view.wait()
+            if not view.value:
+                return None
+            return view.value
+        else:
+            if not self.ctx.interaction or self.ctx.interaction.is_expired():
+                if not isinstance((ch := self.ctx.channel), discord.abc.Messageable):
+                    return None
+                await ch.send(content="このコマンドは使用できません。")
+                return None
+            elif self.ctx.interaction.response.is_done():
+                await self.ctx.interaction.followup.send(content="入力フォームを送信できません。")
+                return None
+            else:
+                modal = MessageInput(
+                    title=title,
+                    custom_id=custom_id,
+                    min_length=min_length,
+                    max_length=max_length,
+                )
+                await self.ctx.interaction.response.send_modal(modal)
+                await modal.wait()
+                return modal.content
 
 
 class MessageInputView(ui.View):

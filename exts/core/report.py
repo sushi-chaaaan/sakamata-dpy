@@ -49,6 +49,7 @@ class Report(commands.Cog):
             min_length=1,
             max_length=2000,
             ephemeral=True,
+            direct=True,
         )
         if not value:
             await ctx.send(content="正しく入力されませんでした。")
@@ -72,6 +73,7 @@ class Report(commands.Cog):
             min_length=1,
             max_length=2000,
             ephemeral=True,
+            direct=True,
         )
         if not value:
             await ctx.send(content="正しく入力されませんでした。")
