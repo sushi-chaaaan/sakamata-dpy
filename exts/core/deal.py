@@ -134,8 +134,12 @@ class Deal(commands.Cog):
             stop_num=1,
         )
         if res:
+            df_reason = f"kicked by: {ctx.author.mention}"
+            _reason = (
+                df_reason if not reason else df_reason + f"\nCustom_Reason: {reason}"
+            )
             try:
-                await interaction.guild.kick(target, reason=reason)  # type: ignore -> checked by Discord server side
+                await interaction.guild.kick(target, reason=_reason)  # type: ignore -> checked by Discord server side
             except discord.Forbidden as e:
                 text = "Failed to kick member: Missing permissions"
                 logger.error(text, exc_info=e)
@@ -194,8 +198,12 @@ class Deal(commands.Cog):
             stop_num=1,
         )
         if res:
+            df_reason = f"banned by: {ctx.author.mention}"
+            _reason = (
+                df_reason if not reason else df_reason + f"\nCustom_Reason: {reason}"
+            )
             try:
-                await interaction.guild.ban(target, reason=reason, delete_message_days=delete_message_days)  # type: ignore -> checked by Discord server side
+                await interaction.guild.ban(target, reason=_reason, delete_message_days=delete_message_days)  # type: ignore -> checked by Discord server side
             except discord.Forbidden as e:
                 text = "Failed to ban member: Missing permissions"
                 logger.error(text, exc_info=e)
