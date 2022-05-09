@@ -11,21 +11,27 @@ class Report(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         load_dotenv()
-        self.ctx_menu_report = app_commands.ContextMenu(
+
+        self.user_ctx_menu_report = app_commands.ContextMenu(
             name="report",
-            callback=self.report,
+            callback=self.report_user,
             guild_ids=[int(os.environ["GUILD_ID"])],
         )
-        self.bot.tree.add_command(self.ctx_menu_report)
+        self.message_ctx_menu_report = app_commands.ContextMenu(
+            name="report",
+            callback=self.report_message,
+            guild_ids=[int(os.environ["GUILD_ID"])],
+        )
+        self.bot.tree.add_command(self.user_ctx_menu_report)
 
     async def cog_unload(self) -> None:
         self.bot.tree.remove_command(
-            self.ctx_menu_report.name,
-            type=self.ctx_menu_report.type,
+            self.user_ctx_menu_report.name,
+            type=self.user_ctx_menu_report.type,
         )
 
     @app_commands.guild_only()
-    async def report(
+    async def report_user(
         self, interaction: discord.Interaction, user: discord.Member
     ) -> None:
         ctx = await commands.Context.from_interaction(interaction)
