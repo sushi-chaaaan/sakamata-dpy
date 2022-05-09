@@ -110,7 +110,7 @@ class Deal(commands.Cog):
         """kick用コマンド"""
         logger.info(f"{interaction.user}[ID: {interaction.user.id}] used kick command")
         if not isinstance(target, discord.Member):
-            await interaction.response.send_message(content="対象が見つかりませんでした")
+            await interaction.response.send_message(content="対象がサーバー内に見つかりませんでした")
             return
 
         await interaction.response.defer()
