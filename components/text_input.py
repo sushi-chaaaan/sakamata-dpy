@@ -63,7 +63,7 @@ class MessageInputView(ui.View):
         custom_id: str,
         min_length: int,
         max_length: int,
-        origin_interaction: discord.Interaction | None = None,
+        origin_interaction: Interaction | None = None,
     ):
         super().__init__(timeout=timeout)
         self.title = title
@@ -79,7 +79,7 @@ class MessageInputView(ui.View):
         emoji="\N{Pencil}",
         row=0,
     )
-    async def input_button(self, interaction: discord.Interaction, button: ui.Button):
+    async def input_button(self, interaction: Interaction, button: ui.Button):
         modal = MessageInput(
             title=self.title,
             custom_id=self.custom_id,
@@ -115,7 +115,7 @@ class FollowupButton(ui.Button):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    async def callback(self, interaction: discord.Interaction):
+    async def callback(self, interaction: Interaction):
         content = "このボタンは既に使用されています。\nもう一度はじめからコマンドを実行してください。"
         if interaction.response.is_done():
             await interaction.followup.send(content=content, ephemeral=True)
@@ -144,7 +144,7 @@ class MessageInput(ui.Modal):
         )
         self.add_item(self._content)
 
-    async def on_submit(self, interaction: discord.Interaction) -> None:
+    async def on_submit(self, interaction: Interaction) -> None:
         await interaction.response.defer()
         self.content = self._content.value
         self.interaction = interaction
