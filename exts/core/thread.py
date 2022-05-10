@@ -20,6 +20,7 @@ class ThreadSys(commands.Cog):
 
     @commands.Cog.listener(name="on_thread_create")
     async def thread_create(self, thread: discord.Thread):
+        logger.info(f"New Thread created: {thread.name}")
         embed = discord.Embed(
             title="New Thread Created",
             colour=Color.basic.value,
@@ -44,6 +45,18 @@ class ThreadSys(commands.Cog):
             name="archive duration",
             value=f"{str(thread.auto_archive_duration)} minutes",
         )
+        channel = self.bot.get_channel(c_id := int(os.environ["LOG_CHANNEL"]))
+        if not channel:
+            channel = await self.bot.fetch_channel(c_id)
+        if not isinstance(
+            channel, discord.TextChannel | discord.VoiceChannel | discord.Thread
+        ):
+            logger.exception(
+                f"Failed to get Messageable channel {os.environ['LOG_CHANNEL']}"
+            )
+            return
+        await channel.send(embeds=[embed])
+        return
 
     @commands.Cog.listener(name="on_thread_update")
     async def thread_update(self, before: discord.Thread, after: discord.Thread):
@@ -51,6 +64,7 @@ class ThreadSys(commands.Cog):
             return
         elif after.archived and not before.archived:
             await after.edit(archived=False)
+            logger.info(f"unarchived {after.name}")
             return
         else:
             return

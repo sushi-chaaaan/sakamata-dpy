@@ -17,9 +17,13 @@ class Entrance(commands.Cog):
 
     @commands.Cog.listener(name="on_member_join")
     async def on_join(self, member: discord.Member):
-        channel = self.bot.get_channel(self.entrance_channel)
+        logger.info(f"{member} joined")
+
+        # get channel
+        channel = self.bot.get_channel(c_id := self.entrance_channel)
         if not channel:
-            channel = await self.bot.fetch_channel(self.entrance_channel)
+            channel = await self.bot.fetch_channel(c_id)
+
         if not isinstance(channel, discord.abc.Messageable):
             logger.error("Failed to get Messageable channel")
             return
@@ -29,12 +33,18 @@ class Entrance(commands.Cog):
 
     @commands.Cog.listener(name="on_raw_member_remove")
     async def on_leave(self, payload: discord.RawMemberRemoveEvent):
-        guild = self.bot.get_guild(payload.guild_id)
+        logger.info(f"{payload.user} left")
+
+        # get guild
+        guild = self.bot.get_guild(g_id := payload.guild_id)
         if not guild:
-            guild = await self.bot.fetch_guild(payload.guild_id)
-        channel = self.bot.get_channel(self.entrance_channel)
+            guild = await self.bot.fetch_guild(g_id)
+
+        # get channel
+        channel = self.bot.get_channel(c_id := self.entrance_channel)
         if not channel:
-            channel = await self.bot.fetch_channel(self.entrance_channel)
+            channel = await self.bot.fetch_channel(c_id)
+
         if not isinstance(channel, discord.abc.Messageable):
             logger.error("Failed to get Messageable channel")
             return
