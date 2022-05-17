@@ -17,17 +17,18 @@ class ThreadSys(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         load_dotenv()
+        self.logger = getMyLogger(__name__)
 
     @commands.Cog.listener(name="on_thread_create")
     async def thread_create(self, thread: discord.Thread):
-        logger.info(f"New Thread created: {thread.name}")
+        self.logger.info(f"New Thread created: {thread.name}")
         embed = discord.Embed(
             title="New Thread Created",
             colour=Color.basic.value,
         )
         embed.set_footer(text=f"{dt_to_str()}")
         if not thread.owner:
-            logger.exception(f"{thread.id} has no owner")
+            self.logger.exception(f"{thread.id} has no owner")
             return
         embed.set_author(
             name=thread.owner.display_name,
@@ -72,12 +73,12 @@ class ThreadSys(commands.Cog):
     @app_commands.command(name="add-role-to-thread")
     @app_commands.guilds(discord.Object(id=int(os.environ["GUILD_ID"])))
     @app_commands.guild_only()
-    @app_commands.describe(thread_id="Input thread_id to add role's members")
+    @app_commands.describe(thread="Select thread to add role's members")
     @app_commands.describe(role="Choose role to add to thread")
     async def add_member_to_thread(
         self,
         interaction: discord.Interaction,
-        thread_id: str,
+        thread: discord.Thread,
         role: discord.Role,
     ):
         logger.info(
@@ -86,15 +87,8 @@ class ThreadSys(commands.Cog):
 
         await interaction.response.defer(thinking=True)
 
-        # get thread
-        thread = interaction.guild.get_thread(int(thread_id))  # type: ignore -> checked by Discord server side
-        if not thread:
-            await interaction.followup.send(content="スレッドが見つかりませんでした。")
-            return
-
-        before_count = len(thread.members)
-
         await interaction.followup.send(content="ロールメンバーの取得を開始します。")
+        before_count = len(thread.members)
 
         # get chunked members
         members = role.members

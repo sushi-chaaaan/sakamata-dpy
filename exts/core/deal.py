@@ -5,9 +5,10 @@ from discord import app_commands
 from discord.app_commands import Choice
 from discord.ext import commands
 from dotenv import load_dotenv
-from model.color import Color
-from tools.confirm import Checker
-from tools.dt import dt_to_str
+from exts.core.embed_builder import EmbedBuilder
+from exts.core.hammer import Hammer
+from exts.core.system_text import ConfirmText, DealText
+from tools.checker import Checker
 from tools.logger import getMyLogger
 
 logger = getMyLogger(__name__)
@@ -32,56 +33,15 @@ class Deal(commands.Cog):
 
     @app_commands.guild_only()
     async def ctx_user(
-        self, interaction: discord.Interaction, user: discord.Member
+        self, interaction: discord.Interaction, target: discord.Member
     ) -> None:
         logger.info(
-            f"{interaction.user} [ID: {interaction.user.id}] used contex_user command"
+            "{} [ID: {}] used user ctx_menu command".format(u := interaction.user, u.id)
         )
         await interaction.response.defer(ephemeral=True)
-        embed = self.user_logic(user)
+        embed = EmbedBuilder.user_embed(target)
         await interaction.followup.send(embeds=[embed], ephemeral=True)
         return
-
-    def user_logic(self, target: discord.Member | discord.User) -> discord.Embed:
-        avatar_url = (
-            target.default_avatar.url
-            if target.default_avatar == target.display_avatar
-            else target.display_avatar.replace(size=1024, static_format="webp")
-        )
-
-        embed = discord.Embed(
-            title="ユーザー情報照会結果",
-            description=f"対象ユーザー: {target.mention}",
-            color=Color.basic.value,
-        )
-        embed.set_footer(text=f"{dt_to_str()}")
-        embed.set_thumbnail(url=avatar_url)
-        embed.add_field(
-            name="Bot?",
-            value=f"{'True' if target.bot else 'False'}",
-        )
-        embed.add_field(
-            name="アカウント作成日時",
-            value=f"{dt_to_str(target.created_at)}",
-        )
-        if isinstance(target, discord.Member):
-            joined = dt_to_str(target.joined_at) if target.joined_at else "取得できませんでした"
-            embed.add_field(
-                name="サーバー参加日時",
-                value=f"{joined}",
-            )
-            roles = sorted(target.roles, key=lambda role: role.position, reverse=True)
-            text = "\n".join([role.mention for role in roles])
-            embed.add_field(
-                name=f"所持ロール({len(roles)})",
-                value=text,
-                inline=False,
-            )
-        else:
-            embed.description = (
-                f"\N{Warning Sign}このサーバーにいないユーザーです。\n対象ユーザー: {target.mention}"
-            )
-        return embed
 
     @commands.hybrid_command(name="user")
     @app_commands.guilds(discord.Object(id=int(os.environ["GUILD_ID"])))
@@ -92,9 +52,9 @@ class Deal(commands.Cog):
         target: discord.Member | discord.User,
     ):
         """ユーザー情報照会用コマンド"""
-        logger.info(f"{ctx.author}[ID: {ctx.author.id}] used user command")
+        logger.info("{} [ID: {}] used user command".format(u := ctx.author, u.id))
         await ctx.defer()
-        embed = self.user_logic(target)
+        embed = EmbedBuilder.user_embed(target)
         await ctx.send(embeds=[embed])
         return
 
@@ -109,6 +69,8 @@ class Deal(commands.Cog):
         reason: str | None = None,
     ):
         """kick用コマンド"""
+
+        # prepare confirm
         logger.info(f"{interaction.user}[ID: {interaction.user.id}] used kick command")
         if not isinstance(target, discord.Member):
             await interaction.response.send_message(content="対象がサーバー内に見つかりませんでした")
@@ -117,40 +79,27 @@ class Deal(commands.Cog):
         await interaction.response.defer()
 
         ctx = await commands.Context.from_interaction(interaction)
-        if not isinstance(ctx.channel, discord.abc.Messageable):
-            return
-        role = ctx.guild.get_role(int(os.environ["ADMIN"]))  # type: ignore -> checked by Discord server side
-        if not role:
-            return
 
         # do confirm
         checker = Checker(self.bot)
-        header = f"{target.mention}をkickしますか？"
         res = await checker.check_role(
             ctx=ctx,
-            watch_role=role,
-            header=header,
+            id=int(os.environ["ADMIN"]),
+            header=ConfirmText.kick.value.format(target=target.mention),
             run_num=1,
             stop_num=1,
         )
+
+        # execute
         if res:
-            df_reason = f"kicked by: {ctx.author.mention}"
-            _reason = (
-                df_reason if not reason else df_reason + f"\nCustom_Reason: {reason}"
-            )
-            try:
-                await interaction.guild.kick(target, reason=_reason)  # type: ignore -> checked by Discord server side
-            except discord.Forbidden as e:
-                text = "Failed to kick member: Missing permissions"
-                logger.error(text, exc_info=e)
-            except Exception as e:
-                text = "Failed to kick member: Unknown error"
-                logger.error(text, exc_info=e)
-            else:
-                await ctx.send(content=f"{target.mention}をkickしました")
-                return
+            hammer = Hammer(author=interaction.user, reason=reason)
+            text = await hammer.do_kick(interaction.guild, target)  # type: ignore -> checked by Discord server side
+            await ctx.send(text)
+            return
+
+        # cancel
         else:
-            await ctx.send(content="Canceled")
+            await ctx.send(DealText.cancel.value)
             return
 
     @app_commands.command(name="ban")
@@ -173,6 +122,8 @@ class Deal(commands.Cog):
         delete_message_days: int = 3,
         reason: str | None = None,
     ):
+
+        # prepare confirm
         logger.info(f"{interaction.user}[ID: {interaction.user.id}] used ban command")
         if not isinstance(target, discord.Member):
             await interaction.response.send_message(content="対象がサーバー内に見つかりませんでした")
@@ -181,42 +132,32 @@ class Deal(commands.Cog):
         await interaction.response.defer()
 
         ctx = await commands.Context.from_interaction(interaction)
-        if not isinstance(ctx.channel, discord.abc.Messageable):
-            return
-        role = ctx.guild.get_role(int(os.environ["ADMIN"]))  # type: ignore -> checked by Discord server side
-        if not role:
-            return
 
         # do confirm
         checker = Checker(self.bot)
         header = f"{target.mention}をbanしますか？"
         res = await checker.check_role(
             ctx=ctx,
-            watch_role=role,
+            id=int(os.environ["ADMIN"]),
             header=header,
             run_num=1,
             stop_num=1,
         )
+
+        # execute
         if res:
-            df_reason = f"banned by: {ctx.author.mention}"
-            _reason = (
-                df_reason if not reason else df_reason + f"\nCustom_Reason: {reason}"
+            hammer = Hammer(author=interaction.user, reason=reason)
+            text = await hammer.do_ban(
+                guild=interaction.guild,  # type: ignore -> checked by Discord server side
+                target=target,
+                delete_message_days=delete_message_days,
             )
-            try:
-                await interaction.guild.ban(target, reason=_reason, delete_message_days=delete_message_days)  # type: ignore -> checked by Discord server side
-            except discord.Forbidden as e:
-                text = "Failed to ban member: Missing permissions"
-                logger.error(text, exc_info=e)
-            except Exception as e:
-                text = "Failed to ban member: Unknown error"
-                logger.error(text, exc_info=e)
-            else:
-                await ctx.send(
-                    content=f"{target.mention}をbanしました。\nメッセージ削除期間: {str(delete_message_days)}日間"
-                )
-                return
+            await ctx.send(text)
+            return
+
+        # cancel
         else:
-            await ctx.send(content="Canceled")
+            await ctx.send(content=DealText.cancel.value)
             return
 
     @app_commands.command(name="timeout")

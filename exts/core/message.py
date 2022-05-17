@@ -6,7 +6,7 @@ from discord import app_commands
 from discord.ext import commands
 from dispander import dispand
 from dotenv import load_dotenv
-from tools.confirm import Checker
+from tools.checker import Checker
 from tools.logger import getMyLogger
 
 from .messanger import Messanger
@@ -68,10 +68,6 @@ class MessageSys(commands.Cog):
 
         # prepare for do confirm
         checker = Checker(self.bot)
-        role = ctx.guild.get_role(int(os.environ["ADMIN"]))  # type: ignore -> checked by Discord server side
-        if not role:
-            await ctx.send(content="承認ロールを取得できませんでした。")
-            return
         header = (
             f"{channel.mention}へ次のメッセージを送信します。"
             if not attachment
@@ -80,7 +76,12 @@ class MessageSys(commands.Cog):
 
         # do confirm
         res = await checker.check_role(
-            ctx=ctx, watch_role=role, header=header, text=value, run_num=1, stop_num=1
+            ctx=ctx,
+            id=int(os.environ["ADMIN"]),
+            header=header,
+            text=value,
+            run_num=1,
+            stop_num=1,
         )
 
         if not res:
