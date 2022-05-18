@@ -93,25 +93,18 @@ class Checker:
     ):
         # convert emoji to str
 
-        def emoji_to_str(emoji: discord.Emoji | discord.PartialEmoji | str):
-            if isinstance(emoji, str):
-                print(emoji)
-                return emoji
-            print(emoji.name)
-            return emoji.name
-
         executable = [
             r.count
             for r in message.reactions
-            if emoji_to_str(r.emoji) == accept_emoji and r.count == run_num + 1
+            if str(r.emoji) == accept_emoji and r.count == run_num + 1
         ]
         cancelable = [
             r.count
             for r in message.reactions
-            if emoji_to_str(r.emoji) == reject_emoji and r.count == stop_num + 1
+            if str(r.emoji) == reject_emoji and r.count == stop_num + 1
         ]
-        print([r.count for r in message.reactions])
-        print(executable, cancelable)
+        # print([r.count for r in message.reactions])
+        # print(executable, cancelable)
         if executable or cancelable:
             return True
         else:
