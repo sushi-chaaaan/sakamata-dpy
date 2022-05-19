@@ -5,7 +5,7 @@ from tools.logger import getMyLogger
 logger = getMyLogger(__name__)
 
 
-class Messanger:
+class Messenger:
     def __init__(
         self,
         ctx: commands.Context,

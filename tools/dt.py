@@ -42,3 +42,23 @@ def dt_to_str(
     if datetime.tzinfo != JST:
         datetime = datetime.astimezone(JST())
     return datetime.strftime(format)
+
+
+def str_to_dt(
+    string: str,
+    /,
+    *,
+    timezone: tzinfo = timezone.utc,
+    format: str = "%Y.%m.%d %H:%M:%S",
+) -> datetime:
+    """convert string to datetime object.
+
+    Args:
+        string (str): a string to convert.
+        timezone (timezone): a timezone object.
+        format (str, optional): a format used in strptime(). Defaults to "%Y/%m/%d %H:%M:%S".
+
+    Returns:
+        datetime: converted datetime object. If there is no tzinfo, this function will replace it with UTC timezone.
+    """
+    return datetime.strptime(string, format).replace(tzinfo=timezone)

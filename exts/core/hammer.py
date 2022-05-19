@@ -39,30 +39,35 @@ class Hammer:
         guild: Guild,
         target: Member,
         delete_message_days: int,
-    ):
+    ) -> str:
         try:
             await guild.ban(
                 target,
-                reason=AuditLogText.ban.value.format(self.author, self.reason),
+                reason=AuditLogText.ban.value.format(
+                    author=self.author,
+                    reason=self.reason,
+                ),
                 delete_message_days=delete_message_days,
             )
         except Exception as e:
             logger.exception(
                 text := DealText.exception.value.format(
-                    "ban", target.mention, e.__class__.__name__
+                    deal="ban",
+                    target=target.mention,
+                    exception=e.__class__.__name__,
                 ),
                 exc_info=e,
             )
             return text
         else:
-            logger.info(text := DealText.ban.value.format(target.mention))
+            logger.info(text := DealText.ban.value.format(target=target.mention))
             return text
 
     async def do_timeout(
         self,
         target: Member | User,
         until: datetime | timedelta = timedelta(hours=24.0),
-    ) -> str | None:
+    ) -> str:
 
         # type check
         if isinstance(target, User):
@@ -71,18 +76,20 @@ class Hammer:
         try:
             await target.timeout(
                 until,
-                reason=AuditLogText.timeout.value.format(self.author, self.reason),
+                reason=AuditLogText.timeout.value.format(
+                    author=self.author, reason=self.reason
+                ),
             )
         except Exception as e:
             logger.exception(
                 text := DealText.exception.value.format(
-                    "timeout",
-                    target.mention,
-                    e.__class__.__name__,
+                    deal="timeout",
+                    target=target.mention,
+                    exception=e.__class__.__name__,
                 ),
                 exc_info=e,
             )
             return text
         else:
-            logger.info(text := DealText.timeout.value.format(target.mention))
+            logger.info(text := DealText.timeout.value.format(target=target.mention))
             return text

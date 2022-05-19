@@ -33,6 +33,72 @@ class Checker:
             return False
 
         if isinstance(id, int):
+            watch_ids = [id]
+        else:
+            watch_ids = id
+
+        watch_roles = [r for i in watch_ids if (r := ctx.guild.get_role(i)) is not None]
+
+        if not watch_roles:
+            return False
+
+        watch_mentions = "\n".join([f"<@&{i}>" for i in watch_ids])
+
+        # send message to watch
+        suffix = f"\n------------------------\nコマンド承認:{watch_mentions}\n実行に必要な承認人数: {str(run_num)}\n中止に必要な承認人数: {str(stop_num)}"
+
+        if not text:
+            send_text = f"【コマンド実行確認】\n{header}" + suffix
+        else:
+            send_text = (
+                f"【コマンド実行確認】\n{header}\n------------------------\n{text}" + suffix
+            )
+        conf_message = await ctx.send(content=send_text)
+        await conf_message.add_reaction(accept_emoji)
+        await conf_message.add_reaction(reject_emoji)
+
+        def check(reaction: discord.Reaction, user: discord.User | discord.Member):
+            return (
+                reaction.message.id == conf_message.id
+                and str(reaction.emoji) in [accept_emoji, reject_emoji]
+                and isinstance(user, discord.Member)
+                and user.id != self.bot.user.id  # type: ignore
+                and [i for r in user.roles if (i := r.id) in watch_ids] is not None
+                and self._check_counts(reaction.message, run_num, stop_num) is True
+            )
+
+        try:
+            reaction, user = await self.bot.wait_for(
+                "reaction_add", check=check, timeout=600.0
+            )
+        except asyncio.TimeoutError as e:
+            await ctx.send(content="タイムアウトしたため処理を停止します。")
+            logger.exception("Confirm timeout", exc_info=e)
+            return False
+        else:
+            if str(reaction.emoji) == accept_emoji:
+                # accept
+                return True
+            else:
+                # reject
+                return False
+
+    async def check_raw_role(
+        self,
+        *,
+        ctx: commands.Context,
+        id: int | list[int],
+        header: str,
+        text: str | None = None,
+        run_num: int,
+        stop_num: int,
+    ) -> bool:
+
+        # setup role list
+        if not ctx.guild:
+            return False
+
+        if isinstance(id, int):
             ids = [id]
         else:
             ids = id
@@ -66,7 +132,6 @@ class Checker:
                 and (mem := payload.member) is not None
                 and mem.id != self.bot.user.id  # type: ignore
                 and [i for r in mem.roles if (i := r.id) in ids] is not None
-                # and self.check_counts(conf_message, run_num, stop_num) is True
             )
 
         try:
@@ -85,7 +150,7 @@ class Checker:
                 # reject
                 return False
 
-    def check_counts(
+    def _check_counts(
         self,
         message: discord.Message,
         run_num: int,

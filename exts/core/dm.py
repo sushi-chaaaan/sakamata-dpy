@@ -70,7 +70,9 @@ class DMSys(commands.Cog):
         await ctx.send(content="実行を開始します。")
         try:
             if attachment:
-                await target.send(content=value, file=await attachment.to_file())
+                await target.send(
+                    content=value, file=await attachment.to_file() or None
+                )
             else:
                 await target.send(content=value)
         except Exception as e:

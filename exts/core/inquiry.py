@@ -1,8 +1,6 @@
-import os
-
 import discord
 from components.text_input import TextInputTracker
-from discord import app_commands, ui
+from discord import ui
 from discord.ext import commands
 from dotenv import load_dotenv
 
@@ -29,9 +27,7 @@ class InquiryView(ui.View):
     ) -> None:
 
         # get context
-        tracker = TextInputTracker(
-            ctx := await commands.Context.from_interaction(interaction)
-        )
+        tracker = TextInputTracker(await commands.Context.from_interaction(interaction))
 
         # get text input
         value = await tracker.track_modal(

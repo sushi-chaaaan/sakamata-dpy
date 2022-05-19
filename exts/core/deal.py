@@ -9,6 +9,7 @@ from exts.core.embed_builder import EmbedBuilder
 from exts.core.hammer import Hammer
 from exts.core.system_text import ConfirmText, DealText
 from tools.checker import Checker
+from tools.dt import JST, str_to_dt
 from tools.logger import getMyLogger
 
 logger = getMyLogger(__name__)
@@ -23,24 +24,52 @@ class Deal(commands.Cog):
             callback=self.ctx_user,
             guild_ids=[int(os.environ["GUILD_ID"])],
         )
+        self.ctx_menu_timeout = app_commands.ContextMenu(
+            name="timeout 24h",
+            callback=self.ctx_timeout,
+            guild_ids=[int(os.environ["GUILD_ID"])],
+        )
         self.bot.tree.add_command(self.ctx_menu_user)
+        self.bot.tree.add_command(self.ctx_menu_timeout)
 
     async def cog_unload(self) -> None:
         self.bot.tree.remove_command(
             self.ctx_menu_user.name,
             type=self.ctx_menu_user.type,
         )
+        self.bot.tree.remove_command(
+            self.ctx_menu_timeout.name,
+            type=self.ctx_menu_timeout.type,
+        )
 
     @app_commands.guild_only()
     async def ctx_user(
         self, interaction: discord.Interaction, target: discord.Member
     ) -> None:
+        await interaction.response.defer(ephemeral=True)
         logger.info(
             "{} [ID: {}] used user ctx_menu command".format(u := interaction.user, u.id)
         )
-        await interaction.response.defer(ephemeral=True)
+
         embed = EmbedBuilder.user_embed(target)
         await interaction.followup.send(embeds=[embed], ephemeral=True)
+        return
+
+    @app_commands.guild_only()
+    async def ctx_timeout(
+        self, interaction: discord.Interaction, target: discord.Member
+    ) -> None:
+        await interaction.response.defer(ephemeral=True)
+
+        logger.info(
+            "{} [ID: {}] used user ctx_timeout command".format(
+                u := interaction.user, u.id
+            )
+        )
+
+        hammer = Hammer(author=interaction.user)
+        text = await hammer.do_timeout(target=target)
+        await interaction.followup.send(text, ephemeral=True)
         return
 
     @commands.hybrid_command(name="user")
@@ -52,8 +81,8 @@ class Deal(commands.Cog):
         target: discord.Member | discord.User,
     ):
         """ユーザー情報照会用コマンド"""
-        logger.info("{} [ID: {}] used user command".format(u := ctx.author, u.id))
         await ctx.defer()
+        logger.info("{} [ID: {}] used user command".format(u := ctx.author, u.id))
         embed = EmbedBuilder.user_embed(target)
         await ctx.send(embeds=[embed])
         return
@@ -70,15 +99,14 @@ class Deal(commands.Cog):
     ):
         """kick用コマンド"""
 
+        await interaction.response.defer()
+        ctx = await commands.Context.from_interaction(interaction)
+
         # prepare confirm
-        logger.info(f"{interaction.user}[ID: {interaction.user.id}] used kick command")
+        logger.info("{} [ID: {}] used kick command".format(u := ctx.author, u.id))
         if not isinstance(target, discord.Member):
             await interaction.response.send_message(content="対象がサーバー内に見つかりませんでした")
             return
-
-        await interaction.response.defer()
-
-        ctx = await commands.Context.from_interaction(interaction)
 
         # do confirm
         checker = Checker(self.bot)
@@ -86,7 +114,7 @@ class Deal(commands.Cog):
             ctx=ctx,
             id=int(os.environ["ADMIN"]),
             header=ConfirmText.kick.value.format(target=target.mention),
-            run_num=1,
+            run_num=2,
             stop_num=1,
         )
 
@@ -123,19 +151,18 @@ class Deal(commands.Cog):
         reason: str | None = None,
     ):
 
+        await interaction.response.defer()
+        ctx = await commands.Context.from_interaction(interaction)
+
         # prepare confirm
-        logger.info(f"{interaction.user}[ID: {interaction.user.id}] used ban command")
+        logger.info("{} [ID: {}] used ban command".format(u := ctx.author, u.id))
         if not isinstance(target, discord.Member):
             await interaction.response.send_message(content="対象がサーバー内に見つかりませんでした")
             return
 
-        await interaction.response.defer()
-
-        ctx = await commands.Context.from_interaction(interaction)
-
         # do confirm
         checker = Checker(self.bot)
-        header = f"{target.mention}をbanしますか？"
+        header = ConfirmText.ban.value.format(target=target.mention)
         res = await checker.check_role(
             ctx=ctx,
             id=int(os.environ["ADMIN"]),
@@ -164,14 +191,50 @@ class Deal(commands.Cog):
     @app_commands.guilds(discord.Object(id=int(os.environ["GUILD_ID"])))
     @app_commands.guild_only()
     @app_commands.describe(target="Choose user to timeout")
-    @app_commands.describe(time="Choose time to timeout")
+    @app_commands.describe(
+        time="Input date to timeout. 20220510 means 2020/05/10 0:00AM JST."
+    )
     async def timeout(
-        self, interaction: discord.Interaction, target: discord.Member, time: int
+        self,
+        interaction: discord.Interaction,
+        target: discord.Member,
+        time: str,
+        reason: str | None = None,
     ):
-        logger.info(
-            f"{interaction.user}[ID: {interaction.user.id}] used timeout command"
+        await interaction.response.defer()
+        ctx = await commands.Context.from_interaction(interaction)
+
+        # prepare confirm
+        logger.info("{} [ID: {}] used kick command".format(u := ctx.author, u.id))
+        if not isinstance(target, discord.Member):
+            await interaction.response.send_message(content="対象がサーバー内に見つかりませんでした")
+            return
+
+        # get dt
+        dt = str_to_dt(time, timezone=JST(), format="%Y%m%d")
+
+        # do confirm
+        checker = Checker(self.bot)
+        header = ConfirmText.timeout.value.format(target=target.mention)
+        res = await checker.check_role(
+            ctx=ctx,
+            id=int(os.environ["ADMIN"]),
+            header=header,
+            run_num=1,
+            stop_num=1,
         )
-        pass
+
+        # execute
+        if res:
+            hammer = Hammer(author=interaction.user, reason=reason)
+            text = await hammer.do_timeout(target=target, until=dt)
+            await ctx.send(text)
+            return
+
+        # cancel
+        else:
+            await ctx.send(content=DealText.cancel.value)
+            return
 
 
 async def setup(bot: commands.Bot):

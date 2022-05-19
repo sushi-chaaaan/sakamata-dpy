@@ -6,10 +6,9 @@ from discord import app_commands
 from discord.ext import commands
 from dispander import dispand
 from dotenv import load_dotenv
+from exts.core.messenger import Messenger
 from tools.checker import Checker
 from tools.logger import getMyLogger
-
-from .messanger import Messanger
 
 logger = getMyLogger(__name__)
 
@@ -23,7 +22,10 @@ class MessageSys(commands.Cog):
     async def on_message_dispand(self, message: discord.Message):
         # ignore message not from Guild or Bot
         if (
-            not isinstance(message.channel, discord.abc.GuildChannel)
+            not isinstance(
+                message.channel,
+                discord.TextChannel | discord.VoiceChannel | discord.Thread,
+            )
             or message.author.bot
         ):
             return
@@ -45,7 +47,7 @@ class MessageSys(commands.Cog):
     async def send_message(
         self,
         interaction: discord.Interaction,
-        channel: discord.TextChannel | discord.VoiceChannel,
+        channel: discord.TextChannel | discord.VoiceChannel | discord.Thread,
         attachment: discord.Attachment | None = None,
     ):
         logger.info(
@@ -89,8 +91,8 @@ class MessageSys(commands.Cog):
             return
 
         # send text (approved)
-        messanger = Messanger(ctx, channel)
-        await messanger.send_message(content=value, attachment=attachment)
+        messenger = Messenger(ctx, channel)
+        await messenger.send_message(content=value, attachment=attachment)
         return
 
 

@@ -13,7 +13,9 @@ class EscapeWithCodeBlock(ui.View):
         custom_id="exts.core.thread.EscapeWithCodeBlock",
         row=0,
     )
-    async def escape(self, interation: discord.Interaction, button: ui.Button):
-        await interation.response.defer(ephemeral=True)
-        await interation.followup.send(content=f"```\n{self.text}\n```", ephemeral=True)
+    async def escape(self, interaction: discord.Interaction, button: ui.Button):
+        await interaction.response.defer(ephemeral=True)
+        await interaction.followup.send(
+            content=f"```\n{self.text}\n```", ephemeral=True
+        )
         return
