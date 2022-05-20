@@ -20,6 +20,7 @@ EXT_LIST = [
     "exts.core.message",
     "exts.core.report",
     "exts.core.thread",
+    "exts.core.word_alert",
     "exts.utils",
     # "Presentation.image",
 ]
