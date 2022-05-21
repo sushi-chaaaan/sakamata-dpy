@@ -7,7 +7,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 from exts.core.embed_builder import EmbedBuilder
 from exts.core.hammer import Hammer
-from exts.core.system_text import ConfirmText, DealText
+from model.system_text import ConfirmText, DealText
 from model.response import ExecuteResponse
 from tools.checker import Checker
 from tools.dt import JST, str_to_dt

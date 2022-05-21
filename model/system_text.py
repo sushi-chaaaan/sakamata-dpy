@@ -22,4 +22,4 @@ class AuditLogText(Enum):
 
 
 class ErrorText(Enum):
-    notfound = "対象がサーバー内に見つかりませんでした"
+    notfound = "対象が見つかりませんでした"

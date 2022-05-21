@@ -5,6 +5,6 @@ from typing import Any
 @dataclass
 class ExecuteResponse:
     succeeded: bool
-    exception: Exception | None
     message: str
-    value: Any
+    value: Any | None = None
+    exception: Exception | None = None

@@ -6,11 +6,9 @@ from components.escape import EscapeWithCodeBlock
 from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
-from model.color import Color
-from tools.dt import dt_to_str
+from exts.core.embed_builder import EmbedBuilder
 from tools.logger import getMyLogger
-
-logger = getMyLogger(__name__)
+from tools.search import Finder
 
 
 class ThreadSys(commands.Cog):
@@ -22,41 +20,23 @@ class ThreadSys(commands.Cog):
     @commands.Cog.listener(name="on_thread_create")
     async def thread_create(self, thread: discord.Thread):
         self.logger.info(f"New Thread created: {thread.name}")
-        embed = discord.Embed(
-            title="New Thread Created",
-            colour=Color.basic.value,
-        )
-        embed.set_footer(text=f"{dt_to_str()}")
-        if not thread.owner:
-            self.logger.exception(f"{thread.id} has no owner")
+        finder = Finder(self.bot)
+
+        response = await finder.search_channel(int(os.environ["LOG_CHANNEL"]))
+        if not response.succeeded:
             return
-        embed.set_author(
-            name=thread.owner.display_name,
-            icon_url=thread.owner.display_avatar.url,
-        )
-        if thread.parent:
-            embed.add_field(name="Parent channel", value=f"{thread.parent.mention}")
-        embed.add_field(name="Thread link", value=f"{thread.mention}")
-        embed.add_field(name="Author", value=f"{thread.owner.mention}")
-        visibility = "public" if not thread.is_private() else "private"
-        embed.add_field(name="Visibility", value=visibility)
-        if thread.created_at:
-            embed.add_field(name="Created at", value=f"{dt_to_str(thread.created_at)}")
-        embed.add_field(
-            name="archive duration",
-            value=f"{str(thread.auto_archive_duration)} minutes",
-        )
-        channel = self.bot.get_channel(c_id := int(os.environ["LOG_CHANNEL"]))
-        if not channel:
-            channel = await self.bot.fetch_channel(c_id)
+
         if not isinstance(
-            channel, discord.TextChannel | discord.VoiceChannel | discord.Thread
+            response.value, discord.TextChannel | discord.Thread | discord.VoiceChannel
         ):
-            logger.exception(
-                f"Failed to get Messageable channel {os.environ['LOG_CHANNEL']}"
+            self.logger.error(
+                f"{str(response.value)} is not TextChannel or Thread or VoiceChannel"
             )
             return
-        await channel.send(embeds=[embed])
+
+        embed = await EmbedBuilder.on_thread_create_embed(thread)
+
+        await response.value.send(embeds=[embed])
         return
 
     @commands.Cog.listener(name="on_thread_update")
@@ -65,7 +45,7 @@ class ThreadSys(commands.Cog):
             return
         elif after.archived and not before.archived:
             await after.edit(archived=False)
-            logger.info(f"unarchived {after.name}")
+            self.logger.info(f"unarchived {after.name}")
             return
         else:
             return
@@ -81,7 +61,7 @@ class ThreadSys(commands.Cog):
         thread: discord.Thread,
         role: discord.Role,
     ):
-        logger.info(
+        self.logger.info(
             f"{interaction.user}[ID: {interaction.user.id}] used add-role-to-thread command"
         )
 
@@ -119,7 +99,7 @@ class ThreadSys(commands.Cog):
         try:
             msg = await thread.send(content="test message")
         except Exception as e:
-            logger.exception(f"{thread.name} is not accessible", exc_info=e)
+            self.logger.exception(f"{thread.name} is not accessible", exc_info=e)
             await interaction.followup.send(
                 content=f"{thread.mention}にアクセスできません。\n処理を停止します。"
             )
@@ -131,7 +111,7 @@ class ThreadSys(commands.Cog):
             try:
                 await msg.edit(content=f"{text}")
             except Exception as e:
-                logger.exception(
+                self.logger.exception(
                     f"failed to edit message: {msg.id},Index:{str(i)}",
                     exc_info=e,
                 )
@@ -156,7 +136,7 @@ class ThreadSys(commands.Cog):
         interaction: discord.Interaction,
         category: discord.CategoryChannel | None = None,
     ):
-        logger.info(
+        self.logger.info(
             f"{interaction.user}[ID: {interaction.user.id}] used thread-board command"
         )
         await interaction.response.defer(ephemeral=True)

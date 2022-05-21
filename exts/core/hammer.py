@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 from discord import Guild, Member, User
-from exts.core.system_text import AuditLogText, DealText, ErrorText
+from model.system_text import AuditLogText, DealText, ErrorText
 from model.response import ExecuteResponse
 from tools.logger import getMyLogger
 
