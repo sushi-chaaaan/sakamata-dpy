@@ -143,7 +143,7 @@ class MyBot(commands.Bot):
 
 if __name__ == "__main__":
     load_dotenv()
-    bot = MyBot(intents=intents, application_id=int(os.environ["APP_ID"]))
+    bot = MyBot(intents=intents)
     token = os.environ["DISCORD_BOT_TOKEN"]
     try:
         bot.run(token)
