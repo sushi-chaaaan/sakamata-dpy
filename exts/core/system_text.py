@@ -19,3 +19,7 @@ class AuditLogText(Enum):
     kick = "kicked by: {author}\nCustom_Reason: {reason}"
     ban = "banned by: {author}\nCustom_Reason: {reason}"
     timeout = "timed out by: {author}\nCustom_Reason: {reason}"
+
+
+class ErrorText(Enum):
+    notfound = "対象がサーバー内に見つかりませんでした"

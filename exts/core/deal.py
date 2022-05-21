@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from exts.core.embed_builder import EmbedBuilder
 from exts.core.hammer import Hammer
 from exts.core.system_text import ConfirmText, DealText
+from model.response import ExecuteResponse
 from tools.checker import Checker
 from tools.dt import JST, str_to_dt
 from tools.logger import getMyLogger
@@ -68,8 +69,8 @@ class Deal(commands.Cog):
         )
 
         hammer = Hammer(author=interaction.user)
-        text = await hammer.do_timeout(target=target)
-        await interaction.followup.send(text, ephemeral=True)
+        response: ExecuteResponse = await hammer.do_timeout(target=target)
+        await interaction.followup.send(response.message, ephemeral=True)
         return
 
     @commands.hybrid_command(name="user")
@@ -121,8 +122,8 @@ class Deal(commands.Cog):
         # execute
         if res:
             hammer = Hammer(author=interaction.user, reason=reason)
-            text = await hammer.do_kick(interaction.guild, target)  # type: ignore -> checked by Discord server side
-            await ctx.send(text)
+            response: ExecuteResponse = await hammer.do_kick(interaction.guild, target)  # type: ignore -> checked by Discord server side
+            await ctx.send(response.message)
             return
 
         # cancel
@@ -174,12 +175,12 @@ class Deal(commands.Cog):
         # execute
         if res:
             hammer = Hammer(author=interaction.user, reason=reason)
-            text = await hammer.do_ban(
+            response: ExecuteResponse = await hammer.do_ban(
                 guild=interaction.guild,  # type: ignore -> checked by Discord server side
                 target=target,
                 delete_message_days=delete_message_days,
             )
-            await ctx.send(text)
+            await ctx.send(response.message)
             return
 
         # cancel
@@ -227,8 +228,8 @@ class Deal(commands.Cog):
         # execute
         if res:
             hammer = Hammer(author=interaction.user, reason=reason)
-            text = await hammer.do_timeout(target=target, until=dt)
-            await ctx.send(text)
+            response: ExecuteResponse = await hammer.do_timeout(target=target, until=dt)
+            await ctx.send(response.message)
             return
 
         # cancel

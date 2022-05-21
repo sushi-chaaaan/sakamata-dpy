@@ -1,7 +1,8 @@
 from datetime import datetime, timedelta
 
 from discord import Guild, Member, User
-from exts.core.system_text import AuditLogText, DealText
+from exts.core.system_text import AuditLogText, DealText, ErrorText
+from model.response import ExecuteResponse
 from tools.logger import getMyLogger
 
 logger = getMyLogger(__name__)
@@ -17,7 +18,7 @@ class Hammer:
         self.author = author.mention
         self.reason = reason
 
-    async def do_kick(self, guild: Guild, target: Member) -> str:
+    async def do_kick(self, guild: Guild, target: Member) -> ExecuteResponse:
         try:
             await guild.kick(target, reason=self.reason)
         except Exception as e:
@@ -29,17 +30,22 @@ class Hammer:
                 ),
                 exc_info=e,
             )
-            return text
+            succeeded = False
+            exception = e
         else:
             logger.info(text := DealText.kick.value.format(target=target.mention))
-            return text
+            succeeded = True
+            exception = None
+        return ExecuteResponse(
+            succeeded=succeeded, exception=exception, message=text, value=None
+        )
 
     async def do_ban(
         self,
         guild: Guild,
         target: Member,
         delete_message_days: int,
-    ) -> str:
+    ) -> ExecuteResponse:
         try:
             await guild.ban(
                 target,
@@ -58,20 +64,30 @@ class Hammer:
                 ),
                 exc_info=e,
             )
-            return text
+            succeeded = False
+            exc = e
         else:
             logger.info(text := DealText.ban.value.format(target=target.mention))
-            return text
+            succeeded = True
+            exc = None
+        return ExecuteResponse(
+            succeeded=succeeded, exception=exc, message=text, value=None
+        )
 
     async def do_timeout(
         self,
         target: Member | User,
         until: datetime | timedelta = timedelta(hours=24.0),
-    ) -> str:
+    ) -> ExecuteResponse:
 
         # type check
         if isinstance(target, User):
-            return "対象がサーバー内に見つかりませんでした"
+            return ExecuteResponse(
+                succeeded=False,
+                exception=None,
+                message=ErrorText.notfound.value,
+                value=None,
+            )
 
         try:
             await target.timeout(
@@ -89,7 +105,12 @@ class Hammer:
                 ),
                 exc_info=e,
             )
-            return text
+            succeeded = False
+            exc = e
         else:
             logger.info(text := DealText.timeout.value.format(target=target.mention))
-            return text
+            succeeded = True
+            exc = None
+        return ExecuteResponse(
+            succeeded=succeeded, exception=exc, message=text, value=None
+        )
