@@ -6,5 +6,11 @@ from typing import Any
 class ExecuteResponse:
     succeeded: bool
     message: str
-    value: Any | None = None
+    exception: Exception | None = None
+    value: Any | None = None  # used when some return value is needed
+
+
+class HammerResponse(ExecuteResponse):
+    succeeded: bool
+    message: str
     exception: Exception | None = None

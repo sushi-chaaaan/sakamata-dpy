@@ -7,8 +7,8 @@ from discord.ext import commands
 from dotenv import load_dotenv
 from exts.core.embed_builder import EmbedBuilder
 from exts.core.hammer import Hammer
+from model.response import HammerResponse
 from model.system_text import ConfirmText, DealText
-from model.response import ExecuteResponse
 from tools.checker import Checker
 from tools.dt import JST, str_to_dt
 from tools.logger import getMyLogger
@@ -69,7 +69,7 @@ class Deal(commands.Cog):
         )
 
         hammer = Hammer(author=interaction.user)
-        response: ExecuteResponse = await hammer.do_timeout(target=target)
+        response: HammerResponse = await hammer.do_timeout(target=target)
         await interaction.followup.send(response.message, ephemeral=True)
         return
 
@@ -122,7 +122,7 @@ class Deal(commands.Cog):
         # execute
         if res:
             hammer = Hammer(author=interaction.user, reason=reason)
-            response: ExecuteResponse = await hammer.do_kick(interaction.guild, target)  # type: ignore -> checked by Discord server side
+            response: HammerResponse = await hammer.do_kick(interaction.guild, target)  # type: ignore -> checked by Discord server side
             await ctx.send(response.message)
             return
 
@@ -175,7 +175,7 @@ class Deal(commands.Cog):
         # execute
         if res:
             hammer = Hammer(author=interaction.user, reason=reason)
-            response: ExecuteResponse = await hammer.do_ban(
+            response: HammerResponse = await hammer.do_ban(
                 guild=interaction.guild,  # type: ignore -> checked by Discord server side
                 target=target,
                 delete_message_days=delete_message_days,
@@ -228,7 +228,7 @@ class Deal(commands.Cog):
         # execute
         if res:
             hammer = Hammer(author=interaction.user, reason=reason)
-            response: ExecuteResponse = await hammer.do_timeout(target=target, until=dt)
+            response: HammerResponse = await hammer.do_timeout(target=target, until=dt)
             await ctx.send(response.message)
             return
 

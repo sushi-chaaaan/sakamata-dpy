@@ -1,5 +1,6 @@
 import discord
 from model.color import Color
+from model.word import Detected
 from tools.dt import dt_to_str
 
 
@@ -71,4 +72,51 @@ class EmbedBuilder:
             name="archive duration",
             value=f"{str(thread.auto_archive_duration)} minutes",
         )
+        return embed
+
+    @staticmethod
+    def word_alert_embed(detected: Detected) -> discord.Embed:
+        embed = discord.Embed(
+            title="Word Alert",
+            colour=Color.basic.value,
+        )
+        embed.set_footer(text=dt_to_str())
+        embed.set_author(
+            name=detected.author.display_name,
+            icon_url=detected.author.display_avatar.url,
+        )
+        embed.add_field(
+            name="author",
+            value=detected.author.mention,
+        )
+        embed.add_field(
+            name="author_id",
+            value=detected.author.id,
+        )
+        embed.add_field(
+            name="channel",
+            value=detected.channel.mention,
+        )
+        embed.add_field(
+            name="channel_id",
+            value=detected.channel.id,
+        )
+        if detected.high:
+            embed.add_field(
+                name="High",
+                value="\n".join(w.content for w in detected.high),
+                inline=False,
+            )
+        if detected.low:
+            embed.add_field(
+                name="Low",
+                value="\n".join(w.content for w in detected.low),
+                inline=False,
+            )
+        if detected.link:
+            embed.add_field(
+                name="Link",
+                value="\n".join(w.content for w in detected.link),
+                inline=False,
+            )
         return embed

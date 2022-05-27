@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
 
 from discord import Guild, Member, User
-from model.system_text import AuditLogText, DealText, ErrorText
-from model.response import ExecuteResponse
+from model.response import HammerResponse
+from model.system_text import AuditLogText, DealText
 from tools.logger import getMyLogger
 
 logger = getMyLogger(__name__)
@@ -18,7 +18,7 @@ class Hammer:
         self.author = author.mention
         self.reason = reason
 
-    async def do_kick(self, guild: Guild, target: Member) -> ExecuteResponse:
+    async def do_kick(self, guild: Guild, target: Member) -> HammerResponse:
         try:
             await guild.kick(target, reason=self.reason)
         except Exception as e:
@@ -36,16 +36,14 @@ class Hammer:
             logger.info(text := DealText.kick.value.format(target=target.mention))
             succeeded = True
             exception = None
-        return ExecuteResponse(
-            succeeded=succeeded, exception=exception, message=text, value=None
-        )
+        return HammerResponse(succeeded=succeeded, message=text, exception=exception)
 
     async def do_ban(
         self,
         guild: Guild,
         target: Member,
         delete_message_days: int,
-    ) -> ExecuteResponse:
+    ) -> HammerResponse:
         try:
             await guild.ban(
                 target,
@@ -70,23 +68,20 @@ class Hammer:
             logger.info(text := DealText.ban.value.format(target=target.mention))
             succeeded = True
             exc = None
-        return ExecuteResponse(
-            succeeded=succeeded, exception=exc, message=text, value=None
-        )
+        return HammerResponse(succeeded=succeeded, message=text, exception=exc)
 
     async def do_timeout(
         self,
         target: Member | User,
         until: datetime | timedelta = timedelta(hours=24.0),
-    ) -> ExecuteResponse:
+    ) -> HammerResponse:
 
         # type check
         if isinstance(target, User):
-            return ExecuteResponse(
+            return HammerResponse(
                 succeeded=False,
                 exception=None,
-                message=ErrorText.notfound.value,
-                value=None,
+                message="Cannot timeout discord.User.",
             )
 
         try:
@@ -111,6 +106,4 @@ class Hammer:
             logger.info(text := DealText.timeout.value.format(target=target.mention))
             succeeded = True
             exc = None
-        return ExecuteResponse(
-            succeeded=succeeded, exception=exc, message=text, value=None
-        )
+        return HammerResponse(succeeded=succeeded, message=text, exception=exc)

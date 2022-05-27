@@ -1,9 +1,14 @@
 import json
+import os
 import re
 
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
+from model.word import Detected, Link, Word
+
+from .embed_builder import EmbedBuilder as EB
+from .webhook import post_webhook
 
 
 class WordAlert(commands.Cog):
@@ -16,12 +21,16 @@ class WordAlert(commands.Cog):
     async def ng_word(self, message: discord.Message):
 
         # ignore check
-        res = self.ignore_message(message)
-        if res:
+        if self.ignore_message(message):
             return
 
         finder = Finder(message)
-        detected = finder.find_all()
+        detected: Detected | None = finder.find_all()
+        if not detected:
+            return
+        embed = EB.word_alert_embed(detected)
+        res = await post_webhook(os.environ["NG_WEBHOOK_URL"], embeds=[embed])
+        return
 
     def ignore_message(self, message: discord.Message) -> bool:
 
@@ -49,37 +58,45 @@ class Finder:
             d: dict[str, str] = json.load(f)
         self.dict = d
         self.server_link = re.compile(r"discord.gg/[\w]*")
+        self.author = message.author
+        self.channel: discord.TextChannel | discord.VoiceChannel | discord.Thread = message.channel  # type: ignore
 
-    def _detect_high(self) -> tuple[str]:
+    def _detect_high(self) -> tuple[Word]:
         return tuple(
             [
-                word
+                Word(content=word, level="high")
                 for word in self.dict
                 if word in self.content and self.dict[word] == "high"
             ]
         )
 
-    def _detect_low(self) -> tuple[str]:
+    def _detect_low(self) -> tuple[Word]:
         return tuple(
             [
-                word
+                Word(content=word, level="low")
                 for word in self.dict
                 if word in self.content and self.dict[word] == "low"
             ]
         )
 
-    def _detect_server_link(self) -> tuple[str]:
-        return tuple([link for link in self.server_link.findall(self.content)])
+    def _detect_server_link(self) -> tuple[Link]:
+        return tuple(
+            [Link(content=link) for link in self.server_link.findall(self.content)]
+        )
 
-    def find_all(self) -> dict[str, str]:
-        d: dict[str, str] = {}
-        for e in self._detect_high():
-            d[e] = "high"
-        for e in self._detect_low():
-            d[e] = "low"
-        for e in self._detect_server_link():
-            d[e] = "server_link"
-        return d
+    def find_all(self) -> Detected | None:
+        high = self._detect_high()
+        low = self._detect_low()
+        link = self._detect_server_link()
+        if not high and not low and not link:
+            return None
+        return Detected(
+            author=self.author,
+            channel=self.channel,
+            high=high,
+            low=low,
+            link=link,
+        )
 
 
 async def setup(bot: commands.Bot):
