@@ -1,7 +1,6 @@
 
 # sakamata-bot
 
-![GitHub commit activity](https://img.shields.io/github/commit-activity/m/sushi-chaaaan/sakamata-dpy?style=flat-square)
 ![Discord](https://img.shields.io/discord/915910043461890078?color=blueviolet&label=Discord&logo=Discord&logoColor=white&style=flat-square)
 
 ## このリポジトリは？
