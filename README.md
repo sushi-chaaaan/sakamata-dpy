@@ -1,21 +1,26 @@
-# sakamatabot
+
+# sakamata-bot
 
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/sushi-chaaaan/sakamata-dpy?style=flat-square)
 ![Discord](https://img.shields.io/discord/915910043461890078?color=blueviolet&label=Discord&logo=Discord&logoColor=white&style=flat-square)
 
-### このリポジトリは？
+## このリポジトリは？
+
 ホロライブ所属VTuber沙花叉クロヱさんの非公式ファンDiscordサーバー  
 [「クロヱ水族館」](https://discord.gg/EqfjtNBf2M)の運営/管理補助を行うBotのコードです。  
 現在ライブラリをdiscord.pyへ変更しフルリファクタリングを行っています。  
 
-### 開発環境及び使用ライブラリ
+## 開発環および使用ライブラリ
+
 Python 3.10.4  
-[discord.py](https://github.com/Rapptz/discord.py) 2.0.0a  
+[discord.py](https://github.com/Rapptz/discord.py)
 [dispander](https://github.com/sushi-chaaaan/dispander/tree/for2.0)([DiscordBotPortalJP様のライブラリ](https://github.com/DiscordBotPortalJP/dispander)をforkさせていただきました)  
 
+## 機能追加履歴
 
-### 機能追加履歴
-
+> v2.0.0β(2022.05.29)
+discord.pyによる書き直し  
+現在進捗60%前後  
 > v1.5.1(2022.02.21)
 
 メッセージ送信機能の改善  
@@ -25,7 +30,7 @@ Python 3.10.4
 
 > v1.5.0(2022.02.11)
 
-```python 
+```python
 await hogehoge()
 ```
 
@@ -45,7 +50,7 @@ Modalを利用したサーバー内問い合わせ/目安箱機能を実装
 
 > v.1.3.2(2022.01.25)
 
-/user コマンドのデザイン変更  
+/userコマンドのデザイン変更  
 スレッド一覧生成コマンド  
 配信通知機能を停止
 
@@ -127,4 +132,3 @@ VCログの成形を改善
 
 Dispanderによるメッセージリンク展開に対応  
 VCのログをユーザーID形式で保存する機能を追加  
-
