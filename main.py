@@ -22,7 +22,6 @@ EXT_LIST = [
     "exts.core.thread",
     "exts.core.word_alert",
     "exts.utils",
-    # "Presentation.image",
 ]
 
 intents = discord.Intents.all()
