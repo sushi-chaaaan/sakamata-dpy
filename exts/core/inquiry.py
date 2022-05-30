@@ -62,9 +62,7 @@ class InquiryView(ui.View):
     ) -> None:
 
         # get context
-        tracker = TextInputTracker(
-            ctx := await commands.Context.from_interaction(interaction)
-        )
+        tracker = TextInputTracker(interaction=interaction)
 
         # get text input
         value = await tracker.track_modal(
@@ -83,12 +81,12 @@ class InquiryView(ui.View):
 
         res = await post_webhook(os.environ["INQUIRY_WEBHOOK_URL"], embeds=[embed])
         if res.succeeded:
-            await ctx.send("お問い合わせを送信しました。")
+            await interaction.followup.send("お問い合わせを送信しました。")
             return
         self.logger.error(
             f"Failed to send inquiry.\nPosted by:{interaction.user.mention}(ID: {interaction.user.id})\nException: {str(res.exception)}"
         )
-        await ctx.send("お問い合わせの送信に失敗しました。\n管理者による対応をお待ちください。")
+        await interaction.followup.send("お問い合わせの送信に失敗しました。\n管理者による対応をお待ちください。")
         return
 
 
