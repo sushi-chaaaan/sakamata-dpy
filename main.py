@@ -110,7 +110,7 @@ class MyBot(commands.Bot):
         embed = discord.Embed(
             title="Booted",
             description=f"Time: {dt_to_str()}",
-            color=Color.basic.value,
+            color=Color.default.value,
         )
         embed.add_field(
             name="Extensions failed to load",
