@@ -20,7 +20,7 @@ emoji = {
     "16": "\N{Orange Heart}",
     "17": "\N{Blue Heart}",
     "18": "\N{Brown Heart}",
-    "19s": "\N{Purple Heart}",
+    "19": "\N{Purple Heart}",
 }
 
 json.dump(emoji, open("./poll_emoji.json", "a"))
