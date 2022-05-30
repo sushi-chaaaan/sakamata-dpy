@@ -4,9 +4,15 @@ from discord.ext import commands
 
 
 class TextInputTracker:
-    def __init__(self, ctx: commands.Context) -> None:
+    def __init__(
+        self,
+        ctx: commands.Context | None = None,
+        interaction: discord.Interaction | None = None,
+    ) -> None:
         self.ctx = ctx
-        self.origin_interaction = self.ctx.interaction
+        self.origin_interaction = (
+            interaction if interaction else self.ctx.interaction if self.ctx else None
+        )
 
     async def track_modal(
         self,
@@ -19,6 +25,7 @@ class TextInputTracker:
         ephemeral: bool = False,
         direct: bool = False,
     ) -> str | None:
+
         if not direct:
             view = MessageInputView(
                 timeout=timeout,
@@ -26,21 +33,30 @@ class TextInputTracker:
                 custom_id=custom_id,
                 min_length=min_length,
                 max_length=max_length,
-                origin_interaction=self.ctx.interaction,
+                origin_interaction=self.origin_interaction,
             )
-            await self.ctx.send(view=view, ephemeral=ephemeral)
+            if self.ctx:
+                await self.ctx.send(view=view, ephemeral=ephemeral)
+            else:
+                if not self.origin_interaction or self.origin_interaction.is_expired():
+                    return None
+                if self.origin_interaction.response.is_done():
+                    await self.origin_interaction.followup.send(
+                        view=view, ephemeral=ephemeral
+                    )
+                else:
+                    await self.origin_interaction.response.send_message(
+                        view=view, ephemeral=ephemeral
+                    )
             await view.wait()
             if not view.value:
                 return None
             return view.value
         else:
-            if not self.ctx.interaction or self.ctx.interaction.is_expired():
-                if not isinstance((ch := self.ctx.channel), discord.abc.Messageable):
-                    return None
-                await ch.send(content="このコマンドは使用できません。")
+            if not self.origin_interaction or self.origin_interaction.is_expired():
                 return None
-            elif self.ctx.interaction.response.is_done():
-                await self.ctx.interaction.followup.send(content="入力フォームを送信できません。")
+            elif self.origin_interaction.response.is_done():
+                await self.origin_interaction.followup.send(content="入力フォームを送信できません。")
                 return None
             else:
                 modal = MessageInput(
@@ -49,7 +65,7 @@ class TextInputTracker:
                     min_length=min_length,
                     max_length=max_length,
                 )
-                await self.ctx.interaction.response.send_modal(modal)
+                await self.origin_interaction.response.send_modal(modal)
                 await modal.wait()
                 return modal.content
 
