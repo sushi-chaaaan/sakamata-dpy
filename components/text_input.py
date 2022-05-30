@@ -1,5 +1,3 @@
-from weakref import ref
-
 import discord
 from discord import Interaction, ui
 from discord.ext import commands
