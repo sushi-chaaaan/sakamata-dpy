@@ -5,6 +5,7 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
+from exts.core.inquiry import InquiryView
 from model.color import Color
 from tools.dt import dt_to_str
 from tools.logger import getMyLogger
@@ -17,6 +18,7 @@ EXT_LIST = [
     "exts.core.deal",
     "exts.core.dm",
     "exts.core.error",
+    "exts.core.inquiry",
     "exts.core.message",
     "exts.core.report",
     "exts.core.thread",
@@ -65,7 +67,7 @@ class MyBot(commands.Bot):
             logger.error(f"Failed to sync command tree: {e}")
 
         # add persistent_view
-        VIEWS: list[discord.ui.View] = []
+        VIEWS: list[discord.ui.View] = [InquiryView()]
         if not self.persistent_views_added:
             for v in VIEWS:
                 try:

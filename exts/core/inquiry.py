@@ -1,19 +1,54 @@
+import os
+
 import discord
 from components.text_input import TextInputTracker
-from discord import ui
+from discord import app_commands, ui
 from discord.ext import commands
 from dotenv import load_dotenv
+from tools.logger import getMyLogger
+
+from .embed_builder import EmbedBuilder as EB
+from .webhook import post_webhook
 
 
 class Inquiry(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         load_dotenv()
+        self.logger = getMyLogger(__name__)
+
+    @app_commands.command(name="send_inquiry")
+    @app_commands.guilds(discord.Object(id=int(os.environ["GUILD_ID"])))
+    @app_commands.guild_only()
+    @app_commands.describe(channel="Choose channel to send inquiry")
+    async def send_inquiry(
+        self,
+        interaction: discord.Interaction,
+        channel: discord.TextChannel | discord.Thread,
+    ):
+        await interaction.response.defer()
+
+        self.logger.info(
+            f"{interaction.user}[ID: {interaction.user.id}] used send_inquiry command"
+        )
+
+        # get embed
+        embed = EB.inquiry_embed()
+
+        # get view
+        view = InquiryView(timeout=None)
+
+        # send
+        msg = await channel.send(embeds=[embed], view=view)
+
+        await interaction.followup.send(f"{channel.mention}に問い合わせフォームを送信しました。")
+        return
 
 
 class InquiryView(ui.View):
     def __init__(self, *, timeout: float | None = None):
         super().__init__(timeout=timeout)
+        self.logger = getMyLogger(__name__)
 
     @ui.button(
         label="お問い合わせ",
@@ -27,7 +62,9 @@ class InquiryView(ui.View):
     ) -> None:
 
         # get context
-        tracker = TextInputTracker(await commands.Context.from_interaction(interaction))
+        tracker = TextInputTracker(
+            ctx := await commands.Context.from_interaction(interaction)
+        )
 
         # get text input
         value = await tracker.track_modal(
@@ -36,10 +73,23 @@ class InquiryView(ui.View):
             min_length=1,
             max_length=2000,
             direct=True,
+            ephemeral=True,
         )
 
         if not value:
             return
+
+        embed = EB.inquiry_view_embed(value=value, target=interaction.user)
+
+        res = await post_webhook(os.environ["INQUIRY_WEBHOOK_URL"], embeds=[embed])
+        if res.succeeded:
+            await ctx.send("お問い合わせを送信しました。")
+            return
+        self.logger.error(
+            f"Failed to send inquiry.\nPosted by:{interaction.user.mention}(ID: {interaction.user.id})\nException: {str(res.exception)}"
+        )
+        await ctx.send("お問い合わせの送信に失敗しました。\n管理者による対応をお待ちください。")
+        return
 
 
 async def setup(bot: commands.Bot):

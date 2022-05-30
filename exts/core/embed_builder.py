@@ -16,7 +16,7 @@ class EmbedBuilder:
         embed = discord.Embed(
             title="ユーザー情報照会結果",
             description=f"対象ユーザー: {target.mention}",
-            color=Color.basic.value,
+            color=Color.default.value,
         )
         embed.set_footer(text=f"{dt_to_str()}")
         embed.set_thumbnail(url=avatar_url)
@@ -51,7 +51,7 @@ class EmbedBuilder:
     async def on_thread_create_embed(thread: discord.Thread) -> discord.Embed:
         embed = discord.Embed(
             title="New Thread Created",
-            colour=Color.basic.value,
+            colour=Color.default.value,
         )
         embed.set_footer(text=dt_to_str())
         embed.set_author(
@@ -78,7 +78,7 @@ class EmbedBuilder:
     def word_alert_embed(detected: Detected) -> discord.Embed:
         embed = discord.Embed(
             title="Word Alert",
-            colour=Color.basic.value,
+            colour=Color.default.value,
         )
         embed.set_footer(text=dt_to_str())
         embed.set_author(
@@ -119,4 +119,34 @@ class EmbedBuilder:
                 value="\n".join(w.content for w in detected.link),
                 inline=False,
             )
+        return embed
+
+    @staticmethod
+    def inquiry_embed() -> discord.Embed:
+        embed = discord.Embed(
+            title="お問い合わせフォーム",
+            description="下のボタンから問い合わせを送ることができます。",
+            color=Color.default.value,
+        )
+        embed.set_footer(text="この下のボタンを押してください。Push the button below this text!")
+        return embed
+
+    @staticmethod
+    def inquiry_view_embed(
+        *, value: str, target: discord.User | discord.Member
+    ) -> discord.Embed:
+        embed = discord.Embed(
+            colour=Color.default.value,
+            title="お問い合わせ",
+            description=value,
+        )
+        embed.add_field(
+            name="user",
+            value=target.mention,
+        )
+        embed.add_field(
+            name="user_id",
+            value=str(target.id),
+        )
+        embed.set_footer(text=dt_to_str())
         return embed
