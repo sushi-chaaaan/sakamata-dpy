@@ -4,7 +4,7 @@ import discord
 
 
 class Color(Enum):
-    basic = discord.Colour(0x3498DB)
+    default = discord.Colour(0x3498DB)
     notice = discord.Colour(0xFFDD00)
     warning = discord.Colour(0xD0021B)
     admin = discord.Colour(0xF097BD)
