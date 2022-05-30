@@ -1,3 +1,5 @@
+from weakref import ref
+
 import discord
 from discord import Interaction, ui
 from discord.ext import commands
@@ -37,7 +39,9 @@ class TextInputTracker:
                 origin_interaction=self.origin_interaction,
             )
             if self.ctx:
-                await self.ctx.send(view=view, ephemeral=ephemeral)
+                await self.ctx.send(
+                    view=view, reference=self.ctx.message, ephemeral=ephemeral
+                )
             else:
                 if not self.origin_interaction or self.origin_interaction.is_expired():
                     return None
