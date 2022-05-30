@@ -17,18 +17,24 @@ class Messenger:
 
     async def send_message(
         self,
-        content: str,
+        content: str | None = None,
         *,
-        attachment: discord.Attachment | None = None,
+        embeds: list[discord.Embed] | None = None,
+        attachment: discord.Attachment | list[discord.Attachment] | None = None,
         **kwargs,
     ) -> None:
         try:
+            d = {}
+            if content:
+                d["content"] = content
+            if embeds:
+                d["embeds"] = embeds
             if attachment:
-                await self.channel.send(
-                    content=content, file=await attachment.to_file(), **kwargs
-                )
-            else:
-                await self.channel.send(content=content, **kwargs)
+                if isinstance(attachment, discord.Attachment):
+                    attachment = [attachment]
+                d["files"] = [await a.to_file() for a in attachment]
+            d = {**d, **kwargs}
+            await self.channel.send(**d)
         except discord.Forbidden as e:
             logger.exception(
                 f"failed to send message to {self.channel.mention}\n\nMissing Permission",
