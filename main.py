@@ -19,6 +19,7 @@ EXT_LIST = [
     "exts.core.dm",
     "exts.core.error",
     "exts.core.inquiry",
+    "exts.core.member_count",
     "exts.core.message",
     "exts.core.report",
     "exts.core.thread",

@@ -5,6 +5,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
+from tools.dt import dt_to_str
 from tools.logger import getMyLogger
 from tools.search import Finder
 
@@ -21,6 +22,13 @@ class MemberCounter(commands.Cog):
     # set up a task to refresh the member count every 30 minutes
     @tasks.loop(minutes=30.0)
     async def refresh_count(self):
+        logger.info(
+            "next refresh is scheduled at {}".format(
+                dt_to_str(self.refresh_count.next_iteration)
+                if self.refresh_count.next_iteration
+                else "cannot get next iteration"
+            )
+        )
         res = await self._refresh_count()
         if not res:
             logger.error("failed to refresh member count")
