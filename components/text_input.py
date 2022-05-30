@@ -7,6 +7,7 @@ class TextInputTracker:
     def __init__(
         self,
         ctx: commands.Context | None = None,
+        /,
         interaction: discord.Interaction | None = None,
     ) -> None:
         self.ctx = ctx
