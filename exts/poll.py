@@ -29,8 +29,8 @@ class Poll(commands.Cog):
         if not select:
             # yes or no
             option = [
-                {"name": emoji_dict["1"], "value": "はい"},
-                {"name": emoji_dict["2"], "value": "いいえ"},
+                {"name": emoji_dict["0"], "value": "はい"},
+                {"name": emoji_dict["1"], "value": "いいえ"},
             ]
         else:
             # many options
