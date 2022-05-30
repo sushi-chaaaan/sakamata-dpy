@@ -5,6 +5,7 @@ import re
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
+from model.response import ExecuteResponse
 from model.word import Detected, Link, Word
 
 from .embed_builder import EmbedBuilder as EB
@@ -29,7 +30,9 @@ class WordAlert(commands.Cog):
         if not detected:
             return
         embed = EB.word_alert_embed(detected)
-        res = await post_webhook(os.environ["NG_WEBHOOK_URL"], embeds=[embed])
+        res: ExecuteResponse = await post_webhook(
+            os.environ["NG_WEBHOOK_URL"], embeds=[embed]
+        )
         return
 
     def ignore_message(self, message: discord.Message) -> bool:
