@@ -15,7 +15,6 @@ class Poll(commands.Cog):
 
     @commands.command(name="poll")
     @commands.guild_only()
-    # @commands.has_role?
     async def poll(self, ctx: commands.Context, title: str, *select: str):
         if (options := len(select)) > 20:
             await ctx.reply("選択肢は最大20個までです。")
