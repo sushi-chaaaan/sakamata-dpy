@@ -24,6 +24,7 @@ EXT_LIST = [
     "exts.core.report",
     "exts.core.thread",
     "exts.core.word_alert",
+    "exts.logging.listener",
     "exts.poll",
     "exts.utils",
 ]
