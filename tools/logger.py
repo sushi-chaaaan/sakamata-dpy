@@ -5,11 +5,10 @@ import os
 from discord_handler import DiscordHandler
 from dotenv import load_dotenv
 
-load_dotenv()
-
 
 def getMyLogger(name, webhook_url: str | None = None):
 
+    load_dotenv()
     # get logger and handler
     logger = logging.getLogger(name)
     streamHandler = logging.StreamHandler()

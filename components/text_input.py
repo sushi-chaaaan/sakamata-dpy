@@ -8,7 +8,7 @@ class TextInputTracker:
         self,
         ctx: commands.Context | None = None,
         /,
-        interaction: discord.Interaction | None = None,
+        interaction: Interaction | None = None,
     ) -> None:
         self.ctx = ctx
         self.origin_interaction = (
@@ -120,7 +120,7 @@ class MessageInputView(ui.View):
 
 
 def to_unavailable(view: ui.View) -> ui.View:
-    _view = discord.ui.View(timeout=view.timeout)
+    _view = ui.View(timeout=view.timeout)
     for c in view.children:
         if isinstance(c, ui.Button) or isinstance(c, ui.Select):
             c.disabled = True

@@ -16,6 +16,7 @@ class EscapeWithCodeBlock(ui.View):
     async def escape(self, interaction: discord.Interaction, button: ui.Button):
         await interaction.response.defer(ephemeral=True)
         await interaction.followup.send(
-            content=f"```\n{self.text}\n```", ephemeral=True
+            content=f"```\n{self.text}\n```",
+            ephemeral=True,
         )
         return
