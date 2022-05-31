@@ -5,8 +5,6 @@ from model.response import HammerResponse
 from model.system_text import AuditLogText, DealText
 from tools.logger import getMyLogger
 
-logger = getMyLogger(__name__)
-
 
 class Hammer:
     def __init__(
@@ -15,6 +13,7 @@ class Hammer:
         author: User | Member,
         reason: str | None = None,
     ) -> None:
+        self.logger = getMyLogger(__name__)
         self.author = author.mention
         self.reason = reason
 
@@ -22,7 +21,7 @@ class Hammer:
         try:
             await guild.kick(target, reason=self.reason)
         except Exception as e:
-            logger.exception(
+            self.logger.exception(
                 text := DealText.exception.value.format(
                     deal="kick",
                     target=target.mention,
@@ -33,7 +32,7 @@ class Hammer:
             succeeded = False
             exception = e
         else:
-            logger.info(text := DealText.kick.value.format(target=target.mention))
+            self.logger.info(text := DealText.kick.value.format(target=target.mention))
             succeeded = True
             exception = None
         return HammerResponse(succeeded=succeeded, message=text, exception=exception)
@@ -54,7 +53,7 @@ class Hammer:
                 delete_message_days=delete_message_days,
             )
         except Exception as e:
-            logger.exception(
+            self.logger.exception(
                 text := DealText.exception.value.format(
                     deal="ban",
                     target=target.mention,
@@ -65,7 +64,7 @@ class Hammer:
             succeeded = False
             exc = e
         else:
-            logger.info(text := DealText.ban.value.format(target=target.mention))
+            self.logger.info(text := DealText.ban.value.format(target=target.mention))
             succeeded = True
             exc = None
         return HammerResponse(succeeded=succeeded, message=text, exception=exc)
@@ -92,7 +91,7 @@ class Hammer:
                 ),
             )
         except Exception as e:
-            logger.exception(
+            self.logger.exception(
                 text := DealText.exception.value.format(
                     deal="timeout",
                     target=target.mention,
@@ -103,7 +102,9 @@ class Hammer:
             succeeded = False
             exc = e
         else:
-            logger.info(text := DealText.timeout.value.format(target=target.mention))
+            self.logger.info(
+                text := DealText.timeout.value.format(target=target.mention)
+            )
             succeeded = True
             exc = None
         return HammerResponse(succeeded=succeeded, message=text, exception=exc)

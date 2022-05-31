@@ -2,8 +2,6 @@ import discord
 from discord.ext import commands
 from tools.logger import getMyLogger
 
-logger = getMyLogger(__name__)
-
 
 class Messenger:
     def __init__(
@@ -11,9 +9,9 @@ class Messenger:
         ctx: commands.Context,
         channel: discord.TextChannel | discord.VoiceChannel | discord.Thread,
     ) -> None:
+        self.logger = getMyLogger(__name__)
         self.ctx = ctx
         self.channel = channel
-        pass
 
     async def send_message(
         self,
@@ -36,7 +34,7 @@ class Messenger:
             d = {**d, **kwargs}
             await self.channel.send(**d)
         except discord.Forbidden as e:
-            logger.exception(
+            self.logger.exception(
                 f"failed to send message to {self.channel.mention}\n\nMissing Permission",
                 exc_info=e,
             )
@@ -45,7 +43,7 @@ class Messenger:
         except discord.HTTPException as e:
             match e.code:
                 case 50008:
-                    logger.exception(
+                    self.logger.exception(
                         f"failed to send message to {self.channel.mention}\n\nText in Voice is not enabled yet in this server: {self.channel.guild.name}(ID: {self.channel.guild.id})",
                         exc_info=e,
                     )
@@ -54,7 +52,7 @@ class Messenger:
                     )
                     return
                 case _:
-                    logger.exception(
+                    self.logger.exception(
                         f"failed to send message to {self.channel.mention}\n\nHTTPException(plz check log)",
                         exc_info=e,
                     )
@@ -63,7 +61,7 @@ class Messenger:
                     )
                     return
         except Exception as e:
-            logger.exception(
+            self.logger.exception(
                 f"failed to send message to {self.channel.name}", exc_info=e
             )
             await self.ctx.send(
@@ -71,6 +69,6 @@ class Messenger:
             )
             return
         else:
-            logger.info(f"message sent to {self.channel.name}")
+            self.logger.info(f"message sent to {self.channel.name}")
             await self.ctx.send(content="メッセージ送信に成功しました。")
             return

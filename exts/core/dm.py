@@ -8,13 +8,12 @@ from dotenv import load_dotenv
 from tools.checker import Checker
 from tools.logger import getMyLogger
 
-logger = getMyLogger(__name__)
-
 
 class DMSys(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         load_dotenv()
+        self.logger = getMyLogger(__name__)
 
     @app_commands.command(name="send-dm")
     @app_commands.guilds(discord.Object(id=int(os.environ["GUILD_ID"])))
@@ -28,7 +27,7 @@ class DMSys(commands.Cog):
         attachment: discord.Attachment | None = None,
     ):
         """ダイレクトメッセージの送信を行います。"""
-        logger.info(
+        self.logger.info(
             f"{interaction.user}[ID: {interaction.user.id}] used send-dm command"
         )
         await interaction.response.defer(thinking=True)
@@ -76,11 +75,11 @@ class DMSys(commands.Cog):
             else:
                 await target.send(content=value)
         except Exception as e:
-            logger.exception(f"Failed to send DM to {target}", exc_info=e)
+            self.logger.exception(f"Failed to send DM to {target}", exc_info=e)
             await ctx.send(content="DM送信に失敗しました。\n対象がDMを受け取らない設定になっている可能性があります。")
             return
         else:
-            logger.info(f"DM was sent to {target}")
+            self.logger.info(f"DM was sent to {target}")
             await ctx.send(content="DM送信に成功しました。")
             return
 

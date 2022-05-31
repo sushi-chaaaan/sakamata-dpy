@@ -8,13 +8,12 @@ from dotenv import load_dotenv
 from tools.dt import JST
 from tools.logger import getMyLogger
 
-logger = getMyLogger(__name__)
-
 
 class Utils(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         load_dotenv()
+        self.logger = getMyLogger(__name__)
 
     @app_commands.command(name="dakuten")
     @app_commands.guilds(discord.Object(id=int(os.environ["GUILD_ID"])))
@@ -22,7 +21,7 @@ class Utils(commands.Cog):
     @app_commands.describe(text="text to add dakuten")
     async def dakuten(self, interaction: discord.Interaction, text: str):
         """濁点を付けて自慢しよう！"""
-        logger.info(f"{interaction.user} used dakuten command")
+        self.logger.info(f"{interaction.user} used dakuten command")
         await interaction.response.defer(ephemeral=True)
         out_text = "".join([text[num] + "゛" for num in range(len(text))])
         await interaction.followup.send(out_text, ephemeral=True)
@@ -40,7 +39,7 @@ class Utils(commands.Cog):
         time: str = "1200",
     ):
         """日付をDiscordで使用できるタイムスタンプに変換します。"""
-        logger.info(f"{interaction.user} used timestamp command")
+        self.logger.info(f"{interaction.user} used timestamp command")
         await interaction.response.defer(ephemeral=True)
         _date = datetime.strptime(date, "%Y%m%d")
         _date.replace(tzinfo=JST())
