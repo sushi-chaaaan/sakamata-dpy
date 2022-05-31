@@ -6,17 +6,17 @@ from discord import app_commands
 from discord.ext import commands
 from dispander import dispand
 from dotenv import load_dotenv
-from exts.core.messenger import Messenger
 from tools.checker import Checker
 from tools.logger import getMyLogger
 
-logger = getMyLogger(__name__)
+from .messenger import Messenger
 
 
 class MessageSys(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         load_dotenv()
+        self.logger = getMyLogger(__name__)
 
     @commands.Cog.listener("on_message")
     async def on_message_dispand(self, message: discord.Message):
@@ -50,7 +50,7 @@ class MessageSys(commands.Cog):
         channel: discord.TextChannel | discord.VoiceChannel | discord.Thread,
         attachment: discord.Attachment | None = None,
     ):
-        logger.info(
+        self.logger.info(
             f"{interaction.user}[ID: {interaction.user.id}] used send-message command"
         )
 

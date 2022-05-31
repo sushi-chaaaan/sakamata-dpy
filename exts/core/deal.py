@@ -5,21 +5,21 @@ from discord import app_commands
 from discord.app_commands import Choice
 from discord.ext import commands
 from dotenv import load_dotenv
-from exts.core.embed_builder import EmbedBuilder
-from exts.core.hammer import Hammer
 from model.response import HammerResponse
 from model.system_text import ConfirmText, DealText
 from tools.checker import Checker
 from tools.dt import JST, str_to_dt
 from tools.logger import getMyLogger
 
-logger = getMyLogger(__name__)
+from .embed_builder import EmbedBuilder
+from .hammer import Hammer
 
 
 class Deal(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         load_dotenv()
+        self.logger = getMyLogger(__name__)
         self.ctx_menu_user = app_commands.ContextMenu(
             name="user",
             callback=self.ctx_user,
@@ -48,7 +48,7 @@ class Deal(commands.Cog):
         self, interaction: discord.Interaction, target: discord.Member
     ) -> None:
         await interaction.response.defer(ephemeral=True)
-        logger.info(
+        self.logger.info(
             "{} [ID: {}] used user ctx_menu command".format(u := interaction.user, u.id)
         )
 
@@ -62,7 +62,7 @@ class Deal(commands.Cog):
     ) -> None:
         await interaction.response.defer(ephemeral=True)
 
-        logger.info(
+        self.logger.info(
             "{} [ID: {}] used user ctx_timeout command".format(
                 u := interaction.user, u.id
             )
@@ -83,7 +83,7 @@ class Deal(commands.Cog):
     ):
         """ユーザー情報照会用コマンド"""
         await ctx.defer()
-        logger.info("{} [ID: {}] used user command".format(u := ctx.author, u.id))
+        self.logger.info("{} [ID: {}] used user command".format(u := ctx.author, u.id))
         embed = EmbedBuilder.user_embed(target)
         await ctx.send(embeds=[embed])
         return
@@ -104,7 +104,7 @@ class Deal(commands.Cog):
         ctx = await commands.Context.from_interaction(interaction)
 
         # prepare confirm
-        logger.info("{} [ID: {}] used kick command".format(u := ctx.author, u.id))
+        self.logger.info("{} [ID: {}] used kick command".format(u := ctx.author, u.id))
         if not isinstance(target, discord.Member):
             await interaction.response.send_message(content="対象がサーバー内に見つかりませんでした")
             return
@@ -156,7 +156,7 @@ class Deal(commands.Cog):
         ctx = await commands.Context.from_interaction(interaction)
 
         # prepare confirm
-        logger.info("{} [ID: {}] used ban command".format(u := ctx.author, u.id))
+        self.logger.info("{} [ID: {}] used ban command".format(u := ctx.author, u.id))
         if not isinstance(target, discord.Member):
             await interaction.response.send_message(content="対象がサーバー内に見つかりませんでした")
             return
@@ -206,7 +206,7 @@ class Deal(commands.Cog):
         ctx = await commands.Context.from_interaction(interaction)
 
         # prepare confirm
-        logger.info("{} [ID: {}] used kick command".format(u := ctx.author, u.id))
+        self.logger.info("{} [ID: {}] used kick command".format(u := ctx.author, u.id))
         if not isinstance(target, discord.Member):
             await interaction.response.send_message(content="対象がサーバー内に見つかりませんでした")
             return

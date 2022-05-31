@@ -6,9 +6,9 @@ from discord import app_commands, ui
 from discord.ext import commands
 from dotenv import load_dotenv
 from tools.logger import getMyLogger
+from tools.webhook import post_webhook
 
 from .embed_builder import EmbedBuilder as EB
-from .webhook import post_webhook
 
 
 class Inquiry(commands.Cog):

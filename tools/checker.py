@@ -2,11 +2,8 @@ import asyncio
 
 import discord
 from discord.ext import commands
-from dotenv import load_dotenv
 
-from tools.logger import getMyLogger
-
-logger = getMyLogger(__name__)
+from .logger import getMyLogger
 
 accept_emoji = "\N{Heavy Large Circle}"
 reject_emoji = "\N{Cross Mark}"
@@ -15,7 +12,7 @@ reject_emoji = "\N{Cross Mark}"
 class Checker:
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        load_dotenv()
+        self.logger = getMyLogger(__name__)
 
     async def check_role(
         self,
@@ -73,7 +70,7 @@ class Checker:
             )
         except asyncio.TimeoutError as e:
             await ctx.send(content="タイムアウトしたため処理を停止します。")
-            logger.exception("Confirm timeout", exc_info=e)
+            self.logger.info("Confirm timeout", exc_info=e)
             return False
         else:
             if str(reaction.emoji) == accept_emoji:
@@ -140,7 +137,7 @@ class Checker:
             )
         except asyncio.TimeoutError as e:
             await ctx.send(content="タイムアウトしたため処理を停止します。")
-            logger.exception("Confirm timeout", exc_info=e)
+            self.logger.info("Confirm timeout", exc_info=e)
             return False
         else:
             if payload.emoji.name == accept_emoji:

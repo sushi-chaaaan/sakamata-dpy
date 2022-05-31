@@ -1,17 +1,12 @@
-import json
-import os
-
 import discord
-from discord import app_commands
 from discord.ext import commands
-from dotenv import load_dotenv
 from model.color import Color
+from tools.io import read_json
 
 
 class Poll(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        load_dotenv()
 
     @commands.command(name="poll")
     @commands.guild_only()
@@ -21,8 +16,7 @@ class Poll(commands.Cog):
             return
 
         # load emoji
-        with open(r"src/poll_emoji.json", "r") as f:
-            emoji_dict = json.load(f)
+        emoji_dict = read_json(r"src/poll_emoji.json")
 
         # generate options
         if not select:

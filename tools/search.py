@@ -1,14 +1,12 @@
 import discord
-from dotenv import load_dotenv
 from model.response import ExecuteResponse
 from model.system_text import ErrorText
 
-from tools.logger import getMyLogger
+from .logger import getMyLogger
 
 
 class Finder:
     def __init__(self, bot: discord.Client) -> None:
-        load_dotenv()
         self.bot = bot
         self.logger = getMyLogger(__name__)
         self.guild: discord.Guild | None = None

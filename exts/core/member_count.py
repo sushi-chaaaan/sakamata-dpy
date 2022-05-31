@@ -1,5 +1,4 @@
 import os
-from asyncio.log import logger
 
 import discord
 from discord import app_commands
@@ -22,7 +21,7 @@ class MemberCounter(commands.Cog):
     # set up a task to refresh the member count every 30 minutes
     @tasks.loop(minutes=30.0)
     async def refresh_count(self):
-        logger.info(
+        self.logger.info(
             "next refresh is scheduled at {}".format(
                 dt_to_str(self.refresh_count.next_iteration)
                 if self.refresh_count.next_iteration
@@ -31,9 +30,9 @@ class MemberCounter(commands.Cog):
         )
         res = await self._refresh_count()
         if not res:
-            logger.error("failed to refresh member count")
+            self.logger.error("failed to refresh member count")
         else:
-            logger.info("refreshed member count")
+            self.logger.info("refreshed member count")
 
     @refresh_count.before_loop
     async def before_refresh_count(self):

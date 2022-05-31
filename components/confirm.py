@@ -1,8 +1,5 @@
 import discord
 from discord import Interaction, ui
-from tools.logger import getMyLogger
-
-logger = getMyLogger(__name__)
 
 
 class ConfirmView(ui.View):

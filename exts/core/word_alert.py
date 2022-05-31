@@ -1,22 +1,22 @@
-import json
 import os
 import re
 
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
-from model.response import ExecuteResponse
 from model.word import Detected, Link, Word
+from tools.io import read_json
+from tools.logger import getMyLogger
+from tools.webhook import post_webhook
 
 from .embed_builder import EmbedBuilder as EB
-from .webhook import post_webhook
 
 
 class WordAlert(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         load_dotenv()
-        self.bot = bot
+        self.logger = getMyLogger(__name__)
 
     @commands.Cog.listener("on_message")
     async def ng_word(self, message: discord.Message):
@@ -29,10 +29,9 @@ class WordAlert(commands.Cog):
         detected: Detected | None = finder.find_all()
         if not detected:
             return
+        self.logger.info(f"{message.author} sent NG word: {detected}")
         embed = EB.word_alert_embed(detected)
-        res: ExecuteResponse = await post_webhook(
-            os.environ["NG_WEBHOOK_URL"], embeds=[embed]
-        )
+        await post_webhook(os.environ["NG_WEBHOOK_URL"], embeds=[embed])
         return
 
     def ignore_message(self, message: discord.Message) -> bool:
@@ -57,9 +56,7 @@ class WordAlert(commands.Cog):
 class Finder:
     def __init__(self, message: discord.Message) -> None:
         self.content = message.content
-        with open(r"src/word_alert.json", mode="r") as f:
-            d: dict[str, str] = json.load(f)
-        self.dict = d
+        self.dict = read_json(r"src/word_alert.json")
         self.server_link = re.compile(r"discord.gg/[\w]*")
         self.author = message.author
         self.channel: discord.TextChannel | discord.VoiceChannel | discord.Thread = message.channel  # type: ignore

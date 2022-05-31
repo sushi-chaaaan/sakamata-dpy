@@ -6,9 +6,10 @@ from components.escape import EscapeWithCodeBlock
 from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
-from exts.core.embed_builder import EmbedBuilder
 from tools.logger import getMyLogger
 from tools.search import Finder
+
+from .embed_builder import EmbedBuilder
 
 
 class ThreadSys(commands.Cog):

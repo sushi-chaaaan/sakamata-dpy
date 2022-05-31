@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 
-import discord
-from discord import Member, User
+from discord import Member, TextChannel, Thread, User, VoiceChannel
 
 
 @dataclass
@@ -19,7 +18,7 @@ class Link:
 @dataclass
 class Detected:
     author: User | Member
-    channel: discord.TextChannel | discord.VoiceChannel | discord.Thread
+    channel: TextChannel | VoiceChannel | Thread
     high: tuple[Word] | None = None
     low: tuple[Word] | None = None
     link: tuple[Link] | None = None
