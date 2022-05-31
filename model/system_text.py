@@ -23,3 +23,4 @@ class AuditLogText(Enum):
 
 class ErrorText(Enum):
     notfound = "対象が見つかりませんでした"
+    failed_to_dm = "DMの送信に失敗しました。\nDMが受信できない設定に\nなっている可能性があります。"
