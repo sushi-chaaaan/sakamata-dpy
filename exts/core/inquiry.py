@@ -26,7 +26,7 @@ class Inquiry(commands.Cog):
         interaction: discord.Interaction,
         channel: discord.TextChannel | discord.Thread,
     ):
-        await interaction.response.defer()
+        await interaction.response.defer(ephemeral=True)
 
         self.logger.info(
             f"{interaction.user}[ID: {interaction.user.id}] used send_inquiry command"
@@ -41,7 +41,9 @@ class Inquiry(commands.Cog):
         # send
         msg = await channel.send(embeds=[embed], view=view)
 
-        await interaction.followup.send(f"{channel.mention}に問い合わせフォームを送信しました。")
+        await interaction.followup.send(
+            f"{channel.mention}に問い合わせフォームを送信しました。", ephemeral=True
+        )
         return
 
 
