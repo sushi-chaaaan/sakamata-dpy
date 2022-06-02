@@ -26,7 +26,7 @@ class Inquiry(commands.Cog):
         interaction: discord.Interaction,
         channel: discord.TextChannel | discord.Thread,
     ):
-        await interaction.response.defer(ephemeral=True)
+        await interaction.response.defer()
 
         self.logger.info(
             f"{interaction.user}[ID: {interaction.user.id}] used send_inquiry command"
@@ -41,9 +41,7 @@ class Inquiry(commands.Cog):
         # send
         msg = await channel.send(embeds=[embed], view=view)
 
-        await interaction.followup.send(
-            f"{channel.mention}に問い合わせフォームを送信しました。", ephemeral=True
-        )
+        await interaction.followup.send(f"{channel.mention}に問い合わせフォームを送信しました。")
         return
 
 
@@ -83,12 +81,14 @@ class InquiryView(ui.View):
 
         res = await post_webhook(os.environ["INQUIRY_WEBHOOK_URL"], embeds=[embed])
         if res.succeeded:
-            await interaction.followup.send("お問い合わせを送信しました。")
+            await interaction.followup.send("お問い合わせを送信しました。", ephemeral=True)
             return
         self.logger.error(
             f"Failed to send inquiry.\nPosted by:{interaction.user.mention}(ID: {interaction.user.id})\nException: {str(res.exception)}"
         )
-        await interaction.followup.send("お問い合わせの送信に失敗しました。\n管理者による対応をお待ちください。")
+        await interaction.followup.send(
+            "お問い合わせの送信に失敗しました。\n管理者による対応をお待ちください。", ephemeral=True
+        )
         return
 
 
