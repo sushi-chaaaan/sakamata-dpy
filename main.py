@@ -148,8 +148,7 @@ class MyBot(commands.Bot):
 if __name__ == "__main__":
     load_dotenv()
     bot = MyBot(intents=intents, application_id=int(os.environ["APP_ID"]))
-    token = os.environ["DISCORD_BOT_TOKEN"]
     try:
-        bot.run(token)
+        bot.run(os.environ["DISCORD_BOT_TOKEN"])
     except Exception as e:
         logger.exception("Failed to run bot", exc_info=e)
