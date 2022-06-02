@@ -13,6 +13,7 @@ async def download_file(filename: str, url: str):
             async with aiofiles.open(filename, mode="wb") as f:
                 await f.write(await resp.read())
                 await f.close()
+                return
 
 
 def read_json(filename: str) -> dict:
@@ -24,3 +25,4 @@ def write_log(filename: str, data: str, append: bool = True):
     m = "a" if append else "w"
     with open(filename, mode=m) as f:
         f.write(data)
+        return
