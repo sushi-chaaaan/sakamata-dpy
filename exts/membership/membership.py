@@ -3,7 +3,7 @@ import os
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
-from tools.gsheets import GSheet
+from tools.gsheets import GSheetClient
 
 
 class MemberShip(commands.Cog):
@@ -18,10 +18,7 @@ class MemberShip(commands.Cog):
         await ctx.send(msg)
 
     async def post_to_sheet(self):
-        sheet = GSheet(
-            sheet_key="1Ts5zgB5apmVsFPSlL8HxfE1R-6ka6ec4Y0vjqGMrCz8",
-            cred=os.environ["SPREAD_SHEET_CRED"],
-        )
+        client = GSheetClient(os.environ["SPREAD_SHEET_CRED"])
 
 
 async def setup(bot: commands.Bot):
