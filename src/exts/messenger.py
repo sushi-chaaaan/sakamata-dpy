@@ -23,17 +23,32 @@ class Messenger:
         **kwargs,
     ) -> None:
         try:
-            d = {}
-            if content:
-                d["content"] = content
-            if embeds:
-                d["embeds"] = embeds
-            if attachment:
+            if not attachment:
+
+                if not embeds:
+                    await self.channel.send(content=content, **kwargs)
+                else:
+                    await self.channel.send(content=content, embeds=embeds, **kwargs)
+
+            else:
+
                 if isinstance(attachment, discord.Attachment):
                     attachment = [attachment]
-                d["files"] = [await a.to_file() for a in attachment]
-            d = {**d, **kwargs}
-            await self.channel.send(**d)
+
+                if not embeds:
+                    await self.channel.send(
+                        content=content,
+                        files=[await a.to_file() for a in attachment],
+                        **kwargs,
+                    )
+
+                else:
+                    await self.channel.send(
+                        content=content,
+                        embeds=embeds,
+                        files=[await a.to_file() for a in attachment],
+                        **kwargs,
+                    )
         except discord.Forbidden as e:
             self.logger.exception(
                 f"failed to send message to {self.channel.mention}\n\nMissing Permission",
