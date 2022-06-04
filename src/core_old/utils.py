@@ -60,10 +60,12 @@ class Utils_Command(commands.Cog):
         desc = desc + f"\n[Avatar url]({avatar_url})"
         deal = []
         if member.communication_disabled_until:
-            until_jst: datetime = member.communication_disabled_until.astimezone(jst)
+            until_jst: datetime = member.communication_disabled_until.astimezone(
+                jst)
             until = until_jst.strftime("%Y/%m/%d %H:%M:%S")
             deal.append(f"Timeout: {until} に解除")
-        stops = "\n".join([role.name for role in member.roles if role.id in stop_list])
+        stops = "\n".join(
+            [role.name for role in member.roles if role.id in stop_list])
         if stops:
             deal.append(stops)
         if not deal:
@@ -84,7 +86,8 @@ class Utils_Command(commands.Cog):
             name="サーバー参加日時",
             value=joined,
         )
-        embed.add_field(name=f"所持ロール({len(roles)})", value=send_roles, inline=False)
+        embed.add_field(name=f"所持ロール({len(roles)})",
+                        value=send_roles, inline=False)
         embed.add_field(
             name="実行中措置",
             value=send_deal,

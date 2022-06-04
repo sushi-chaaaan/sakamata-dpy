@@ -35,7 +35,8 @@ class Hammer:
             succeeded = False
             exc = e
         else:
-            self.logger.info(text := DealText.kick.value.format(target=target.mention))
+            self.logger.info(
+                text := DealText.kick.value.format(target=target.mention))
             succeeded = True
         return HammerResponse(succeeded=succeeded, message=text, exception=exc)
 
@@ -67,7 +68,8 @@ class Hammer:
             succeeded = False
             exc = e
         else:
-            self.logger.info(text := DealText.ban.value.format(target=target.mention))
+            self.logger.info(
+                text := DealText.ban.value.format(target=target.mention))
             succeeded = True
             exc = None
         return HammerResponse(succeeded=succeeded, message=text, exception=exc)

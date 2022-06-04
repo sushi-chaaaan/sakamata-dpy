@@ -1,6 +1,12 @@
 from discord import Embed, Interaction
-from discord.ext.ui import (InteractionProvider, Message, PageView,
-                            PaginationView, View, ViewTracker)
+from discord.ext.ui import (
+    InteractionProvider,
+    Message,
+    PageView,
+    PaginationView,
+    View,
+    ViewTracker,
+)
 
 
 class Page(PageView):
@@ -21,7 +27,7 @@ class PagePage:
         self._embeds = embeds
 
     def _split(self, __embeds: list[Embed]) -> list[list[Embed]]:
-        return [__embeds[num : num + 3] for num in range(0, len(__embeds), 3)]
+        return [__embeds[num: num + 3] for num in range(0, len(__embeds), 3)]
 
     def _view(self) -> PaginationView:
         embed_list = self._split(self._embeds)

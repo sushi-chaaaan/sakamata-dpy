@@ -20,7 +20,8 @@ class Finder:
             try:
                 channel = await self.seek.fetch_channel(channel_id)
             except Exception as e:
-                self.logger.exception(text := ErrorText.notfound.value, exc_info=e)
+                self.logger.exception(
+                    text := ErrorText.notfound.value, exc_info=e)
                 raise Exception(text)
         return channel
 
@@ -36,6 +37,7 @@ class Finder:
             try:
                 guild = await self.bot.fetch_guild(guild_id)
             except Exception as e:
-                self.logger.exception(text := ErrorText.notfound.value, exc_info=e)
+                self.logger.exception(
+                    text := ErrorText.notfound.value, exc_info=e)
                 raise Exception(text)
         return guild

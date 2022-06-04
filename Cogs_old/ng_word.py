@@ -40,8 +40,10 @@ class NGWordSystem(commands.Cog):
         if type(message.author) == discord.Member:
             if admin_role in [role.id for role in message.author.roles]:
                 return
-        detected_high = [word for word in self.ng_high if word in message.content]
-        detected_low = [word for word in self.ng_low if word in message.content]
+        detected_high = [
+            word for word in self.ng_high if word in message.content]
+        detected_low = [
+            word for word in self.ng_low if word in message.content]
         links: list[str] = self.prog.findall(message.content)
         ng_url = []
         if links:
@@ -91,7 +93,8 @@ class NGWordSystem(commands.Cog):
         embed.add_field(name="送信先", value=f"{message.channel.mention}")
         embed.add_field(
             name="送信日時",
-            value=message.created_at.astimezone(jst).strftime("%Y/%m/%d %H:%M:%S"),
+            value=message.created_at.astimezone(
+                jst).strftime("%Y/%m/%d %H:%M:%S"),
         )
         return embed
 
