@@ -11,7 +11,6 @@ from tools.finder import Finder
 from tools.io import read_json
 from tools.logger import getMyLogger
 
-from src.exts.embeds import EmbedBuilder as EB
 from src.exts.inquiry import InquiryView
 
 
