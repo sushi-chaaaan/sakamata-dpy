@@ -5,7 +5,8 @@ from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
 
-from components.modal_tracker import InteractionModalTracker, MessageInput
+from components.modal_tracker import MessageInput
+from exts.modal_tracker import InteractionModalTracker
 from tools.log_formatter import command_log
 from tools.logger import getMyLogger
 
