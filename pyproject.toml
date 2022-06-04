@@ -12,7 +12,6 @@ discord-handler = "^0.0.5"
 "discord.py" = {git = "https://github.com/Rapptz/discord.py.git", rev = "06c1f44d749fa66b3b276adb7ee5616922112aaa"}
 dispander = {git = "https://github.com/sushi-chaaaan/dispander.git", rev = "cde35b1ebf9b31c0ebdb03ceafdc32187a6bf714"}
 gspread = "^5.4.0"
-pip-autoremove = "^0.10.0"
 python-dotenv = "^0.20.0"
 songdbcore = {git = "https://github.com/sushi-chaaaan/song-db-client", rev = "02d58f117d35744c20458c3c679f81d59b87423e"}
 
