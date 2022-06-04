@@ -23,7 +23,7 @@ class Utils(commands.Cog):
     @app_commands.describe(text="濁点をつける文章を入力")
     @app_commands.rename(text="濁点をつける文章")
     async def dakuten(self, interaction: discord.Interaction, text: str):
-        """濁点を付けるだけ"""
+        """濁点を付けるだけのコマンド"""
 
         self.logger.info(command_log(name="dakuten", author=interaction.user))
 

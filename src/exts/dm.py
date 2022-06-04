@@ -32,7 +32,7 @@ class DMSys(commands.Cog):
         target: discord.Member,
         attachment: discord.Attachment | None = None,
     ):
-        """DMの送信を行います。"""
+        """DMを送信します。"""
         self.logger.info(command_log(name="send-dm", author=interaction.user))
 
         await interaction.response.defer(thinking=True)

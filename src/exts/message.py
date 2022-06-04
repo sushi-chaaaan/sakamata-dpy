@@ -55,7 +55,7 @@ class MessageSys(commands.Cog):
         channel: discord.TextChannel | discord.VoiceChannel | discord.Thread,
         attachment: discord.Attachment | None = None,
     ):
-        """メッセージ送信コマンド"""
+        """メッセージを送信します。"""
 
         self.logger.info(command_log(name="send_message", author=interaction.user))
 

@@ -30,6 +30,8 @@ class Inquiry(commands.Cog):
         interaction: discord.Interaction,
         channel: discord.TextChannel | discord.Thread,
     ):
+        """お問い合わせフォームを送信します。"""
+
         await interaction.response.defer()
 
         self.logger.info(command_log(name="send_inquiry", author=interaction.user))

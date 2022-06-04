@@ -62,7 +62,7 @@ class ThreadSys(commands.Cog):
         thread: discord.Thread,
         role: discord.Role,
     ):
-        """スレッドに特定のロールを持つメンバーを一括追加するコマンド"""
+        """特定のロールを持つメンバーをスレッドに一括追加します。"""
 
         self.logger.info(
             command_log(name="add-role-to-thread", author=interaction.user)
@@ -140,7 +140,7 @@ class ThreadSys(commands.Cog):
         interaction: discord.Interaction,
         category: discord.CategoryChannel | None = None,
     ):
-        """スレッドとチャンネルの一覧を作成するコマンド"""
+        """特定カテゴリ内のスレッドとチャンネルの一覧を作成します。"""
 
         self.logger.info(command_log(name="thread-board", author=interaction.user))
 
