@@ -30,7 +30,7 @@ async def post_webhook(
     webhook_url: str, /, suppress_log: bool = False, **kwargs
 ) -> ExecuteResponse:
     async with aiohttp.ClientSession() as session:
-        webhook = Webhook.from_url(webhook_url, session=session)
+        webhook: Webhook = Webhook.from_url(webhook_url, session=session)
         logger = getMyLogger(__name__)
         try:
             webhook_message = await webhook.send(wait=True, **kwargs)

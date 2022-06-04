@@ -118,7 +118,7 @@ class Deal(commands.Cog):
         # execute
         if res:
             hammer = Hammer(author=interaction.user, reason=reason)
-            response: HammerResponse = await hammer.do_kick(interaction.guild, target)  # type: ignore -> checked by Discord server side
+            response: HammerResponse = await hammer.do_kick(interaction.guild, target)  # type: ignore # checked by Discord server side
             await ctx.send(response.message)
             return
 
@@ -172,7 +172,7 @@ class Deal(commands.Cog):
         if res:
             hammer = Hammer(author=interaction.user, reason=reason)
             response: HammerResponse = await hammer.do_ban(
-                guild=interaction.guild,  # type: ignore -> checked by Discord server side
+                guild=interaction.guild,  # type: ignore # checked by Discord server side
                 target=target,
                 delete_message_days=delete_message_days,
             )
