@@ -1,9 +1,12 @@
 import os
+import platform
 
 import discord
 from components.confirm import ConfirmView
 from discord.ext import commands
 from dotenv import load_dotenv
+from model.color import Color
+from tools.dt import dt_to_str
 from tools.finder import Finder
 from tools.io import read_json
 from tools.logger import getMyLogger
@@ -92,6 +95,41 @@ class ChloeriumBot(commands.Bot):
                 self.failed_views.append(fv)
         if not self.failed_views:
             self.failed_views = ["None"]
+
+    def boot_embed(self) -> discord.Embed:
+        embed = discord.Embed(
+            title="Booted",
+            description=f"Time: {dt_to_str()}",
+            color=Color.default.value,
+        )
+        embed.add_field(
+            name="Extensions failed to load",
+            value="\n".join(self.failed_extensions),
+            inline=False,
+        )
+        embed.add_field(
+            name="Views failed to add",
+            value="\n".join(self.failed_views),
+            inline=False,
+        )
+        embed.add_field(
+            name="loaded app_commands",
+            value=self.synced_commands,
+            inline=False,
+        )
+        embed.add_field(
+            name="Latency",
+            value=f"{self.latency * 1000:.2f}ms",
+        )
+        embed.add_field(
+            name="Python",
+            value=f"{platform.python_implementation()} {platform.python_version()}",
+        )
+        embed.add_field(
+            name="discord.py",
+            value=f"{discord.__version__}",
+        )
+        return embed
 
     async def send_boot_message(self):
         # send boot log
