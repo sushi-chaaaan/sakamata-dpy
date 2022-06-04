@@ -22,10 +22,7 @@ class MemberShip(commands.Cog):
     async def send_membership(self, ctx: commands.Context, *, msg: str):
         await ctx.send(msg)
 
-    async def post_to_sheet(self):
-        # client = GSheetClient(os.environ["SPREAD_SHEET_CRED"])
-        pass
-
+    # メンバーシップ認証コマンド
     @commands.command(name="verify")
     @commands.dm_only()
     async def verify(
@@ -43,27 +40,23 @@ class MemberShip(commands.Cog):
         # do confirm
         res = await self.do_confirm(attachment.url)
 
-        text = "verified" if res else "rejected"
-        await ctx.reply(f"{text}")
+        await ctx.reply("verified" if res else "rejected")
         return
 
     async def do_confirm(self, image_url: str) -> bool:
 
         # generate confirmation message
-        view = ConfirmView(
-            custom_id="exts.membership.verify.do_confirm",
-            timeout=None,
-        )
-
+        view = ConfirmView(custom_id="exts.membership.verify.do_confirm", timeout=None)
         embed = EB.member_confirm_embed(image_url)
 
-        # do confirm
+        # find channel
         finder = Finder(self.bot)
         channel = await finder.search_channel(int(os.environ["MEMBERSHIP_CHANNEL"]))
 
         if not isinstance(channel, discord.TextChannel | discord.Thread):
             raise Exception("Failed to get MessageableChannel")
 
+        # send confirm
         await channel.send(embeds=[embed], view=view)
         await view.wait()
         return view.value
