@@ -58,7 +58,7 @@ class InquiryView(ui.View):
     @ui.button(
         label="お問い合わせ",
         custom_id="exts.core.inquiry.inquiry_view",
-        style=discord.ButtonStyle.blurple,
+        style=discord.ButtonStyle.gray,
         emoji="\N{Pencil}",
         row=0,
     )
