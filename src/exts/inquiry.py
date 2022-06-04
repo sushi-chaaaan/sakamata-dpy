@@ -6,6 +6,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 
 from components.modal_tracker import MessageInput
+from model.tracked_modal import TrackedModal
 from tools.log_formatter import command_log
 from tools.logger import getMyLogger
 from tools.webhook import post_webhook
@@ -71,14 +72,14 @@ class InquiryView(ui.View):
             custom_id="exts.core.inquiry.inquiry_button",
             min_length=1,
             max_length=2000,
+            label="入力フォーム",
         )
 
         tracker = InteractionModalTracker(modal, interaction=interaction)
 
         # get text input
-        value = await tracker.track(ephemeral=True, direct=True)
-
-        if not (text := value["入力フォーム"]):
+        tracked: TrackedModal = await tracker.track(ephemeral=True, direct=True)
+        if not (text := tracked.text_inputs["入力フォーム"]):
             return
 
         embed = EB.inquiry_view_embed(value=text, target=interaction.user)

@@ -6,6 +6,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 
 from components.modal_tracker import MessageInput
+from model.tracked_modal import TrackedModal
 from tools.checker import Checker
 from tools.log_formatter import command_log
 from tools.logger import getMyLogger
@@ -43,11 +44,12 @@ class DMSys(commands.Cog):
             custom_id="exts.core.dm.send_dm_track_modal",
             min_length=1,
             max_length=2000,
+            label="入力フォーム",
         )
 
         tracker = InteractionModalTracker(modal, interaction=interaction)
-        value = await tracker.track()
-        if not (text := value["入力フォーム"]):
+        tracked: TrackedModal = await tracker.track()
+        if not (text := tracked.text_inputs["入力フォーム"]):
             await ctx.send(content="実行をキャンセルします。")
             return
 

@@ -49,10 +49,11 @@ class MessageInput(ui.Modal):
         custom_id: str,
         min_length: int,
         max_length: int,
+        label: str = "入力フォーム",
     ) -> None:
         super().__init__(title=title, timeout=timeout, custom_id=custom_id)
         self.input: ui.TextInput = ui.TextInput(
-            label="入力フォーム",
+            label=label,
             style=TextStyle.paragraph,
             placeholder="メッセージを入力",
             min_length=min_length,

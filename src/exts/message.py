@@ -7,6 +7,7 @@ from dispander import dispand
 from dotenv import load_dotenv
 
 from components.modal_tracker import MessageInput
+from model.tracked_modal import TrackedModal
 from tools.checker import Checker
 from tools.log_formatter import command_log
 from tools.logger import getMyLogger
@@ -67,11 +68,12 @@ class MessageSys(commands.Cog):
             custom_id="exts.core.message.send_message_track_modal",
             min_length=1,
             max_length=2000,
+            label="入力フォーム",
         )
         tracker = InteractionModalTracker(modal, interaction=interaction)
-        value = await tracker.track()
+        tracked: TrackedModal = await tracker.track()
 
-        if not (text := value["入力フォーム"]):
+        if not (text := tracked.text_inputs["入力フォーム"]):
             await ctx.send(content="正しく入力されませんでした。")
             return
 

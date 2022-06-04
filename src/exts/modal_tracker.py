@@ -3,6 +3,7 @@ from discord import Interaction, InteractionResponded, ui
 
 from components.modal_tracker import ModalView
 from model.exception import InteractionExpired
+from model.tracked_modal import TrackedModal
 
 
 class InteractionModalTracker:
@@ -15,7 +16,7 @@ class InteractionModalTracker:
         *,
         ephemeral: bool = False,
         direct: bool = False,
-    ) -> dict[str, str | None]:
+    ) -> TrackedModal:
 
         if self._interaction.is_expired():
 
@@ -36,7 +37,7 @@ class InteractionModalTracker:
                     view=ModalView(self._interaction, modal=self._modal, timeout=None)
                 )
                 await view.wait()
-                return value_to_dict(view._modal)
+                return TrackedModal(view._modal)
 
             else:
                 raise InteractionExpired()
@@ -52,7 +53,7 @@ class InteractionModalTracker:
                     view=view, ephemeral=ephemeral
                 )
             await view.wait()
-            return value_to_dict(view._modal)
+            return TrackedModal(view._modal)
 
         else:
             # send modal directly
@@ -64,14 +65,4 @@ class InteractionModalTracker:
             else:
                 await self._interaction.response.send_modal(self._modal)
                 await self._modal.wait()
-                return value_to_dict(self._modal)
-
-
-def value_to_dict(modal: ui.Modal) -> dict[str, str | None]:
-    d: dict[str, str | None] = {}
-    for item in modal.children:
-        if not isinstance(item, ui.TextInput):
-            continue
-        else:
-            d[item.label] = item.value
-    return d
+                return TrackedModal(self._modal)
