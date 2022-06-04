@@ -171,3 +171,13 @@ class Checker:
             return True
         else:
             return False
+
+    def check_content_type(
+        self, attachment: discord.Attachment, valid_content_type: str | list[str]
+    ) -> bool:
+        if isinstance(valid_content_type, str):
+            valid_content_type = [valid_content_type]
+
+        if attachment.content_type not in valid_content_type:
+            return False
+        return True
