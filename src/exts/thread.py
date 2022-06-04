@@ -7,6 +7,7 @@ from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
 from tools.finder import Finder
+from tools.log_formatter import command_log
 from tools.logger import getMyLogger
 
 from .embeds import EmbedBuilder
@@ -59,7 +60,7 @@ class ThreadSys(commands.Cog):
         role: discord.Role,
     ):
         self.logger.info(
-            f"{interaction.user}[ID: {interaction.user.id}] used add-role-to-thread command"
+            command_log(name="add-role-to-thread", author=interaction.user)
         )
 
         await interaction.response.defer(thinking=True)
@@ -133,9 +134,9 @@ class ThreadSys(commands.Cog):
         interaction: discord.Interaction,
         category: discord.CategoryChannel | None = None,
     ):
-        self.logger.info(
-            f"{interaction.user}[ID: {interaction.user.id}] used thread-board command"
-        )
+
+        self.logger.info(command_log(name="thread-board", author=interaction.user))
+
         await interaction.response.defer(ephemeral=True)
 
         # get category

@@ -6,6 +6,7 @@ from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
 from tools.checker import Checker
+from tools.log_formatter import command_log
 from tools.logger import getMyLogger
 
 
@@ -27,9 +28,8 @@ class DMSys(commands.Cog):
         attachment: discord.Attachment | None = None,
     ):
         """ダイレクトメッセージの送信を行います。"""
-        self.logger.info(
-            f"{interaction.user}[ID: {interaction.user.id}] used send-dm command"
-        )
+        self.logger.info(command_log(name="send-dm", author=interaction.user))
+
         await interaction.response.defer(thinking=True)
         ctx = await commands.Context.from_interaction(interaction)
         tracker = TextInputTracker(ctx)

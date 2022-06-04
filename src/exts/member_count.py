@@ -6,6 +6,7 @@ from discord.ext import commands, tasks
 from dotenv import load_dotenv
 from tools.dt import dt_to_str
 from tools.finder import Finder
+from tools.log_formatter import command_log
 from tools.logger import getMyLogger
 
 
@@ -43,6 +44,10 @@ class MemberCounter(commands.Cog):
     @app_commands.guilds(discord.Object(id=int(os.environ["GUILD_ID"])))
     @app_commands.guild_only()
     async def refresh_count_command(self, interaction: discord.Interaction):
+        self.logger.info(
+            command_log(name="refresh-member-count", author=interaction.user)
+        )
+
         await interaction.response.defer(ephemeral=True)
         res = await self._refresh_count()
         text = "更新しました" if res else "更新に失敗しました"

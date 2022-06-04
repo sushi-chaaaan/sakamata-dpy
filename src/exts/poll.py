@@ -2,15 +2,21 @@ import discord
 from discord.ext import commands
 from model.color import Color
 from tools.io import read_json
+from tools.log_formatter import command_log
+from tools.logger import getMyLogger
 
 
 class Poll(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.logger = getMyLogger(__name__)
 
     @commands.command(name="poll")
     @commands.guild_only()
     async def poll(self, ctx: commands.Context, title: str, *select: str):
+
+        self.logger.info(command_log(name="poll", author=ctx.author))
+
         if (options := len(select)) > 20:
             await ctx.reply("選択肢は最大20個までです。")
             return

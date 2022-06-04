@@ -5,6 +5,7 @@ from components.text_input import TextInputTracker
 from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
+from tools.log_formatter import command_log
 from tools.logger import getMyLogger
 
 
@@ -41,10 +42,10 @@ class Report(commands.Cog):
     async def report_user(
         self, interaction: discord.Interaction, user: discord.Member
     ) -> None:
-        self.logger.info(
-            f"{(u := interaction.user)} [ID: {u.id}] used report user command"
-        )
         ctx = await commands.Context.from_interaction(interaction)
+
+        self.logger.info(command_log(name="report_user", author=ctx.author))
+
         tracker = TextInputTracker(ctx)
 
         # get text input
@@ -67,10 +68,10 @@ class Report(commands.Cog):
     async def report_message(
         self, interaction: discord.Interaction, message: discord.Message
     ) -> None:
-        self.logger.info(
-            f"{(u := interaction.user)} [ID: {u.id}] used report message command"
-        )
         ctx = await commands.Context.from_interaction(interaction)
+
+        self.logger.info(command_log(name="report_message", author=ctx.author))
+
         tracker = TextInputTracker(ctx)
 
         # get text input

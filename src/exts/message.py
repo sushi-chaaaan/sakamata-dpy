@@ -7,6 +7,7 @@ from discord.ext import commands
 from dispander import dispand
 from dotenv import load_dotenv
 from tools.checker import Checker
+from tools.log_formatter import command_log
 from tools.logger import getMyLogger
 
 from .messenger import Messenger
@@ -50,9 +51,7 @@ class MessageSys(commands.Cog):
         channel: discord.TextChannel | discord.VoiceChannel | discord.Thread,
         attachment: discord.Attachment | None = None,
     ):
-        self.logger.info(
-            f"{interaction.user}[ID: {interaction.user.id}] used send-message command"
-        )
+        self.logger.info(command_log(name="send_message", author=interaction.user))
 
         # get text
         ctx = await commands.Context.from_interaction(interaction)

@@ -6,6 +6,7 @@ from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
 from tools.dt import JST
+from tools.log_formatter import command_log
 from tools.logger import getMyLogger
 
 
@@ -21,7 +22,9 @@ class Utils(commands.Cog):
     @app_commands.describe(text="text to add dakuten")
     async def dakuten(self, interaction: discord.Interaction, text: str):
         """濁点を付けて自慢しよう！"""
-        self.logger.info(f"{interaction.user} used dakuten command")
+
+        self.logger.info(command_log(name="dakuten", author=interaction.user))
+
         await interaction.response.defer(ephemeral=True)
         out_text = "".join([text[num] + "゛" for num in range(len(text))])
         await interaction.followup.send(out_text, ephemeral=True)
@@ -39,7 +42,9 @@ class Utils(commands.Cog):
         time: str = "1200",
     ):
         """日付をDiscordで使用できるタイムスタンプに変換します。"""
-        self.logger.info(f"{interaction.user} used timestamp command")
+
+        self.logger.info(command_log(name="timestamp", author=interaction.user))
+
         await interaction.response.defer(ephemeral=True)
         _date = datetime.strptime(date, "%Y%m%d")
         _date.replace(tzinfo=JST())
@@ -53,6 +58,9 @@ class Utils(commands.Cog):
     @commands.hybrid_command(name="ping")
     @app_commands.guilds(discord.Object(id=int(os.environ["GUILD_ID"])))
     async def ping(self, ctx: commands.Context):
+
+        self.logger.info(command_log(name="ping", author=ctx.author))
+
         await ctx.send(content=f"pong!\nping is {self.bot.latency * 1000:.2f}ms")
         return
 
