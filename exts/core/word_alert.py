@@ -56,7 +56,7 @@ class WordAlert(commands.Cog):
 class Finder:
     def __init__(self, message: discord.Message) -> None:
         self.content = message.content
-        self.dict = read_json(r"src/word_alert.json")
+        self.dict = read_json(r"config/word_alert.json")
         self.server_link = re.compile(r"discord.gg/[\w]*")
         self.author = message.author
         self.channel: discord.TextChannel | discord.VoiceChannel | discord.Thread = message.channel  # type: ignore

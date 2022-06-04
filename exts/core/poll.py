@@ -16,7 +16,7 @@ class Poll(commands.Cog):
             return
 
         # load emoji
-        emoji_dict = read_json(r"src/poll_emoji.json")
+        emoji_dict = read_json(r"config/poll_emoji.json")
 
         # generate options
         if not select:

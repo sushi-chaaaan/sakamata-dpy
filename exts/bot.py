@@ -37,7 +37,7 @@ class ChloeriumBot(commands.Bot):
         self.logger.info("Bot is ready")
 
     def load_config(self):
-        config = read_json("config/config.json")
+        config = read_json(r"config/config.json")
         self.ext_list = config["ext_list"]
 
     async def load_exts(self):
@@ -74,7 +74,7 @@ class ChloeriumBot(commands.Bot):
             self.logger.error(f"Failed to sync command tree: {e}")
 
     def load_persistent(self):
-        dict = read_json("config/persistent_view.json")
+        dict = read_json(r"config/persistent_view.json")
         return [ConfirmView(custom_id=c_id) for c_id in dict["confirm"]]
 
     async def setup_view(self):
