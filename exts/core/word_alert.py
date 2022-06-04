@@ -9,7 +9,7 @@ from tools.io import read_json
 from tools.logger import getMyLogger
 from tools.webhook import post_webhook
 
-from .embed_builder import EmbedBuilder as EB
+from .embeds import EmbedBuilder as EB
 
 
 class WordAlert(commands.Cog):

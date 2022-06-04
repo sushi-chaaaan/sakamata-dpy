@@ -1,10 +1,49 @@
+import platform
+
 import discord
+from exts.bot import ChloeriumBot
 from model.color import Color
 from model.word import Detected
 from tools.dt import dt_to_str
 
 
 class EmbedBuilder:
+    @staticmethod
+    def boot_embed(bot: ChloeriumBot) -> discord.Embed:
+        embed = discord.Embed(
+            title="Booted",
+            description=f"Time: {dt_to_str()}",
+            color=Color.default.value,
+        )
+        embed.add_field(
+            name="Extensions failed to load",
+            value="\n".join(bot.failed_extensions),
+            inline=False,
+        )
+        embed.add_field(
+            name="Views failed to add",
+            value="\n".join(bot.failed_views),
+            inline=False,
+        )
+        embed.add_field(
+            name="loaded app_commands",
+            value=bot.synced_commands,
+            inline=False,
+        )
+        embed.add_field(
+            name="Latency",
+            value=f"{bot.latency * 1000:.2f}ms",
+        )
+        embed.add_field(
+            name="Python",
+            value=f"{platform.python_implementation()} {platform.python_version()}",
+        )
+        embed.add_field(
+            name="discord.py",
+            value=f"{discord.__version__}",
+        )
+        return embed
+
     @staticmethod
     def user_embed(target: discord.Member | discord.User) -> discord.Embed:
         avatar_url = (
@@ -48,7 +87,7 @@ class EmbedBuilder:
         return embed
 
     @staticmethod
-    async def on_thread_create_embed(thread: discord.Thread) -> discord.Embed:
+    def on_thread_create_embed(thread: discord.Thread) -> discord.Embed:
         embed = discord.Embed(
             title="New Thread Created",
             colour=Color.default.value,
