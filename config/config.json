@@ -16,5 +16,10 @@
         "src.logging.listener",
         "src.membership.verify"
     ],
-    "unused_ext_list": []
+    "unused_ext_list": [],
+    "persistent_view": {
+        "confirm": [
+            "exts.membership.verify"
+        ]
+    }
 }
