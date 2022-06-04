@@ -3,13 +3,24 @@ from discord import Interaction, ui
 
 
 class ConfirmView(ui.View):
-    def __init__(self, *, custom_id: str, timeout: float | None = None):
+    def __init__(
+        self,
+        *,
+        custom_id: str,
+        accept: str = "承諾",
+        reject: str = "拒否",
+        timeout: float | None = None
+    ):
         super().__init__(timeout=timeout)
         global c_id
+        global _acc
+        global _rej
+        _acc = accept
+        _rej = reject
         c_id = custom_id
 
     @ui.button(
-        label="承諾",
+        label=_acc,
         custom_id=c_id + "_accept",
         style=discord.ButtonStyle.blurple,
         emoji="\N{White Heavy Check Mark}",
@@ -21,7 +32,7 @@ class ConfirmView(ui.View):
         self.stop()
 
     @ui.button(
-        label="拒否",
+        label=_rej,
         custom_id=c_id + "_reject",
         style=discord.ButtonStyle.blurple,
         emoji="\N{Negative Squared Cross Mark}",
