@@ -12,10 +12,10 @@ discord-handler = "^0.0.5"
 "discord.py" = {git = "https://github.com/Rapptz/discord.py.git", rev = "06c1f44d749fa66b3b276adb7ee5616922112aaa"}
 dispander = {git = "https://github.com/sushi-chaaaan/dispander.git", rev = "cde35b1ebf9b31c0ebdb03ceafdc32187a6bf714"}
 gspread = "^5.4.0"
-PyNaCl = "^1.5.0"
 python-dotenv = "^0.20.0"
 songdbcore = {git = "https://github.com/sushi-chaaaan/song-db-client", rev = "02d58f117d35744c20458c3c679f81d59b87423e"}
 
+PyNaCl = {version = "^1.5.0", optional = true}
 orjson = {version = "^3.7.1", optional = true}
 aiodns = {version = "^3.0.0", optional = true}
 Brotli = {version = "^1.0.9", optional = true}
@@ -23,6 +23,7 @@ cchardet = {version = "^2.1.7", optional = true}
 
 [tool.poetry.extras]
 speed = ["orjson","aiodns","Brotli","cchardet"]
+voice = ["PyNaCl"]
 
 [tool.poetry.dev-dependencies]
 black = "^22.3.0"
