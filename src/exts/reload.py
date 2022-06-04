@@ -1,6 +1,6 @@
 import os
 
-from discord import Interaction, app_commands, Object
+from discord import Interaction, Object, app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
 
