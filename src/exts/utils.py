@@ -38,7 +38,7 @@ class Utils(commands.Cog):
     @app_commands.describe(date="日付を入力してください。(例: 20220101→2021年1月1日)")
     @app_commands.describe(time="時間を24時間表記で入力してください。(例: 1200→昼の12時")
     @app_commands.rename(date="日付")
-    @app_commands.rename(time="時間(24時間表記)")
+    @app_commands.rename(time="時間")
     async def timestamp(
         self,
         interaction: discord.Interaction,
