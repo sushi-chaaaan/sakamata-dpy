@@ -8,6 +8,7 @@
         "exts.core.member_count",
         "exts.core.message",
         "exts.core.report",
+        "exts.core.reload",
         "exts.core.thread",
         "exts.core.word_alert",
         "exts.logging.listener",
