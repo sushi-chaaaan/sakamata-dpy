@@ -4,9 +4,8 @@ import discord
 from components.confirm import ConfirmView
 from discord.ext import commands
 from dotenv import load_dotenv
-from model.response import ExecuteResponse
-from tools.gsheets import GSheetClient
-from tools.webhook import post_webhook
+from tools.checker import Checker
+from tools.finder import Finder
 
 from .embeds import EmbedBuilder as EB
 
@@ -23,38 +22,50 @@ class MemberShip(commands.Cog):
         await ctx.send(msg)
 
     async def post_to_sheet(self):
-        client = GSheetClient(os.environ["SPREAD_SHEET_CRED"])
+        # client = GSheetClient(os.environ["SPREAD_SHEET_CRED"])
+        pass
 
     @commands.command(name="verify")
     @commands.dm_only()
-    async def verify(self, ctx: commands.Context, attachment: discord.Attachment):
+    async def verify(
+        self, ctx: commands.Context, attachment: discord.Attachment | None = None
+    ):
 
         # check attachment
-        VALID_CONTENT_TYPE = ["image/png", "image/jpeg"]
-        if attachment.content_type not in VALID_CONTENT_TYPE:
+        checker = Checker(self.bot)
+        if not attachment or not checker.check_content_type(
+            attachment, ["image/png", "image/jpeg"]
+        ):
             await ctx.reply("画像を添付してください。")
             return
 
         # do confirm
+        res = await self.do_confirm(attachment.url)
+
+        text = "verified" if res else "rejected"
+        await ctx.reply(f"{text}")
+        return
 
     async def do_confirm(self, image_url: str) -> bool:
 
         # generate confirmation message
         view = ConfirmView(
             custom_id="exts.membership.verify.do_confirm",
-            accept="承認",
-            reject="拒否",
             timeout=None,
         )
 
         embed = EB.member_confirm_embed(image_url)
 
         # do confirm
-        await post_webhook(os.environ["MEMBER_WEBHOOK_URL"], embeds=[embed], view=view)
-        await view.wait()
-        res = view.value
+        finder = Finder(self.bot)
+        channel = await finder.search_channel(int(os.environ["MEMBERSHIP_CHANNEL"]))
 
-        # check result
+        if not isinstance(channel, discord.TextChannel | discord.Thread):
+            raise Exception("Failed to get MessageableChannel")
+
+        await channel.send(embeds=[embed], view=view)
+        await view.wait()
+        return view.value
 
 
 async def setup(bot: commands.Bot):
