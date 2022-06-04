@@ -14,6 +14,7 @@ class MemberCounter(commands.Cog):
         self.bot = bot
         load_dotenv()
         self.logger = getMyLogger(__name__)
+        self.refresh_count.start()
 
     def cog_unload(self) -> None:
         self.refresh_count.cancel()
