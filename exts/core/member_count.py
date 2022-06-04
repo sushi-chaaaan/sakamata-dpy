@@ -5,8 +5,8 @@ from discord import app_commands
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
 from tools.dt import dt_to_str
+from tools.finder import Finder
 from tools.logger import getMyLogger
-from tools.search import Finder
 
 
 class MemberCounter(commands.Cog):
@@ -53,27 +53,19 @@ class MemberCounter(commands.Cog):
 
         # get guild
         finder = Finder(self.bot)
-        guild_res = await finder.search_guild(int(os.environ["GUILD_ID"]))
-        if not guild_res.succeeded:
-            return False
-
-        if not isinstance((guild := guild_res.value), discord.Guild):
-            self.logger.exception(f"{str(guild_res.value)} is not a guild")
-            return False
+        guild = await finder.search_guild(int(os.environ["GUILD_ID"]))
 
         # get channel
 
-        res = await finder.search_channel(int(os.environ["COUNT_VC"]), guild=guild)
-        if not res.succeeded:
-            return False
+        channel = await finder.search_channel(int(os.environ["COUNT_VC"]), guild=guild)
 
         # check channel
-        if not isinstance((ch := res.value), discord.VoiceChannel):
-            self.logger.exception(f"{str(res.value)} is not a VoiceChannel")
+        if not isinstance(channel, discord.VoiceChannel):
+            self.logger.exception(f"{str(channel)} is not a VoiceChannel")
             return False
 
         try:
-            await ch.edit(
+            await channel.edit(
                 name="Member Count: {count}".format(
                     count=guild.member_count
                     if guild.member_count
@@ -81,10 +73,10 @@ class MemberCounter(commands.Cog):
                 )
             )
         except Exception as e:
-            self.logger.exception(f"failed to edit channel: {ch.name}", exc_info=e)
+            self.logger.exception(f"failed to edit channel: {channel.name}", exc_info=e)
             return False
         else:
-            self.logger.info(f"updated channel: {ch.name}")
+            self.logger.info(f"updated channel: {channel.name}")
             return True
 
 
