@@ -1,0 +1,2 @@
+class InteractionExpired(Exception):
+    pass
