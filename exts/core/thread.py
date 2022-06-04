@@ -2,10 +2,11 @@ import asyncio
 import os
 
 import discord
-from components.escape import EscapeWithCodeBlock
 from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
+
+from components.escape import EscapeWithCodeBlock
 from exts.core.embed_builder import EmbedBuilder
 from tools.logger import getMyLogger
 from tools.search import Finder
@@ -99,7 +100,8 @@ class ThreadSys(commands.Cog):
         try:
             msg = await thread.send(content="test message")
         except Exception as e:
-            self.logger.exception(f"{thread.name} is not accessible", exc_info=e)
+            self.logger.exception(
+                f"{thread.name} is not accessible", exc_info=e)
             await interaction.followup.send(
                 content=f"{thread.mention}にアクセスできません。\n処理を停止します。"
             )
@@ -155,13 +157,15 @@ class ThreadSys(commands.Cog):
             category = _category
 
         # get threads
-        channels = sorted(category.channels, key=lambda channel: channel.position)
+        channels = sorted(category.channels,
+                          key=lambda channel: channel.position)
         filtered_channels = [
             ch for ch in channels if not isinstance(ch, discord.CategoryChannel)
         ]
 
         # parse threads
-        board_text = "\n\n".join([self.parse_thread(ch) for ch in filtered_channels])
+        board_text = "\n\n".join([self.parse_thread(ch)
+                                 for ch in filtered_channels])
 
         # send board
         view = EscapeWithCodeBlock(text=board_text)
@@ -185,7 +189,8 @@ class ThreadSys(commands.Cog):
         if len(threads) == 1:
             return f"{channel.mention}\n┗{threads[0].mention}"
         return (
-            "\n┣".join([f"{channel.mention}"] + [t.mention for t in threads[:-1]])
+            "\n┣".join([f"{channel.mention}"] +
+                       [t.mention for t in threads[:-1]])
             + f"\n┗{threads[-1].mention}"
         )
 

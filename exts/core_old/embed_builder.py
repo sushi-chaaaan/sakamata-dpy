@@ -26,7 +26,8 @@ class EmbedBuilder:
             timestamp=datetime.utcnow(),
         )
         embed.add_field(name="実行者", value=f"{ctx.author.mention}")
-        embed.add_field(name="実行コマンド", value=f"[コマンドリンク]({ctx.message.jump_url})")
+        embed.add_field(
+            name="実行コマンド", value=f"[コマンドリンク]({ctx.message.jump_url})")
         embed.add_field(
             name="実行日時",
             value=datetime.now(jst).strftime("%Y/%m/%d %H:%M:%S"),
@@ -65,7 +66,8 @@ class EmbedBuilder:
         embed.add_field(name="送信者", value=f"{message.author.mention}")
         embed.add_field(
             name="受信日時",
-            value=message.created_at.astimezone(jst).strftime("%Y/%m/%d %H:%M:%S"),
+            value=message.created_at.astimezone(
+                jst).strftime("%Y/%m/%d %H:%M:%S"),
         )
         if message.attachments and message.attachments[0].proxy_url:
             embed.set_image(url=message.attachments[0].proxy_url)

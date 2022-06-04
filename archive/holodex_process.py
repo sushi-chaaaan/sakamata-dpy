@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, timezone
+
 import discord
 
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
@@ -33,7 +34,8 @@ class TimeData:
         if not self.x.start_actual:
             return
         actual_start_stamp = self.x.start_actual.replace("Z", "+00:00")
-        actual_start = datetime.fromisoformat(actual_start_stamp).astimezone(jst)
+        actual_start = datetime.fromisoformat(
+            actual_start_stamp).astimezone(jst)
         actual_start_str = actual_start.strftime("%Y/%m/%d %H:%M:%S")
         return actual_start_str
 

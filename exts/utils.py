@@ -5,6 +5,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
+
 from tools.dt import JST
 from tools.logger import getMyLogger
 
@@ -46,7 +47,8 @@ class Utils(commands.Cog):
         _date.replace(tzinfo=JST())
         delta = timedelta(hours=int(time[0:2]), minutes=int(time[2:4]))
         _dt = _date + delta
-        timestamp = discord.utils.format_dt(_dt.astimezone(timezone.utc), style="f")
+        timestamp = discord.utils.format_dt(
+            _dt.astimezone(timezone.utc), style="f")
         await interaction.followup.send(timestamp, ephemeral=True)
         await interaction.followup.send(f"```{timestamp}```", ephemeral=True)
         return

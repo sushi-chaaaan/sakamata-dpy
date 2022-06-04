@@ -1,10 +1,11 @@
 import os
 
 import discord
-from cloudflare.client import ImageClient
 from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
+
+from cloudflare.client import ImageClient
 
 
 class Uploader(commands.Cog):

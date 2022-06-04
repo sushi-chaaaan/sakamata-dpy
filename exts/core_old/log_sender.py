@@ -1,11 +1,10 @@
 import os
 from datetime import timedelta, timezone
 
+from Core.embed_builder import EmbedBuilder as EB
 from discord import ApplicationContext
 from discord.ext import commands
 from dotenv import load_dotenv
-
-from Core.embed_builder import EmbedBuilder as EB
 
 load_dotenv()
 

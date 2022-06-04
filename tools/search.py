@@ -1,8 +1,8 @@
 import discord
 from dotenv import load_dotenv
+
 from model.response import ExecuteResponse
 from model.system_text import ErrorText
-
 from tools.logger import getMyLogger
 
 
@@ -18,6 +18,7 @@ class Finder:
             try:
                 channel = await self.bot.fetch_channel(channel_id)
             except Exception as e:
-                self.logger.exception(text := ErrorText.notfound.value, exc_info=e)
+                self.logger.exception(
+                    text := ErrorText.notfound.value, exc_info=e)
                 return ExecuteResponse(succeeded=False, message=text, exception=e)
         return ExecuteResponse(succeeded=True, message="", value=channel)

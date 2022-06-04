@@ -3,9 +3,7 @@ from discord import ApplicationContext
 from discord.commands import slash_command
 from discord.ext import commands
 
-from ..archive import cfg
-
-from ..archive import embed_builder
+from ..archive import cfg, embed_builder
 
 
 class Portal(commands.Cog):
@@ -23,16 +21,24 @@ class Portal(commands.Cog):
 class PortalView(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
-        self.add_item(discord.ui.Button(label="HoYo Lab", url=cfg.hoyo_lab, row=0))
-        self.add_item(discord.ui.Button(label="コード受け取り", url=cfg.redeem_code, row=0))
-        self.add_item(discord.ui.Button(label="ログインボーナス", url=cfg.login_bonus, row=0))
-        self.add_item(discord.ui.Button(label="公式マップ", url=cfg.official_map, row=0))
-        self.add_item(discord.ui.Button(label="非公式マップ", url=cfg.unofficial_map, row=1))
+        self.add_item(discord.ui.Button(
+            label="HoYo Lab", url=cfg.hoyo_lab, row=0))
+        self.add_item(discord.ui.Button(
+            label="コード受け取り", url=cfg.redeem_code, row=0))
+        self.add_item(discord.ui.Button(
+            label="ログインボーナス", url=cfg.login_bonus, row=0))
+        self.add_item(discord.ui.Button(
+            label="公式マップ", url=cfg.official_map, row=0))
+        self.add_item(discord.ui.Button(
+            label="非公式マップ", url=cfg.unofficial_map, row=1))
         self.add_item(
-            discord.ui.Button(label="shinshin.moe", url=cfg.shinshin_moe, row=1)
+            discord.ui.Button(label="shinshin.moe",
+                              url=cfg.shinshin_moe, row=1)
         )
-        self.add_item(discord.ui.Button(label="paimon.moe", url=cfg.paimon_moe, row=1))
-        self.add_item(discord.ui.Button(label="ダメージ計算機", url=cfg.damage_calc, row=1))
+        self.add_item(discord.ui.Button(
+            label="paimon.moe", url=cfg.paimon_moe, row=1))
+        self.add_item(discord.ui.Button(
+            label="ダメージ計算機", url=cfg.damage_calc, row=1))
 
 
 def setup(bot):

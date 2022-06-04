@@ -75,7 +75,8 @@ class StreamModal(Modal):
         super().__init__(title="配信登録用フォーム")
         self.origin_msg = origin_msg
         self.add_item(
-            InputText(label="配信のトピック", placeholder="歌枠、雑談、など", row=0, required=True)
+            InputText(label="配信のトピック", placeholder="歌枠、雑談、など",
+                      row=0, required=True)
         )
         if _url:
             self.add_item(

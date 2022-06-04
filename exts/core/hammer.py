@@ -1,8 +1,9 @@
 from datetime import datetime, timedelta
 
 from discord import Guild, Member, User
-from model.system_text import AuditLogText, DealText, ErrorText
+
 from model.response import ExecuteResponse
+from model.system_text import AuditLogText, DealText, ErrorText
 from tools.logger import getMyLogger
 
 logger = getMyLogger(__name__)
@@ -33,7 +34,8 @@ class Hammer:
             succeeded = False
             exception = e
         else:
-            logger.info(text := DealText.kick.value.format(target=target.mention))
+            logger.info(text := DealText.kick.value.format(
+                target=target.mention))
             succeeded = True
             exception = None
         return ExecuteResponse(
@@ -67,7 +69,8 @@ class Hammer:
             succeeded = False
             exc = e
         else:
-            logger.info(text := DealText.ban.value.format(target=target.mention))
+            logger.info(text := DealText.ban.value.format(
+                target=target.mention))
             succeeded = True
             exc = None
         return ExecuteResponse(
@@ -108,7 +111,8 @@ class Hammer:
             succeeded = False
             exc = e
         else:
-            logger.info(text := DealText.timeout.value.format(target=target.mention))
+            logger.info(text := DealText.timeout.value.format(
+                target=target.mention))
             succeeded = True
             exc = None
         return ExecuteResponse(

@@ -1,8 +1,9 @@
 import discord
-from components.text_input import TextInputTracker
 from discord import ui
 from discord.ext import commands
 from dotenv import load_dotenv
+
+from components.text_input import TextInputTracker
 
 
 class Inquiry(commands.Cog):

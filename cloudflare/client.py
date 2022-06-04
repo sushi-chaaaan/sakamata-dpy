@@ -1,4 +1,5 @@
 import requests
+
 from tools.logger import getMyLogger
 
 logger = getMyLogger(__name__)
@@ -33,7 +34,8 @@ class ImageClient:
 
     def post_request(self, url: str, headers: dict, files: dict) -> requests.Response:
         try:
-            res = requests.post(url, headers=headers, files=files, timeout=(3.0, 10.0))
+            res = requests.post(url, headers=headers,
+                                files=files, timeout=(3.0, 10.0))
         except requests.exceptions.RequestException as e:
             logger.exception("failed to post", exc_info=e)
             raise RequestError

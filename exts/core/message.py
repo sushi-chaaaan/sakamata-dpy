@@ -1,11 +1,12 @@
 import os
 
 import discord
-from components.text_input import TextInputTracker
 from discord import app_commands
 from discord.ext import commands
 from dispander import dispand
 from dotenv import load_dotenv
+
+from components.text_input import TextInputTracker
 from exts.core.messenger import Messenger
 from tools.checker import Checker
 from tools.logger import getMyLogger

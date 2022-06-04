@@ -28,7 +28,8 @@ def getMyLogger(name, webhook_url: str | None = None):
     )
 
     # set format
-    formatter = logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s")
+    formatter = logging.Formatter(
+        "%(asctime)s:%(levelname)s:%(name)s: %(message)s")
     streamHandler.setFormatter(formatter)
     file_handler.setFormatter(formatter)
     discord_handler.setFormatter(formatter)
