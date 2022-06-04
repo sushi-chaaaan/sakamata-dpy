@@ -8,8 +8,8 @@ from tools.finder import Finder
 from tools.io import read_json
 from tools.logger import getMyLogger
 
-from exts.core.embeds import EmbedBuilder as EB
-from exts.core.inquiry import InquiryView
+from src.exts.embeds import EmbedBuilder as EB
+from src.exts.inquiry import InquiryView
 
 
 class ChloeriumBot(commands.Bot):

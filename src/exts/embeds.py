@@ -1,9 +1,9 @@
 import platform
 
 import discord
-from exts.bot import ChloeriumBot
 from model.color import Color
 from model.word import Detected
+from src.bot import ChloeriumBot
 from tools.dt import dt_to_str
 
 

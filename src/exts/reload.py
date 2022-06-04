@@ -1,6 +1,6 @@
 from discord.ext import commands
 from dotenv import load_dotenv
-from exts.bot import ChloeriumBot
+from src.bot import ChloeriumBot
 
 
 class Reload(commands.Cog):
