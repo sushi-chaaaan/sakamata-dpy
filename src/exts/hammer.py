@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+import discord
 from discord import Guild, Member, User
 
 from model.response import HammerResponse
@@ -19,8 +20,9 @@ class Hammer:
         self.reason = reason
 
     async def do_kick(self, guild: Guild, target: Member) -> HammerResponse:
+        exc: Exception | None = None
         try:
-            await guild.kick(target, reason=self.reason)
+            await guild.kick(discord.Object(id=target.id), reason=self.reason)
         except Exception as e:
             self.logger.exception(
                 text := DealText.exception.value.format(
@@ -31,12 +33,11 @@ class Hammer:
                 exc_info=e,
             )
             succeeded = False
-            exception = e
+            exc = e
         else:
             self.logger.info(text := DealText.kick.value.format(target=target.mention))
             succeeded = True
-            exception = None
-        return HammerResponse(succeeded=succeeded, message=text, exception=exception)
+        return HammerResponse(succeeded=succeeded, message=text, exception=exc)
 
     async def do_ban(
         self,
@@ -44,9 +45,10 @@ class Hammer:
         target: Member,
         delete_message_days: int,
     ) -> HammerResponse:
+        exc: Exception | None = None
         try:
             await guild.ban(
-                target,
+                discord.Object(id=target.id),
                 reason=AuditLogText.ban.value.format(
                     author=self.author,
                     reason=self.reason,
@@ -84,6 +86,7 @@ class Hammer:
                 message="Cannot timeout discord.User.",
             )
 
+        exc: Exception | None = None
         try:
             await target.timeout(
                 until,
@@ -107,5 +110,4 @@ class Hammer:
                 text := DealText.timeout.value.format(target=target.mention)
             )
             succeeded = True
-            exc = None
         return HammerResponse(succeeded=succeeded, message=text, exception=exc)

@@ -2,7 +2,7 @@ import os
 
 import discord
 from discord import app_commands
-from discord.ext import commands, tasks
+from discord.ext import commands, tasks  # type: ignore
 from dotenv import load_dotenv
 
 from tools.dt import dt_to_str
