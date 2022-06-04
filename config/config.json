@@ -1,0 +1,18 @@
+{
+    "ext_list": [
+        "exts.core.entrance",
+        "exts.core.deal",
+        "exts.core.dm",
+        "exts.core.error",
+        "exts.core.inquiry",
+        "exts.core.member_count",
+        "exts.core.message",
+        "exts.core.report",
+        "exts.core.thread",
+        "exts.core.word_alert",
+        "exts.logging.listener",
+        "exts.membership.verify",
+        "exts.poll",
+        "exts.utils"
+    ]
+}
