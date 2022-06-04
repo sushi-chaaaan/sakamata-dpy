@@ -7,13 +7,13 @@
         "exts.core.inquiry",
         "exts.core.member_count",
         "exts.core.message",
+        "exts.core.poll",
         "exts.core.report",
         "exts.core.reload",
         "exts.core.thread",
+        "exts.core.utils",
         "exts.core.word_alert",
         "exts.logging.listener",
-        "exts.membership.verify",
-        "exts.poll",
-        "exts.utils"
+        "exts.membership.verify"
     ]
 }
