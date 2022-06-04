@@ -90,7 +90,8 @@ class EmbedBuilder:
                         inline=False,
                     )
                 if not song.latest.url:
-                    availables = [history for history in song.history if history.url]
+                    availables = [
+                        history for history in song.history if history.url]
                     if availables != []:
                         embed.add_field(
                             name="視聴(二番目に新しいもの)",
@@ -186,7 +187,8 @@ class EmbedBuilder:
                         inline=False,
                     )
                 if not song.latest.url:
-                    availables = [history for history in song.history if history.url]
+                    availables = [
+                        history for history in song.history if history.url]
                     if availables != []:
                         embed.add_field(
                             name="視聴(二番目に新しいもの)",

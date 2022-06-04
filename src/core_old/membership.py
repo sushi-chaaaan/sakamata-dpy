@@ -75,7 +75,8 @@ class Membership(commands.Cog):
                         )
 
                     date = await self.bot.wait_for("message", check=check_date)
-                    status: str | None = Sheet(member, date.content).check_status()
+                    status: str | None = Sheet(
+                        member, date.content).check_status()
                     if status is None:
                         await date.reply("シートに反映されました。", mention_author=False)
                         add_role = guild.get_role(yt_membership_role)
@@ -98,7 +99,8 @@ class Membership(commands.Cog):
                         )
                         embed.add_field(
                             name="実行日時",
-                            value=datetime.now(jst).strftime("%Y/%m/%d %H:%M:%S"),
+                            value=datetime.now(jst).strftime(
+                                "%Y/%m/%d %H:%M:%S"),
                         )
                         await log_channel_object.send(embed=embed)
                         return
@@ -254,8 +256,10 @@ class MemberVerifyButton(discord.ui.View):
     ):
         await interaction.response.defer()
         res_image_name = "receive_dm.png"
-        path = os.path.join(os.path.dirname(__file__), r"../images/receive_dm.png")
-        res_image = discord.File(fp=path, filename=res_image_name, spoiler=False)
+        path = os.path.join(os.path.dirname(__file__),
+                            r"../images/receive_dm.png")
+        res_image = discord.File(
+            fp=path, filename=res_image_name, spoiler=False)
         embed = discord.Embed(
             title="認証を開始します。",
             description="BotからのDMを確認してください。",

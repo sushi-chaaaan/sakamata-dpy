@@ -97,7 +97,8 @@ class StreamNotify(commands.Cog):
                 embed.add_field(
                     name="**配信予定時刻(Timestamp)**", value=f"{timestamp}", inline=False
                 )
-                embed.set_image(url=f"https://i.ytimg.com/vi/{x.id}/maxresdefault.jpg")
+                embed.set_image(
+                    url=f"https://i.ytimg.com/vi/{x.id}/maxresdefault.jpg")
                 embed.set_footer(
                     text=f"{yt_channel.name} ({created})",
                     icon_url=f"{yt_channel.photo}",
@@ -128,7 +129,8 @@ class StreamNotify(commands.Cog):
                     text=f"{yt_channel.name} ({actual_start})",
                     icon_url=f"{yt_channel.photo}",
                 )
-                embed.set_image(url=f"https://i.ytimg.com/vi/{x.id}/maxresdefault.jpg")
+                embed.set_image(
+                    url=f"https://i.ytimg.com/vi/{x.id}/maxresdefault.jpg")
                 channel = self.bot.get_channel(stream_channel)
                 await channel.send(embed=embed)
             else:
@@ -174,7 +176,8 @@ class StreamNotify(commands.Cog):
                     name="**総配信時間**",
                     value=f"{duration_str}",
                 )
-                embed.set_image(url=f"https://i.ytimg.com/vi/{x.id}/maxresdefault.jpg")
+                embed.set_image(
+                    url=f"https://i.ytimg.com/vi/{x.id}/maxresdefault.jpg")
                 channel = self.bot.get_channel(stream_channel)
                 await channel.send(embed=embed)
             else:

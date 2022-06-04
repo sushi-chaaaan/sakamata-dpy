@@ -61,4 +61,5 @@ class TrackedModal:
         self.select_values = {
             str(i): item.values for i, item in enumerate(self.__selects)
         }
-        self.text_inputs = {item.label: item.value for item in self.__text_inputs}
+        self.text_inputs = {
+            item.label: item.value for item in self.__text_inputs}

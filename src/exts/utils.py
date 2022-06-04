@@ -47,14 +47,16 @@ class Utils(commands.Cog):
     ):
         """日付をDiscordで使用できるタイムスタンプに変換します。"""
 
-        self.logger.info(command_log(name="timestamp", author=interaction.user))
+        self.logger.info(command_log(
+            name="timestamp", author=interaction.user))
 
         await interaction.response.defer(ephemeral=True)
         _date = datetime.strptime(date, "%Y%m%d")
         _date.replace(tzinfo=JST())
         delta = timedelta(hours=int(time[0:2]), minutes=int(time[2:4]))
         _dt = _date + delta
-        timestamp = discord.utils.format_dt(_dt.astimezone(timezone.utc), style="f")
+        timestamp = discord.utils.format_dt(
+            _dt.astimezone(timezone.utc), style="f")
         await interaction.followup.send(timestamp, ephemeral=True)
         await interaction.followup.send(f"```{timestamp}```", ephemeral=True)
         return

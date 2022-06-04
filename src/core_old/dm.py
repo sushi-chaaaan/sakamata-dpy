@@ -51,7 +51,8 @@ class DM_Sys(commands.Cog):
                 # print("complete download")
                 sent_files = [
                     discord.File(
-                        os.path.join(os.path.dirname(__file__), f"/tmp/{name}"),
+                        os.path.join(os.path.dirname(
+                            __file__), f"/tmp/{name}"),
                         filename=name,
                         spoiler=False,
                     )
@@ -59,7 +60,8 @@ class DM_Sys(commands.Cog):
                 ]
                 sent_message = await user.send(content=text, files=sent_files)
                 for name in names:
-                    os.remove(os.path.join(os.path.dirname(__file__), f"/tmp/{name}"))
+                    os.remove(os.path.join(
+                        os.path.dirname(__file__), f"/tmp/{name}"))
             else:
                 sent_message = await user.send(content=text)
             msg = exe_msg

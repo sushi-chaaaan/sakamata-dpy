@@ -82,7 +82,8 @@ class MemberCounter(commands.Cog):
                 )
             )
         except Exception as e:
-            self.logger.exception(f"failed to edit channel: {channel.name}", exc_info=e)
+            self.logger.exception(
+                f"failed to edit channel: {channel.name}", exc_info=e)
             return False
         else:
             self.logger.info(f"updated channel: {channel.name}")

@@ -19,7 +19,8 @@ class Start_Verify_View(ui.View):
         # response
         await interaction.response.defer(ephemeral=True)
         self.logger.info(
-            "{user} used start_verify button".format(user=str(interaction.user))
+            "{user} used start_verify button".format(
+                user=str(interaction.user))
         )
 
         # start verify
