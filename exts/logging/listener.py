@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from tools.io import read_json
 from tools.logger import getMyLogger
-from tools.search import Finder
+from tools.finder import Finder
 from tools.webhook import transfer_message
 
 

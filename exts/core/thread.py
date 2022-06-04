@@ -6,10 +6,10 @@ from components.escape import EscapeWithCodeBlock
 from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
+from tools.finder import Finder
 from tools.logger import getMyLogger
-from tools.search import Finder
 
-from .embed_builder import EmbedBuilder
+from .embeds import EmbedBuilder
 
 
 class ThreadSys(commands.Cog):
@@ -23,21 +23,17 @@ class ThreadSys(commands.Cog):
         self.logger.info(f"New Thread created: {thread.name}")
         finder = Finder(self.bot)
 
-        response = await finder.search_channel(int(os.environ["LOG_CHANNEL"]))
-        if not response.succeeded:
-            return
+        channel = await finder.search_channel(int(os.environ["LOG_CHANNEL"]))
 
         if not isinstance(
-            response.value, discord.TextChannel | discord.Thread | discord.VoiceChannel
+            channel, discord.TextChannel | discord.Thread | discord.VoiceChannel
         ):
-            self.logger.error(
-                f"{str(response.value)} is not TextChannel or Thread or VoiceChannel"
-            )
+            self.logger.error(f"{str(channel)} is not log channel")
             return
 
-        embed = await EmbedBuilder.on_thread_create_embed(thread)
+        embed = EmbedBuilder.on_thread_create_embed(thread)
 
-        await response.value.send(embeds=[embed])
+        await channel.send(embeds=[embed])
         return
 
     @commands.Cog.listener(name="on_thread_update")
