@@ -133,7 +133,7 @@ class ChloeriumBot(commands.Bot):
 
     async def send_boot_message(self):
         # send boot log
-        embed = EB.boot_embed(self)
+        embed = self.boot_embed()
         finder = Finder(self)
         channel = await finder.search_channel(int(os.environ["LOG_CHANNEL"]))
 
