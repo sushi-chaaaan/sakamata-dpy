@@ -18,7 +18,7 @@ class ModalView(ui.View):
     @ui.button(
         label="入力",
         custom_id="message_input_button",
-        style=ButtonStyle.blurple,
+        style=ButtonStyle.gray,
         emoji="\N{Pencil}",
         row=0,
     )
