@@ -8,12 +8,13 @@
         "src.exts.member_count",
         "src.exts.message",
         "src.exts.poll",
-        "src.exts.report",
         "src.exts.reload",
+        "src.exts.report",
         "src.exts.thread",
         "src.exts.utils",
         "src.exts.word_alert",
         "src.logging.listener",
         "src.membership.verify"
-    ]
+    ],
+    "unused_ext_list": []
 }

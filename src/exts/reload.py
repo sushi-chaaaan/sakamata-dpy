@@ -16,7 +16,7 @@ class Reload(commands.Cog):
         self.logger.info(command_log(name="reload", author=ctx.author))
 
         await self.bot.reload_exts()
-        await ctx.reply("Reloaded!!!")
+        await ctx.reply("All extensions reloaded")
         return
 
 
