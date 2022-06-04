@@ -2,10 +2,11 @@ import asyncio
 import os
 
 import discord
-from components.escape import EscapeWithCodeBlock
 from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
+
+from components.escape import EscapeWithCodeBlock
 from tools.finder import Finder
 from tools.log_formatter import command_log
 from tools.logger import getMyLogger

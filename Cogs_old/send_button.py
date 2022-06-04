@@ -7,6 +7,7 @@ from discord.commands import slash_command
 from discord.ext import commands
 from discord.ui import InputText, Modal
 from dotenv import load_dotenv
+
 from Event.birth_mishmash import Yosetti_View
 
 load_dotenv()

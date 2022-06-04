@@ -1,9 +1,10 @@
 import os
 
 import discord
-from components.confirm import ConfirmView
 from discord.ext import commands
 from dotenv import load_dotenv
+
+from components.confirm import ConfirmView
 from tools.checker import Checker
 from tools.finder import Finder
 

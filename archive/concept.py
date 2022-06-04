@@ -5,21 +5,14 @@ from datetime import datetime, timedelta, timezone
 from typing import Tuple
 
 import discord
+from Cogs.embed_builder import EmbedBuilder as EB
 from discord import Embed, Member, User
 from discord.commands import permissions, slash_command
 from discord.ext import commands
-from discord.ext.ui import (
-    Button,
-    InteractionProvider,
-    Message,
-    MessageProvider,
-    View,
-    ViewTracker,
-    state,
-)
+from discord.ext.ui import (Button, InteractionProvider, Message,
+                            MessageProvider, View, ViewTracker, state)
 
 from archive.connect import connect
-from Cogs.embed_builder import EmbedBuilder as EB
 
 guild_id = int(os.environ["GUILD_ID"])
 utc = timezone.utc

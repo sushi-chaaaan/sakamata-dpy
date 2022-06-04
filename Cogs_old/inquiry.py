@@ -4,11 +4,10 @@ from datetime import datetime, timedelta, timezone
 
 import discord
 import requests
+from Cogs.embed_builder import EmbedBuilder as EB
 from discord.ext import commands
 from discord.ui import InputText, Modal
 from dotenv import load_dotenv
-
-from Cogs.embed_builder import EmbedBuilder as EB
 
 load_dotenv()
 

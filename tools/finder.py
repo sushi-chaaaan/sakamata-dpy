@@ -1,4 +1,5 @@
 import discord
+
 from model.system_text import ErrorText
 
 from .logger import getMyLogger

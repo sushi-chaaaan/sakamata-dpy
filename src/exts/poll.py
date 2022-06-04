@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+
 from model.color import Color
 from tools.io import read_json
 from tools.log_formatter import command_log

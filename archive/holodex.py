@@ -1,11 +1,9 @@
 import os
 
-from discord import permissions
-
 import discord
-from discord.ext import commands, tasks
+from discord import permissions
 from discord.commands import slash_command
-
+from discord.ext import commands, tasks
 from holodex.client import HolodexClient
 
 from .connect import connect

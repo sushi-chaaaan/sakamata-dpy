@@ -4,6 +4,7 @@ import re
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
+
 from model.word import Detected, Link, Word
 from tools.io import read_json
 from tools.logger import getMyLogger

@@ -1,10 +1,11 @@
 import os
 
 import discord
-from components.text_input import TextInputTracker
 from discord import app_commands, ui
 from discord.ext import commands
 from dotenv import load_dotenv
+
+from components.text_input import TextInputTracker
 from tools.log_formatter import command_log
 from tools.logger import getMyLogger
 from tools.webhook import post_webhook
