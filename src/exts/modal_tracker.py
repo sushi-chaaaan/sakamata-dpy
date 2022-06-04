@@ -66,10 +66,6 @@ class InteractionModalTracker:
                 await self._modal.wait()
                 return value_to_dict(self._modal)
 
-    async def _track(self, view: ModalView) -> dict[str, str | None]:
-        await view.wait()
-        return value_to_dict(view._modal)
-
 
 def value_to_dict(modal: ui.Modal) -> dict[str, str | None]:
     d: dict[str, str | None] = {}
