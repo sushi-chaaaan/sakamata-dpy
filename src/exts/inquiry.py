@@ -5,7 +5,7 @@ from discord import app_commands, ui
 from discord.ext import commands
 from dotenv import load_dotenv
 
-from components.text_input import TextInputTracker
+from components.text_input import InteractionModalTracker, MessageInput
 from tools.log_formatter import command_log
 from tools.logger import getMyLogger
 from tools.webhook import post_webhook
@@ -39,7 +39,7 @@ class Inquiry(commands.Cog):
         view = InquiryView(timeout=None)
 
         # send
-        msg = await channel.send(embeds=[embed], view=view)
+        await channel.send(embeds=[embed], view=view)
 
         await interaction.followup.send(f"{channel.mention}に問い合わせフォームを送信しました。")
         return
@@ -62,22 +62,22 @@ class InquiryView(ui.View):
     ) -> None:
 
         # get context
-        tracker = TextInputTracker(interaction=interaction)
-
-        # get text input
-        value = await tracker.track_modal(
+        modal = MessageInput(
             title="お問い合わせ内容を入力してください。",
             custom_id="exts.core.inquiry.inquiry_button",
             min_length=1,
             max_length=2000,
-            direct=True,
-            ephemeral=True,
         )
 
-        if not value:
+        tracker = InteractionModalTracker(modal, interaction=interaction)
+
+        # get text input
+        value = await tracker.track(ephemeral=True, direct=True)
+
+        if not (text := value["入力フォーム"]):
             return
 
-        embed = EB.inquiry_view_embed(value=value, target=interaction.user)
+        embed = EB.inquiry_view_embed(value=text, target=interaction.user)
 
         res = await post_webhook(os.environ["INQUIRY_WEBHOOK_URL"], embeds=[embed])
         if res.succeeded:

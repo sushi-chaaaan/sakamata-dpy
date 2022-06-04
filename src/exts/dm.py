@@ -5,7 +5,7 @@ from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
 
-from components.text_input import TextInputTracker
+from components.text_input import InteractionModalTracker, MessageInput
 from tools.checker import Checker
 from tools.log_formatter import command_log
 from tools.logger import getMyLogger
@@ -33,15 +33,17 @@ class DMSys(commands.Cog):
 
         await interaction.response.defer(thinking=True)
         ctx = await commands.Context.from_interaction(interaction)
-        tracker = TextInputTracker(ctx)
-        value = await tracker.track_modal(
+
+        modal = MessageInput(
             title="DM内容入力",
             custom_id="exts.core.dm.send_dm_track_modal",
             min_length=1,
             max_length=2000,
-            timeout=None,
         )
-        if not value:
+
+        tracker = InteractionModalTracker(modal, interaction=interaction)
+        value = await tracker.track()
+        if not (text := value["入力フォーム"]):
             await ctx.send(content="実行をキャンセルします。")
             return
 
@@ -56,7 +58,7 @@ class DMSys(commands.Cog):
             ctx=ctx,
             id=int(os.environ["ADMIN"]),
             header=header,
-            text=value,
+            text=text,
             run_num=1,
             stop_num=1,
         )
@@ -70,9 +72,9 @@ class DMSys(commands.Cog):
         await ctx.send(content="実行を開始します。")
         try:
             if attachment:
-                await target.send(content=value, file=await attachment.to_file())
+                await target.send(content=text, file=await attachment.to_file())
             else:
-                await target.send(content=value)
+                await target.send(content=text)
         except Exception as e:
             self.logger.exception(f"Failed to send DM to {target}", exc_info=e)
             await ctx.send(content="DM送信に失敗しました。\n対象がDMを受け取らない設定になっている可能性があります。")

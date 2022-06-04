@@ -5,7 +5,7 @@ from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
 
-from components.text_input import TextInputTracker
+from components.text_input import InteractionModalTracker, MessageInput
 from tools.log_formatter import command_log
 from tools.logger import getMyLogger
 
@@ -47,18 +47,18 @@ class Report(commands.Cog):
 
         self.logger.info(command_log(name="report_user", author=ctx.author))
 
-        tracker = TextInputTracker(ctx)
-
-        # get text input
-        value = await tracker.track_modal(
+        modal = MessageInput(
             title=f"{user}を管理者に通報しますか？",
             custom_id="exts.core.report.report_user",
             min_length=1,
             max_length=2000,
-            ephemeral=True,
-            direct=True,
         )
-        if not value:
+
+        tracker = InteractionModalTracker(modal, interaction=interaction)
+
+        # get text input
+        value = await tracker.track(ephemeral=True, direct=True)
+        if not (text := value["入力フォーム"]):
             await ctx.send(content="正しく入力されませんでした。")
             return
 
@@ -73,18 +73,18 @@ class Report(commands.Cog):
 
         self.logger.info(command_log(name="report_message", author=ctx.author))
 
-        tracker = TextInputTracker(ctx)
-
-        # get text input
-        value = await tracker.track_modal(
+        modal = MessageInput(
             title="選択したメッセージを管理者に通報しますか？",
             custom_id="exts.core.report.report_message",
             min_length=1,
             max_length=2000,
-            ephemeral=True,
-            direct=True,
         )
-        if not value:
+
+        tracker = InteractionModalTracker(modal, interaction=interaction)
+
+        # get text input
+        value = await tracker.track(ephemeral=True, direct=True)
+        if not (text := value["入力フォーム"]):
             await ctx.send(content="正しく入力されませんでした。")
             return
 

@@ -6,7 +6,7 @@ from discord.ext import commands
 from dispander import dispand
 from dotenv import load_dotenv
 
-from components.text_input import TextInputTracker
+from components.text_input import InteractionModalTracker, MessageInput
 from tools.checker import Checker
 from tools.log_formatter import command_log
 from tools.logger import getMyLogger
@@ -54,17 +54,19 @@ class MessageSys(commands.Cog):
     ):
         self.logger.info(command_log(name="send_message", author=interaction.user))
 
-        # get text
         ctx = await commands.Context.from_interaction(interaction)
-        tracker = TextInputTracker(ctx)
-        value = await tracker.track_modal(
+
+        # get text
+        modal = MessageInput(
             title="メッセージの内容を入力してください。",
             custom_id="exts.core.message.send_message_track_modal",
             min_length=1,
             max_length=2000,
-            ephemeral=False,
         )
-        if not value:
+        tracker = InteractionModalTracker(modal, interaction=interaction)
+        value = await tracker.track()
+
+        if not (text := value["入力フォーム"]):
             await ctx.send(content="正しく入力されませんでした。")
             return
 
@@ -81,7 +83,7 @@ class MessageSys(commands.Cog):
             ctx=ctx,
             id=int(os.environ["ADMIN"]),
             header=header,
-            text=value,
+            text=text,
             run_num=1,
             stop_num=1,
         )
@@ -92,7 +94,7 @@ class MessageSys(commands.Cog):
 
         # send text (approved)
         messenger = Messenger(ctx, channel)
-        await messenger.send_message(content=value, attachment=attachment)
+        await messenger.send_message(content=text, attachment=attachment)
         return
 
 

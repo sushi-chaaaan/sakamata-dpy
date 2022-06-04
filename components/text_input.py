@@ -1,95 +1,62 @@
 import discord
-from discord import Interaction, ui
-from discord.ext import commands
+from discord import Interaction, InteractionResponded, ui
+
+from model.exception import InteractionExpired
 
 
-class TextInputTracker:
-    def __init__(
-        self,
-        ctx: commands.Context | None = None,
-        /,
-        interaction: Interaction | None = None,
-    ) -> None:
-        self.ctx = ctx
-        self.origin_interaction = (
-            interaction if interaction else self.ctx.interaction if self.ctx else None
-        )
+class InteractionModalTracker:
+    def __init__(self, modal: ui.Modal, *, interaction: Interaction) -> None:
+        self._modal = modal
+        self._interaction = interaction
 
-    async def track_modal(
+    async def track(
         self,
         *,
-        title: str,
-        custom_id: str,
-        min_length: int,
-        max_length: int,
-        timeout: float | None = None,
         ephemeral: bool = False,
         direct: bool = False,
-    ) -> str | None:
+    ) -> dict[str, str | None]:
+
+        if self._interaction.is_expired():
+            raise InteractionExpired()
 
         if not direct:
-            view = MessageInputView(
-                timeout=timeout,
-                title=title,
-                custom_id=custom_id,
-                min_length=min_length,
-                max_length=max_length,
-                origin_interaction=self.origin_interaction,
-            )
-            if self.ctx:
-                await self.ctx.send(
-                    view=view, reference=self.ctx.message, ephemeral=ephemeral
-                )
+            # send modal via view
+            view = ModalView(self._interaction, modal=self._modal, timeout=None)
+
+            if self._interaction.response.is_done():
+                await self._interaction.followup.send(view=view, ephemeral=ephemeral)
             else:
-                if not self.origin_interaction or self.origin_interaction.is_expired():
-                    return None
-                if self.origin_interaction.response.is_done():
-                    await self.origin_interaction.followup.send(
-                        view=view, ephemeral=ephemeral
-                    )
-                else:
-                    await self.origin_interaction.response.send_message(
-                        view=view, ephemeral=ephemeral
-                    )
+                await self._interaction.response.send_message(
+                    view=view, ephemeral=ephemeral
+                )
             await view.wait()
-            if not view.value:
-                return None
-            return view.value
+            return value_to_dict(view._modal)
+
         else:
-            if not self.origin_interaction or self.origin_interaction.is_expired():
-                return None
-            elif self.origin_interaction.response.is_done():
-                await self.origin_interaction.followup.send(content="入力フォームを送信できません。")
-                return None
-            else:
-                modal = MessageInput(
-                    title=title,
-                    custom_id=custom_id,
-                    min_length=min_length,
-                    max_length=max_length,
+            # send modal directly
+            if self._interaction.response.is_done():
+                await self._interaction.followup.send(
+                    "フォームを送信できません。", ephemeral=ephemeral
                 )
-                await self.origin_interaction.response.send_modal(modal)
-                await modal.wait()
-                return modal.content
+                raise InteractionResponded(self._interaction)
+            else:
+                await self._interaction.response.send_modal(self._modal)
+                await self._modal.wait()
+                return value_to_dict(self._modal)
 
 
-class MessageInputView(ui.View):
+class ModalView(ui.View):
     def __init__(
         self,
+        origin_interaction: Interaction,
         *,
+        modal: ui.Modal,
         timeout: float | None = None,
-        title: str,
-        custom_id: str,
-        min_length: int,
-        max_length: int,
-        origin_interaction: Interaction | None = None,
     ):
         super().__init__(timeout=timeout)
-        self.title = title
-        self.custom_id = custom_id
-        self.min = min_length
-        self.max = max_length
+        self._modal = modal
         self.origin_interaction = origin_interaction
+        self.value: dict[str, str | None] = {}
 
     @ui.button(
         label="入力",
@@ -99,12 +66,8 @@ class MessageInputView(ui.View):
         row=0,
     )
     async def input_button(self, interaction: Interaction, button: ui.Button):
-        modal = MessageInput(
-            title=self.title,
-            custom_id=self.custom_id,
-            min_length=self.min,
-            max_length=self.max,
-        )
+
+        # disable view
         view = to_unavailable(self)
         if not self.origin_interaction or self.origin_interaction.is_expired():
             if not interaction.message:
@@ -113,58 +76,52 @@ class MessageInputView(ui.View):
                 await interaction.message.edit(view=view)
         else:
             await self.origin_interaction.edit_original_message(view=view)
-        await interaction.response.send_modal(modal)
-        await modal.wait()
-        self.value = modal.content
+
+        # send modal and wait
+        await interaction.response.send_modal(self._modal)
+        await self._modal.wait()
         self.stop()
 
 
 def to_unavailable(view: ui.View) -> ui.View:
-    _view = ui.View(timeout=view.timeout)
     for c in view.children:
         if isinstance(c, ui.Button) or isinstance(c, ui.Select):
             c.disabled = True
-            _view.add_item(c)
         else:
-            _view.add_item(c)
-    return _view
+            pass
+    return view
 
 
-class FollowupButton(ui.Button):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    async def callback(self, interaction: Interaction):
-        content = "このボタンは既に使用されています。\nもう一度はじめからコマンドを実行してください。"
-        if interaction.response.is_done():
-            await interaction.followup.send(content=content, ephemeral=True)
+def value_to_dict(modal: ui.Modal) -> dict[str, str | None]:
+    d: dict[str, str | None] = {}
+    for item in modal.children:
+        if not isinstance(item, ui.TextInput):
+            continue
         else:
-            await interaction.response.send_message(content=content, ephemeral=True)
-        return
+            d[item.label] = item.value
+    return d
 
 
 class MessageInput(ui.Modal):
     def __init__(
         self,
         *,
-        title: str = ...,
+        title: str,
         timeout: float | None = None,
         custom_id: str,
         min_length: int,
         max_length: int,
     ) -> None:
         super().__init__(title=title, timeout=timeout, custom_id=custom_id)
-        self._content = ui.TextInput(
+        self.input: ui.TextInput = ui.TextInput(
             label="入力フォーム",
             style=discord.TextStyle.paragraph,
             placeholder="メッセージを入力",
             min_length=min_length,
             max_length=max_length,
         )
-        self.add_item(self._content)
+        self.add_item(self.input)
 
     async def on_submit(self, interaction: Interaction) -> None:
         await interaction.response.defer()
-        self.content = self._content.value
-        self.interaction = interaction
         self.stop()
