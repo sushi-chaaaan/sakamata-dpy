@@ -62,10 +62,13 @@ class Utils(commands.Cog):
     @commands.hybrid_command(name="ping")
     @app_commands.guilds(discord.Object(id=int(os.environ["GUILD_ID"])))
     async def ping(self, ctx: commands.Context):
+        """ping!pong!"""
 
         self.logger.info(command_log(name="ping", author=ctx.author))
 
-        await ctx.send(content=f"pong!\nping is {self.bot.latency * 1000:.2f}ms")
+        await ctx.send(
+            content=f"pong!\nping is {self.bot.latency * 1000:.2f}ms", ephemeral=True
+        )
         return
 
 
