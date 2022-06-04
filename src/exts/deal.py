@@ -71,7 +71,8 @@ class Deal(commands.Cog):
 
     @commands.hybrid_command(name="user")
     @app_commands.guilds(discord.Object(id=int(os.environ["GUILD_ID"])))
-    @app_commands.describe(target="Choose user to search information")
+    @app_commands.describe(target="照会するユーザーを選択してください。")
+    @app_commands.rename(target="ユーザー")
     async def user(
         self,
         ctx: commands.Context,
@@ -87,7 +88,9 @@ class Deal(commands.Cog):
     @app_commands.command(name="kick")
     @app_commands.guilds(discord.Object(id=int(os.environ["GUILD_ID"])))
     @app_commands.guild_only()
-    @app_commands.describe(target="Choose user to kick")
+    @app_commands.describe(target="kickするユーザーを選択してください。")
+    @app_commands.rename(target="ユーザー")
+    @app_commands.rename(reason="理由")
     async def kick(
         self,
         interaction: discord.Interaction,
@@ -130,7 +133,10 @@ class Deal(commands.Cog):
     @app_commands.command(name="ban")
     @app_commands.guilds(discord.Object(id=int(os.environ["GUILD_ID"])))
     @app_commands.guild_only()
-    @app_commands.describe(target="Choose user to ban")
+    @app_commands.describe(target="BANするユーザーを選択してください。")
+    @app_commands.rename(target="ユーザー")
+    @app_commands.rename(delete_message_days="メッセージ削除期間")
+    @app_commands.rename(reason="理由")
     @app_commands.choices(
         delete_message_days=[
             Choice(name="Don't delete any", value=0),
@@ -147,6 +153,7 @@ class Deal(commands.Cog):
         delete_message_days: int = 3,
         reason: str | None = None,
     ):
+        """BAN用コマンド"""
 
         await interaction.response.defer()
         ctx = await commands.Context.from_interaction(interaction)
@@ -188,9 +195,13 @@ class Deal(commands.Cog):
     @app_commands.guilds(discord.Object(id=int(os.environ["GUILD_ID"])))
     @app_commands.guild_only()
     @app_commands.describe(target="Choose user to timeout")
+    @app_commands.describe(target="Timeoutするユーザーを選択してください。")
     @app_commands.describe(
-        time="Input date to timeout. 20220510 means 2020/05/10 0:00AM JST."
+        time="解除する日付を入力してください。(例: 20220510→2020/05/10 0:00AM JSTに解除)"
     )
+    @app_commands.rename(target="ユーザー")
+    @app_commands.rename(time="解除する日付")
+    @app_commands.rename(reason="理由")
     async def timeout(
         self,
         interaction: discord.Interaction,
@@ -198,6 +209,8 @@ class Deal(commands.Cog):
         time: str,
         reason: str | None = None,
     ):
+        """Timeout用コマンド"""
+
         await interaction.response.defer()
         ctx = await commands.Context.from_interaction(interaction)
 

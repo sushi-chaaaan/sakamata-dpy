@@ -45,14 +45,18 @@ class MessageSys(commands.Cog):
     @app_commands.command(name="send-message")
     @app_commands.guilds(discord.Object(id=int(os.environ["GUILD_ID"])))
     @app_commands.guild_only()
-    @app_commands.describe(channel="Choose channel to send message")
-    @app_commands.describe(attachment="File to send with message")
+    @app_commands.describe(channel="メッセージを送信するチャンネルを選択してください")
+    @app_commands.describe(attachment="添付するファイルがあれば添付してください。")
+    @app_commands.rename(channel="送信先チャンネル")
+    @app_commands.rename(attachment="添付ファイル")
     async def send_message(
         self,
         interaction: discord.Interaction,
         channel: discord.TextChannel | discord.VoiceChannel | discord.Thread,
         attachment: discord.Attachment | None = None,
     ):
+        """メッセージ送信コマンド"""
+
         self.logger.info(command_log(name="send_message", author=interaction.user))
 
         ctx = await commands.Context.from_interaction(interaction)

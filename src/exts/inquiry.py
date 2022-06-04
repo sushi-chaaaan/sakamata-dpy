@@ -23,7 +23,8 @@ class Inquiry(commands.Cog):
     @app_commands.command(name="send_inquiry")
     @app_commands.guilds(discord.Object(id=int(os.environ["GUILD_ID"])))
     @app_commands.guild_only()
-    @app_commands.describe(channel="Choose channel to send inquiry")
+    @app_commands.describe(channel="お問い合わせフォームを送信するチャンネルかスレッドを選択してください。")
+    @app_commands.rename(channel="チャンネル")
     async def send_inquiry(
         self,
         interaction: discord.Interaction,

@@ -45,6 +45,8 @@ class MemberCounter(commands.Cog):
     @app_commands.guilds(discord.Object(id=int(os.environ["GUILD_ID"])))
     @app_commands.guild_only()
     async def refresh_count_command(self, interaction: discord.Interaction):
+        """MemberCountを手動で更新します。"""
+
         self.logger.info(
             command_log(name="refresh-member-count", author=interaction.user)
         )

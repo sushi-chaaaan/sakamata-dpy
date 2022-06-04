@@ -20,9 +20,10 @@ class Utils(commands.Cog):
     @app_commands.command(name="dakuten")
     @app_commands.guilds(discord.Object(id=int(os.environ["GUILD_ID"])))
     @app_commands.guild_only()
-    @app_commands.describe(text="text to add dakuten")
+    @app_commands.describe(text="濁点をつける文章を入力")
+    @app_commands.rename(text="濁点をつける文章")
     async def dakuten(self, interaction: discord.Interaction, text: str):
-        """濁点を付けて自慢しよう！"""
+        """濁点を付けるだけ"""
 
         self.logger.info(command_log(name="dakuten", author=interaction.user))
 
@@ -34,8 +35,10 @@ class Utils(commands.Cog):
     @app_commands.command(name="timestamp")
     @app_commands.guilds(discord.Object(id=int(os.environ["GUILD_ID"])))
     @app_commands.guild_only()
-    @app_commands.describe(date="choose date to make timestamp. default is 20220101")
-    @app_commands.describe(time="choose time to make timestamp. default is 1200")
+    @app_commands.describe(date="日付を入力してください。(例: 20220101→2021年1月1日)")
+    @app_commands.describe(time="時間を24時間表記で入力してください。(例: 1200→昼の12時")
+    @app_commands.rename(date="日付")
+    @app_commands.rename(time="時間(24時間表記)")
     async def timestamp(
         self,
         interaction: discord.Interaction,

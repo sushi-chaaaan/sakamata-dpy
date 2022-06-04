@@ -15,6 +15,7 @@ class Poll(commands.Cog):
     @commands.command(name="poll")
     @commands.guild_only()
     async def poll(self, ctx: commands.Context, title: str, *select: str):
+        """投票を作成するコマンド"""
 
         self.logger.info(command_log(name="poll", author=ctx.author))
 

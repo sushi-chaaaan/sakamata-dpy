@@ -22,15 +22,17 @@ class DMSys(commands.Cog):
     @app_commands.command(name="send-dm")
     @app_commands.guilds(discord.Object(id=int(os.environ["GUILD_ID"])))
     @app_commands.guild_only()
-    @app_commands.describe(target="Choose user to send DM")
-    @app_commands.describe(attachment="File to send with message")
+    @app_commands.describe(target="DMを送信するユーザーを選択してください。")
+    @app_commands.describe(attachment="添付するファイルがあれば添付してください。")
+    @app_commands.rename(target="送り先")
+    @app_commands.rename(attachment="添付ファイル")
     async def send_dm(
         self,
         interaction: discord.Interaction,
         target: discord.Member,
         attachment: discord.Attachment | None = None,
     ):
-        """ダイレクトメッセージの送信を行います。"""
+        """DMの送信を行います。"""
         self.logger.info(command_log(name="send-dm", author=interaction.user))
 
         await interaction.response.defer(thinking=True)

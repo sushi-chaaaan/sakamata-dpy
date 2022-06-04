@@ -52,14 +52,17 @@ class ThreadSys(commands.Cog):
     @app_commands.command(name="add-role-to-thread")
     @app_commands.guilds(discord.Object(id=int(os.environ["GUILD_ID"])))
     @app_commands.guild_only()
-    @app_commands.describe(thread="Select thread to add role's members")
-    @app_commands.describe(role="Choose role to add to thread")
+    @app_commands.describe(thread="対象スレッドを選択してください。")
+    @app_commands.describe(role="スレッドに一括追加するロールを選択してください。")
+    @app_commands.rename(thread="対象スレッド")
+    @app_commands.rename(role="対象ロール")
     async def add_member_to_thread(
         self,
         interaction: discord.Interaction,
         thread: discord.Thread,
         role: discord.Role,
     ):
+
         self.logger.info(
             command_log(name="add-role-to-thread", author=interaction.user)
         )
@@ -128,8 +131,9 @@ class ThreadSys(commands.Cog):
     @app_commands.guilds(discord.Object(id=int(os.environ["GUILD_ID"])))
     @app_commands.guild_only()
     @app_commands.describe(
-        category="Choose category to make board. defaults to current category"
+        category="スレッドツリーを作るカテゴリを指定してください。指定されなかった場合、自動的に実行したチャンネルのカテゴリが選択されます。"
     )
+    @app_commands.rename(category="対象カテゴリ")
     async def thread_board(
         self,
         interaction: discord.Interaction,
