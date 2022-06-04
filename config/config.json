@@ -1,19 +1,19 @@
 {
     "ext_list": [
-        "exts.core.entrance",
-        "exts.core.deal",
-        "exts.core.dm",
-        "exts.core.error",
-        "exts.core.inquiry",
-        "exts.core.member_count",
-        "exts.core.message",
-        "exts.core.poll",
-        "exts.core.report",
-        "exts.core.reload",
-        "exts.core.thread",
-        "exts.core.utils",
-        "exts.core.word_alert",
-        "exts.logging.listener",
-        "exts.membership.verify"
+        "src.exts.entrance",
+        "src.exts.deal",
+        "src.exts.dm",
+        "src.exts.error",
+        "src.exts.inquiry",
+        "src.exts.member_count",
+        "src.exts.message",
+        "src.exts.poll",
+        "src.exts.report",
+        "src.exts.reload",
+        "src.exts.thread",
+        "src.exts.utils",
+        "src.exts.word_alert",
+        "src.logging.listener",
+        "src.membership.verify"
     ]
 }
