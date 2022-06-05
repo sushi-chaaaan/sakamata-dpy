@@ -21,7 +21,7 @@ class Hammer:
         self.author = author.mention
         self.reason = reason
 
-    async def do_kick(self, guild: Guild) -> HammerResponse:
+    async def kick(self, guild: Guild) -> HammerResponse:
         exc: Exception | None = None
         try:
             await guild.kick(discord.Object(id=self.target.id), reason=self.reason)
@@ -43,7 +43,7 @@ class Hammer:
             succeeded = True
         return HammerResponse(succeeded=succeeded, message=text, exception=exc)
 
-    async def do_ban(
+    async def ban(
         self,
         guild: Guild,
         delete_message_days: int,
@@ -77,7 +77,7 @@ class Hammer:
             exc = None
         return HammerResponse(succeeded=succeeded, message=text, exception=exc)
 
-    async def do_timeout(
+    async def timeout(
         self,
         until: datetime | timedelta = timedelta(hours=24.0),
     ) -> HammerResponse:
