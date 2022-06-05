@@ -147,8 +147,8 @@ class Checker:
                 # reject
                 return False
 
+    @staticmethod
     def _check_counts(
-        self,
         message: discord.Message,
         run_num: int,
         stop_num: int,
@@ -172,8 +172,9 @@ class Checker:
         else:
             return False
 
+    @staticmethod
     def check_content_type(
-        self, attachment: discord.Attachment, valid_content_type: str | list[str]
+        attachment: discord.Attachment, valid_content_type: str | list[str]
     ) -> bool:
         if isinstance(valid_content_type, str):
             valid_content_type = [valid_content_type]
