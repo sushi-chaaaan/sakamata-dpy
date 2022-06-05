@@ -31,10 +31,12 @@ class InteractionModalTracker:
 
                 # send as normal message
 
-                view = ModalView(self.__interaction, modal=self.__modal, timeout=None)
+                view = ModalView(self.__interaction,
+                                 modal=self.__modal, timeout=None)
 
                 await ch.send(
-                    view=ModalView(self.__interaction, modal=self.__modal, timeout=None)
+                    view=ModalView(self.__interaction,
+                                   modal=self.__modal, timeout=None)
                 )
                 await view.wait()
                 return TrackedModal(view.__modal)
@@ -44,7 +46,8 @@ class InteractionModalTracker:
 
         if not direct:
             # send modal via view
-            view = ModalView(self.__interaction, modal=self.__modal, timeout=None)
+            view = ModalView(self.__interaction,
+                             modal=self.__modal, timeout=None)
 
             if self.__interaction.response.is_done():
                 await self.__interaction.followup.send(view=view, ephemeral=ephemeral)
