@@ -175,7 +175,8 @@ class Concept(commands.Cog):
     ) -> str:
         game_msg_1 = _set_session_id(EB()._concept_start(master), session_id)
         await game_thread.send(embed=game_msg_1)
-        master_msg_1 = _set_session_id(EB()._concept_start_parent(master), session_id)
+        master_msg_1 = _set_session_id(
+            EB()._concept_start_parent(master), session_id)
         word_target = await master_thread.send(embed=master_msg_1)
 
         def _catch_answer(message):
@@ -196,7 +197,8 @@ class Concept(commands.Cog):
             session_id,
         )
         await master_thread.send(embed=master_msg_2)
-        game_msg_2 = _set_session_id(EB()._concept_set_answer_embed_game(), session_id)
+        game_msg_2 = _set_session_id(
+            EB()._concept_set_answer_embed_game(), session_id)
         await game_thread.send(embed=game_msg_2)
         return answer_word_msg.content
 
