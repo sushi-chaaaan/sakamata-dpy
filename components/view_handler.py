@@ -6,5 +6,5 @@ def to_unavailable(view: ui.View) -> ui.View:
         if isinstance(c, ui.Button) or isinstance(c, ui.Select):
             c.disabled = True
         else:
-            pass
+            continue
     return view
