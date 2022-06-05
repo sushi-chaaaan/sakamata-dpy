@@ -1,4 +1,5 @@
-from discord import ButtonStyle, Interaction, TextStyle, ui
+import discord
+from discord import ButtonStyle, TextStyle, ui
 
 from .view_handler import to_unavailable
 
@@ -6,7 +7,7 @@ from .view_handler import to_unavailable
 class ModalView(ui.View):
     def __init__(
         self,
-        origin_interaction: Interaction,
+        origin_interaction: discord.Interaction,
         *,
         modal: ui.Modal,
         timeout: float | None = None,
@@ -22,7 +23,7 @@ class ModalView(ui.View):
         emoji="\N{Pencil}",
         row=0,
     )
-    async def input_button(self, interaction: Interaction, button: ui.Button):
+    async def input_button(self, interaction: discord.Interaction, button: ui.Button):
 
         # disable view
         view = to_unavailable(self)
@@ -61,6 +62,6 @@ class MessageInput(ui.Modal):
         )
         self.add_item(self.input)
 
-    async def on_submit(self, interaction: Interaction) -> None:
+    async def on_submit(self, interaction: discord.Interaction) -> None:
         await interaction.response.defer()
         self.stop()

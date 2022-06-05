@@ -5,14 +5,8 @@ import discord
 from discord import ApplicationContext, Option
 from discord.commands import slash_command
 from discord.ext import commands
-from discord.ext.ui import (
-    InteractionProvider,
-    Message,
-    PageView,
-    PaginationView,
-    View,
-    ViewTracker,
-)
+from discord.ext.ui import (InteractionProvider, Message, PageView,
+                            PaginationView, View, ViewTracker)
 from dotenv import load_dotenv
 
 load_dotenv()
