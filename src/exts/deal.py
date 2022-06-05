@@ -64,8 +64,8 @@ class Deal(commands.Cog):
 
         self.logger.info(command_log(name="ctx_timeout", author=interaction.user))
 
-        hammer = Hammer(author=interaction.user)
-        response: HammerResponse = await hammer.do_timeout(target=target)
+        hammer = Hammer(target, author=interaction.user)
+        response: HammerResponse = await hammer.do_timeout()
         await interaction.followup.send(response.message, ephemeral=True)
         return
 
@@ -120,8 +120,8 @@ class Deal(commands.Cog):
 
         # execute
         if res:
-            hammer = Hammer(author=interaction.user, reason=reason)
-            response: HammerResponse = await hammer.do_kick(interaction.guild, target)  # type: ignore # checked by Discord server side
+            hammer = Hammer(target, author=interaction.user, reason=reason)
+            response: HammerResponse = await hammer.do_kick(interaction.guild)  # type: ignore # checked by Discord server side
             await ctx.send(response.message)
             return
 
@@ -177,10 +177,9 @@ class Deal(commands.Cog):
 
         # execute
         if res:
-            hammer = Hammer(author=interaction.user, reason=reason)
+            hammer = Hammer(target, author=interaction.user, reason=reason)
             response: HammerResponse = await hammer.do_ban(
                 guild=interaction.guild,  # type: ignore # checked by Discord server side
-                target=target,
                 delete_message_days=delete_message_days,
             )
             await ctx.send(response.message)
@@ -236,8 +235,8 @@ class Deal(commands.Cog):
 
         # execute
         if res:
-            hammer = Hammer(author=interaction.user, reason=reason)
-            response: HammerResponse = await hammer.do_timeout(target=target, until=dt)
+            hammer = Hammer(target, author=interaction.user, reason=reason)
+            response: HammerResponse = await hammer.do_timeout(until=dt)
             await ctx.send(response.message)
             return
 

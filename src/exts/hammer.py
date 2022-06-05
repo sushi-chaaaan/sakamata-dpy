@@ -11,23 +11,25 @@ from tools.logger import getMyLogger
 class Hammer:
     def __init__(
         self,
+        target: Member,
         *,
         author: User | Member,
         reason: str | None = None,
     ) -> None:
         self.logger = getMyLogger(__name__)
+        self.target = target
         self.author = author.mention
         self.reason = reason
 
-    async def do_kick(self, guild: Guild, target: Member) -> HammerResponse:
+    async def do_kick(self, guild: Guild) -> HammerResponse:
         exc: Exception | None = None
         try:
-            await guild.kick(discord.Object(id=target.id), reason=self.reason)
+            await guild.kick(discord.Object(id=self.target.id), reason=self.reason)
         except Exception as e:
             self.logger.exception(
                 text := DealText.exception.value.format(
                     deal="kick",
-                    target=target.mention,
+                    target=self.target.mention,
                     exception=e.__class__.__name__,
                 ),
                 exc_info=e,
@@ -35,20 +37,21 @@ class Hammer:
             succeeded = False
             exc = e
         else:
-            self.logger.info(text := DealText.kick.value.format(target=target.mention))
+            self.logger.info(
+                text := DealText.kick.value.format(target=self.target.mention)
+            )
             succeeded = True
         return HammerResponse(succeeded=succeeded, message=text, exception=exc)
 
     async def do_ban(
         self,
         guild: Guild,
-        target: Member,
         delete_message_days: int,
     ) -> HammerResponse:
         exc: Exception | None = None
         try:
             await guild.ban(
-                discord.Object(id=target.id),
+                discord.Object(id=self.target.id),
                 reason=AuditLogText.ban.value.format(
                     author=self.author,
                     reason=self.reason,
@@ -59,7 +62,7 @@ class Hammer:
             self.logger.exception(
                 text := DealText.exception.value.format(
                     deal="ban",
-                    target=target.mention,
+                    target=self.target.mention,
                     exception=e.__class__.__name__,
                 ),
                 exc_info=e,
@@ -67,28 +70,21 @@ class Hammer:
             succeeded = False
             exc = e
         else:
-            self.logger.info(text := DealText.ban.value.format(target=target.mention))
+            self.logger.info(
+                text := DealText.ban.value.format(target=self.target.mention)
+            )
             succeeded = True
             exc = None
         return HammerResponse(succeeded=succeeded, message=text, exception=exc)
 
     async def do_timeout(
         self,
-        target: Member | User,
         until: datetime | timedelta = timedelta(hours=24.0),
     ) -> HammerResponse:
 
-        # type check
-        if isinstance(target, User):
-            return HammerResponse(
-                succeeded=False,
-                exception=None,
-                message="Cannot timeout discord.User.",
-            )
-
         exc: Exception | None = None
         try:
-            await target.timeout(
+            await self.target.timeout(
                 until,
                 reason=AuditLogText.timeout.value.format(
                     author=self.author, reason=self.reason
@@ -98,7 +94,7 @@ class Hammer:
             self.logger.exception(
                 text := DealText.exception.value.format(
                     deal="timeout",
-                    target=target.mention,
+                    target=self.target.mention,
                     exception=e.__class__.__name__,
                 ),
                 exc_info=e,
@@ -107,7 +103,7 @@ class Hammer:
             exc = e
         else:
             self.logger.info(
-                text := DealText.timeout.value.format(target=target.mention)
+                text := DealText.timeout.value.format(target=self.target.mention)
             )
             succeeded = True
         return HammerResponse(succeeded=succeeded, message=text, exception=exc)
