@@ -13,8 +13,8 @@ class ModalView(ui.View):
         timeout: float | None = None,
     ):
         super().__init__(timeout=timeout)
-        self._modal = modal
-        self._interaction = origin_interaction
+        self.__modal = modal
+        self.__interaction = origin_interaction
 
     @ui.button(
         label="入力",
@@ -27,17 +27,17 @@ class ModalView(ui.View):
 
         # disable view
         view = to_unavailable(self)
-        if not self._interaction or self._interaction.is_expired():
+        if not self.__interaction or self.__interaction.is_expired():
             if not interaction.message:
                 pass
             else:
                 await interaction.message.edit(view=view)
         else:
-            await self._interaction.edit_original_message(view=view)
+            await self.__interaction.edit_original_message(view=view)
 
         # send modal and wait
-        await interaction.response.send_modal(self._modal)
-        await self._modal.wait()
+        await interaction.response.send_modal(self.__modal)
+        await self.__modal.wait()
         self.stop()
 
 
