@@ -3,7 +3,7 @@ import json
 import aiofiles
 
 
-async def download_file(filename: str, url: str):
+async def download_file(url: str, /, *, filename: str):
     import aiohttp
 
     async with aiohttp.ClientSession() as session:
