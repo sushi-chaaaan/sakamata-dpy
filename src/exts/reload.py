@@ -25,7 +25,7 @@ class Reload(commands.Cog):
         self.logger.info(command_log(name="reload", author=interaction.user))
         await interaction.response.defer(ephemeral=True)
 
-        await self.bot.reload_exts()
+        await self.bot.load_exts(reload=True)
 
         await interaction.followup.send("All extensions reloaded", ephemeral=True)
         return

@@ -42,27 +42,30 @@ class ChloeriumBot(commands.Bot):
         config = read_json(r"config/config.json")
         self.ext_list = config["ext_list"]
 
-    async def load_exts(self):
-        # load extensions
-        for ext in self.ext_list:
-            try:
-                await self.load_extension(ext)
-            except Exception as e:
-                self.logger.error(f"Failed to load extension {ext}", exc_info=e)
-                self.failed_extensions.append(ext)
-            else:
-                self.logger.info(f"Loaded extension {ext}")
-        if not self.failed_extensions:
-            self.failed_extensions = ["None"]
+    async def load_exts(self, reload: bool = False):
 
-    async def reload_exts(self):
-        for ext in self.ext_list:
-            try:
-                await self.reload_extension(ext)
-            except Exception as e:
-                self.logger.error(f"Failed to reload extension {ext}", exc_info=e)
-            else:
-                self.logger.info(f"Reloaded extension {ext}")
+        if reload:
+            # load extensions
+            for ext in self.ext_list:
+                try:
+                    await self.load_extension(ext)
+                except Exception as e:
+                    self.logger.error(f"Failed to load extension {ext}", exc_info=e)
+                    self.failed_extensions.append(ext)
+                else:
+                    self.logger.info(f"Loaded extension {ext}")
+            if not self.failed_extensions:
+                self.failed_extensions = ["None"]
+
+        else:
+            # reload extensions
+            for ext in self.ext_list:
+                try:
+                    await self.reload_extension(ext)
+                except Exception as e:
+                    self.logger.error(f"Failed to reload extension {ext}", exc_info=e)
+                else:
+                    self.logger.info(f"Reloaded extension {ext}")
 
     async def sync_commands(self):
         # sync command
