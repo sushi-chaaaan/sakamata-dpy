@@ -50,7 +50,8 @@ class ChloeriumBot(commands.Bot):
                 try:
                     await self.load_extension(ext)
                 except Exception as e:
-                    self.logger.error(f"Failed to load extension {ext}", exc_info=e)
+                    self.logger.error(
+                        f"Failed to load extension {ext}", exc_info=e)
                     self.failed_extensions.append(ext)
                 else:
                     self.logger.info(f"Loaded extension {ext}")
@@ -63,7 +64,8 @@ class ChloeriumBot(commands.Bot):
                 try:
                     await self.reload_extension(ext)
                 except Exception as e:
-                    self.logger.error(f"Failed to reload extension {ext}", exc_info=e)
+                    self.logger.error(
+                        f"Failed to reload extension {ext}", exc_info=e)
                 else:
                     self.logger.info(f"Reloaded extension {ext}")
 
