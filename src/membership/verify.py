@@ -51,7 +51,7 @@ class MemberShip(commands.Cog):
 
         # find channel
         finder = Finder(self.bot)
-        channel = await finder.search_channel(int(os.environ["MEMBERSHIP_CHANNEL"]))
+        channel = await finder.find_channel(int(os.environ["MEMBERSHIP_CHANNEL"]))
 
         if not isinstance(channel, discord.TextChannel | discord.Thread):
             raise Exception("Failed to get MessageableChannel")

@@ -62,11 +62,11 @@ class MemberCounter(commands.Cog):
 
         # get guild
         finder = Finder(self.bot)
-        guild = await finder.search_guild(int(os.environ["GUILD_ID"]))
+        guild = await finder.find_guild(int(os.environ["GUILD_ID"]))
 
         # get channel
 
-        channel = await finder.search_channel(int(os.environ["COUNT_VC"]), guild=guild)
+        channel = await finder.find_channel(int(os.environ["COUNT_VC"]), guild=guild)
 
         # check channel
         if not isinstance(channel, discord.VoiceChannel):

@@ -137,7 +137,7 @@ class ChloeriumBot(commands.Bot):
         # send boot log
         embed = self.boot_embed()
         finder = Finder(self)
-        channel = await finder.search_channel(int(os.environ["LOG_CHANNEL"]))
+        channel = await finder.find_channel(int(os.environ["LOG_CHANNEL"]))
 
         if not isinstance(channel, discord.abc.Messageable):
             self.logger.error(

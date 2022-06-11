@@ -25,7 +25,7 @@ class ThreadSys(commands.Cog):
         self.logger.info(f"New Thread created: {thread.name}")
         finder = Finder(self.bot)
 
-        channel = await finder.search_channel(int(os.environ["LOG_CHANNEL"]))
+        channel = await finder.find_channel(int(os.environ["LOG_CHANNEL"]))
 
         if not isinstance(
             channel, discord.TextChannel | discord.Thread | discord.VoiceChannel
