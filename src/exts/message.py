@@ -65,7 +65,7 @@ class MessageSys(commands.Cog):
         view = MessageInputView(custom_id="src.exts.message.send_message")
         await ctx.send(
             embeds=[
-                EB.message_input_embed(
+                EB.message_input_preview_embed(
                     author=interaction.user, target=channel, command=True
                 )
             ],

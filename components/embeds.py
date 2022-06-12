@@ -11,7 +11,7 @@ class EmbedBuilder:
         pass
 
     @staticmethod
-    def message_input_embed(
+    def message_input_preview_embed(
         author: discord.User | discord.Member,
         command: bool,
         target: discord.TextChannel
