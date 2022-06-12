@@ -5,7 +5,7 @@ from discord import app_commands, ui
 from discord.ext import commands
 from dotenv import load_dotenv
 
-from components.modal_tracker import MessageInput
+from components.modal_tracker import MessageInputModal
 from model.tracked_modal import TrackedModal
 from tools.log_formatter import command_log
 from tools.logger import getMyLogger
@@ -67,7 +67,7 @@ class InquiryView(ui.View):
     ) -> None:
 
         # get context
-        modal = MessageInput(
+        modal = MessageInputModal(
             title="お問い合わせ内容を入力してください。",
             custom_id="exts.core.inquiry.inquiry_button",
             min_length=1,

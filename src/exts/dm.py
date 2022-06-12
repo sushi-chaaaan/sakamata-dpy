@@ -5,7 +5,7 @@ from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
 
-from components.modal_tracker import MessageInput
+from components.modal_tracker import MessageInputModal
 from model.tracked_modal import TrackedModal
 from tools.checker import Checker
 from tools.log_formatter import command_log
@@ -39,7 +39,7 @@ class DMSys(commands.Cog):
         await interaction.response.defer(thinking=True)
         ctx = await commands.Context.from_interaction(interaction)
 
-        modal = MessageInput(
+        modal = MessageInputModal(
             title="DM内容入力",
             custom_id="exts.core.dm.send_dm_track_modal",
             min_length=1,
