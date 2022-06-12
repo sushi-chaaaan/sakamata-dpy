@@ -30,7 +30,6 @@ class InteractionModalTracker:
                     raise InteractionExpired()
 
                 # send as normal message
-
                 view = ModalView(self.__interaction, modal=self.__modal, timeout=None)
 
                 await ch.send(
