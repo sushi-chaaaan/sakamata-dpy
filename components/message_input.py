@@ -46,6 +46,12 @@ class MessageInputView(ui.View):
 
         # set content
         self.content = tracked.text_inputs["送信するメッセージを入力してください。"]
+
+        # edit preview
+        if (m := interaction.message) and m.embeds:
+            m.embeds[0].description = self.content
+            await m.edit(embeds=m.embeds)
+
         await interaction.followup.send("メッセージを入力しました。", ephemeral=True)
         return
 
