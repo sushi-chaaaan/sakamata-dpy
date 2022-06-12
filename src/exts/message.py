@@ -6,6 +6,7 @@ from discord.ext import commands
 from dispander import dispand
 from dotenv import load_dotenv
 
+from components.embeds import EmbedBuilder as EB
 from components.message_input import MessageInputView
 from tools.checker import Checker
 from tools.log_formatter import command_log
@@ -62,7 +63,14 @@ class MessageSys(commands.Cog):
 
         # get text
         view = MessageInputView(custom_id="src.exts.message.send_message")
-        await ctx.send(view=view)
+        await ctx.send(
+            embeds=[
+                EB.message_input_embed(
+                    author=interaction.user, target=channel, command=True
+                )
+            ],
+            view=view,
+        )
         await view.wait()
 
         if not view.status:
