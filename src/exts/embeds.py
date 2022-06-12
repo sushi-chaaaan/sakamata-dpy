@@ -131,23 +131,3 @@ class EmbedBuilder:
         )
         embed.set_footer(text="この下のボタンを押してください。Push the button below this text!")
         return embed
-
-    @staticmethod
-    def inquiry_view_embed(
-        *, value: str, target: discord.User | discord.Member
-    ) -> discord.Embed:
-        embed = discord.Embed(
-            colour=Color.default.value,
-            title="お問い合わせ",
-            description=value,
-        )
-        embed.add_field(
-            name="user",
-            value=target.mention,
-        )
-        embed.add_field(
-            name="user_id",
-            value=str(target.id),
-        )
-        embed.set_footer(text=dt_to_str())
-        return embed
