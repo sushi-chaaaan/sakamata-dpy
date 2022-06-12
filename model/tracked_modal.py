@@ -18,11 +18,11 @@ class TrackedModal:
 
     ```python
         {
-            "TextInput": {
+            "text_inputs": {
                 "label": "value",
                 "label2": None,
             },
-            "Select": {
+            "select_values": {
                 "0": "values",
                 "1": "values",
             },
