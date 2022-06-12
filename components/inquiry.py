@@ -33,7 +33,8 @@ class InquiryView(ui.View):
     ) -> None:
 
         # get context
-        view = MessageInputView(custom_id="src.exts.inquiry.InquiryView.inquiry_button")
+        view = MessageInputView(
+            custom_id="src.exts.inquiry.InquiryView.inquiry_button")
         await interaction.response.send_message(view=view)
         await view.wait()
 

@@ -30,12 +30,14 @@ class EmbedBuilder:
             value=f"{dt_to_str(target.created_at)}",
         )
         if isinstance(target, discord.Member):
-            joined = dt_to_str(target.joined_at) if target.joined_at else "取得できませんでした"
+            joined = dt_to_str(
+                target.joined_at) if target.joined_at else "取得できませんでした"
             embed.add_field(
                 name="サーバー参加日時",
                 value=f"{joined}",
             )
-            roles = sorted(target.roles, key=lambda role: role.position, reverse=True)
+            roles = sorted(
+                target.roles, key=lambda role: role.position, reverse=True)
             text = "\n".join([role.mention for role in roles])
             embed.add_field(
                 name=f"所持ロール({len(roles)})",
@@ -68,7 +70,8 @@ class EmbedBuilder:
         visibility = "public" if not thread.is_private() else "private"
         embed.add_field(name="Visibility", value=visibility)
         if thread.created_at:
-            embed.add_field(name="Created at", value=dt_to_str(thread.created_at))
+            embed.add_field(name="Created at",
+                            value=dt_to_str(thread.created_at))
         embed.add_field(
             name="archive duration",
             value=f"{str(thread.auto_archive_duration)} minutes",
@@ -129,5 +132,6 @@ class EmbedBuilder:
             description="下のボタンから問い合わせを送ることができます。",
             color=Color.default.value,
         )
-        embed.set_footer(text="この下のボタンを押してください。Push the button below this text!")
+        embed.set_footer(
+            text="この下のボタンを押してください。Push the button below this text!")
         return embed
