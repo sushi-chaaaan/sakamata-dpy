@@ -1,5 +1,20 @@
 {
-    "confirm": [
-        "exts.membership.verify"
-    ]
+    "confirm": {
+        "class": "ConfirmView",
+        "custom_id": [
+            "src.exts.membership.verify"
+        ]
+    },
+    "message_input": {
+        "class": "MessageInputView",
+        "custom_id": [
+            "src.exts.message.send_message"
+        ]
+    },
+    "inquiry": {
+        "class": "InquiryView",
+        "custom_id": [
+            "src.exts.inquiry.InquiryView"
+        ]
+    }
 }

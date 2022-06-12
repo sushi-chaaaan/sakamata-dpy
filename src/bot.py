@@ -5,9 +5,7 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
-from components.confirm import ConfirmView
 from model.color import Color
-from src.exts.inquiry import InquiryView
 from tools.dt import dt_to_str
 from tools.finder import Finder
 from tools.io import read_json
@@ -78,17 +76,31 @@ class ChloeriumBot(commands.Bot):
         except Exception as e:
             self.logger.error(f"Failed to sync command tree: {e}")
 
-    def load_persistent(self):
-        dict = read_json(r"config/persistent_view.json")
-        return [ConfirmView(custom_id=c_id) for c_id in dict["confirm"]]
+    def load_persistent(self) -> list[discord.ui.View]:
+        # import persistent views
+        from components.confirm import \
+            ConfirmView  # noqa: F401(load_persistent)
+        from components.message_input import \
+            MessageInputView  # noqa: F401(load_persistent)
+        from 
+
+        # load persistent views
+        persistent_views: list[discord.ui.View] = []
+
+        d: dict[str, dict[str, str]] = read_json(r"config/persistent_view.json")
+        for v in d.values():
+            cls = locals()[v["class"]]
+            for c_id in v["custom_id"]:
+                persistent_views.append(cls(custom_id=c_id))
+        return persistent_views
 
     async def setup_view(self):
         # add persistent_view
-        confirm = self.load_persistent()
-        VIEWS: list[discord.ui.View] = [InquiryView(), *confirm]
-        for v in VIEWS:
+        persistent_views = self.load_persistent()
+        for v in persistent_views:
             try:
                 self.add_view(v)
+                self.logger.info(f"Added view {v.__class__.__name__}")
             except Exception as e:
                 self.logger.error(
                     f"Failed to add persistent view {(fv := str(v))}",
