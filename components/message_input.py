@@ -60,19 +60,25 @@ class MessageInputView(ui.View):
     )
     async def exe_button(self, interaction: discord.Interaction, button: ui.Button):
         # defer
-        await interaction.response.defer(thinking=True)
+        await interaction.response.defer(thinking=True, ephemeral=True)
 
         # ignore if there is no content
 
         if self.content is None:
-            await interaction.followup.send("送信するメッセージが入力されていません。")
+            await interaction.followup.send(
+                "送信するメッセージが入力されていません。",
+                ephemeral=True,
+            )
             return
 
         # send message
         if m := interaction.message:
             await m.edit(view=to_unavailable(self))
 
-        await interaction.followup.send("send message triggered.")
+        await interaction.followup.send(
+            "入力が完了しました。コマンドを実行中であればコマンドの実行が再開されます。",
+            ephemeral=True,
+        )
         self.status = True
         self.stop()
 

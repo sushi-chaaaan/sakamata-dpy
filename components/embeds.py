@@ -28,7 +28,9 @@ class EmbedBuilder:
             timestamp=datetime.now(JST()),
         )
         if command:
-            embed.set_footer(text=f"Started by: {author}")
+            embed.set_footer(
+                text=f"Started by: {author}", icon_url=author.display_avatar.url
+            )
         if target:
             embed.add_field(name="送信先", value=target.mention)
         return embed
