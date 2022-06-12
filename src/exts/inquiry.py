@@ -35,7 +35,8 @@ class Inquiry(commands.Cog):
 
         await interaction.response.defer()
 
-        self.logger.info(command_log(name="send_inquiry", author=interaction.user))
+        self.logger.info(command_log(
+            name="send_inquiry", author=interaction.user))
 
         # get embed
         embed = EB.inquiry_embed()
