@@ -1,5 +1,5 @@
 import discord
-from discord import ButtonStyle, TextStyle, ui
+from discord import ButtonStyle, ui
 
 from .view_handler import to_unavailable
 
@@ -41,26 +41,18 @@ class ModalView(ui.View):
         self.stop()
 
 
-class MessageInput(ui.Modal):
+class MessageInputModal(ui.Modal):
     def __init__(
         self,
         *,
         title: str,
         timeout: float | None = None,
         custom_id: str,
-        min_length: int,
-        max_length: int,
-        label: str = "入力フォーム",
+        inputs: list[ui.TextInput],
     ) -> None:
         super().__init__(title=title, timeout=timeout, custom_id=custom_id)
-        self.input: ui.TextInput = ui.TextInput(
-            label=label,
-            style=TextStyle.paragraph,
-            placeholder="メッセージを入力",
-            min_length=min_length,
-            max_length=max_length,
-        )
-        self.add_item(self.input)
+        for f in inputs:
+            self.add_item(f)
 
     async def on_submit(self, interaction: discord.Interaction) -> None:
         await interaction.response.defer()

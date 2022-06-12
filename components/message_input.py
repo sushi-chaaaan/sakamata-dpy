@@ -1,10 +1,13 @@
 import discord
 from discord import ui
 
+from model.tracked_modal import TrackedModal
 from src.exts.modal_tracker import InteractionModalTracker
 
-from .modal_tracker import MessageInput
+from .modal_tracker import MessageInputModal
 from .view_handler import to_unavailable
+
+c_id = ""
 
 
 class MessageInputView(ui.View):
@@ -12,22 +15,36 @@ class MessageInputView(ui.View):
         super().__init__(timeout=None)
         global c_id
         c_id = custom_id
+        self.content: str | None = None
 
     @ui.button(label="メッセージ入力(input)", style=discord.ButtonStyle.blurple)
     async def input_button(self, interaction: discord.Interaction, button: ui.Button):
 
         # get input
-        modal: MessageInput = MessageInput(
+        inputs: list[ui.TextInput] = [
+            ui.TextInput(
+                label="送信するメッセージを入力してください。",
+                style=discord.TextStyle.paragraph,
+                max_length=2000,
+                required=True,
+            )
+        ]
+
+        modal: MessageInputModal = MessageInputModal(
             title="メッセージ入力",
             timeout=None,
             custom_id=c_id + "message_input_view",
-            min_length=1,
-            max_length=2000,
+            inputs=inputs,
         )
 
-        tracker = InteractionModalTracker(interaction)
+        # send modal and wait
+        tracker = InteractionModalTracker(modal, interaction=interaction)
+        tracked: TrackedModal = await tracker.track(direct=True, ephemeral=True)
 
-        pass
+        # set content
+        self.content = tracked.text_inputs["送信するメッセージを入力してください。"]
+        await interaction.followup.send("メッセージを入力しました。", ephemeral=True)
+        return
 
     @ui.button(label="実行(start)", style=discord.ButtonStyle.success)
     async def exe_button(self, interaction: discord.Interaction, button: ui.Button):
@@ -41,6 +58,8 @@ class MessageInputView(ui.View):
             return
 
         # disable view
+        await interaction.response.defer(ephemeral=True)
         disabled_view: ui.View = to_unavailable(self)
         await interaction.message.edit(view=disabled_view)
+        await interaction.followup.send("実行を停止します。", ephemeral=True)
         self.stop()
