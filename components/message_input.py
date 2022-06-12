@@ -16,8 +16,11 @@ class MessageInputView(ui.View):
         global c_id
         c_id = custom_id
         self.content: str | None = None
+        self.status: bool = False
 
-    @ui.button(label="メッセージ入力(input)", style=discord.ButtonStyle.blurple)
+    @ui.button(
+        label="入力(input)", style=discord.ButtonStyle.blurple, custom_id=c_id + "_input"
+    )
     async def input_button(self, interaction: discord.Interaction, button: ui.Button):
 
         # get input
@@ -46,20 +49,40 @@ class MessageInputView(ui.View):
         await interaction.followup.send("メッセージを入力しました。", ephemeral=True)
         return
 
-    @ui.button(label="実行(start)", style=discord.ButtonStyle.success)
+    @ui.button(
+        label="実行(start)", style=discord.ButtonStyle.success, custom_id=c_id + "_start"
+    )
     async def exe_button(self, interaction: discord.Interaction, button: ui.Button):
-        pass
+        # defer
+        await interaction.response.defer(thinking=True)
 
-    @ui.button(label="キャンセル(cancel)", style=discord.ButtonStyle.danger)
-    async def cancel_button(self, interaction: discord.Interaction, button: ui.Button):
+        # ignore if there is no content
 
-        # ignore if there is no message
-        if not interaction.message:
+        if self.content is None:
+            await interaction.followup.send("送信するメッセージが入力されていません。")
             return
+
+        # send message
+        if m := interaction.message:
+            await m.edit(view=to_unavailable(self))
+
+        await interaction.followup.send("send message triggered.")
+        self.status = True
+        self.stop()
+
+    @ui.button(
+        label="キャンセル(cancel)",
+        style=discord.ButtonStyle.danger,
+        custom_id=c_id + "_cancel",
+    )
+    async def cancel_button(self, interaction: discord.Interaction, button: ui.Button):
 
         # disable view
         await interaction.response.defer(ephemeral=True)
-        disabled_view: ui.View = to_unavailable(self)
-        await interaction.message.edit(view=disabled_view)
+        if m := interaction.message:
+            await m.edit(view=to_unavailable(self))
+
+        # cancel
         await interaction.followup.send("実行を停止します。", ephemeral=True)
+        self.status = False
         self.stop()
