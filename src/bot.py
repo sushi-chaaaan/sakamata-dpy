@@ -22,9 +22,9 @@ class ChloeriumBot(commands.Bot):
         self.logger = getMyLogger(__name__)
 
         # setup vars
-        self.failed_extensions = []
-        self.failed_views = []
-        self.synced_commands = 0
+        self.failed_extensions: list[str] = []
+        self.failed_views: list[str] = []
+        self.synced_commands: int = 0
 
     async def setup_hook(self):
         self.load_config()
@@ -38,7 +38,7 @@ class ChloeriumBot(commands.Bot):
 
     def load_config(self):
         config = read_json(r"config/config.json")
-        self.ext_list = config["ext_list"]
+        self.ext_list: list[str] = config["ext_list"]
 
     async def load_exts(self, reload: bool = False):
 
@@ -98,12 +98,13 @@ class ChloeriumBot(commands.Bot):
         # add persistent_view
         persistent_views = self.load_persistent()
         for v in persistent_views:
+            fv = str(v)
             try:
                 self.add_view(v)
-                self.logger.info(f"Added view {v.__class__.__name__}")
+                self.logger.info(f"Added view {fv}")
             except Exception as e:
                 self.logger.error(
-                    f"Failed to add persistent view {(fv := str(v))}",
+                    f"Failed to add persistent view {fv}",
                     exc_info=e,
                 )
                 self.failed_views.append(fv)
