@@ -44,7 +44,7 @@ class ChloeriumBot(commands.Bot):
 
     async def load_exts(self, reload: bool = False):
 
-        if reload:
+        if not reload:
             # load extensions
             for ext in self.ext_list:
                 try:
