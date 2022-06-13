@@ -4,6 +4,24 @@ from discord import ButtonStyle, ui
 from tools.view_handler import to_unavailable
 
 
+class MessageInputModal(ui.Modal):
+    def __init__(
+        self,
+        *,
+        title: str,
+        timeout: float | None = None,
+        custom_id: str,
+        inputs: list[ui.TextInput],
+    ) -> None:
+        super().__init__(title=title, timeout=timeout, custom_id=custom_id)
+        for f in inputs:
+            self.add_item(f)
+
+    async def on_submit(self, interaction: discord.Interaction) -> None:
+        await interaction.response.defer()
+        self.stop()
+
+
 class ModalView(ui.View):
     def __init__(
         self,
@@ -38,22 +56,4 @@ class ModalView(ui.View):
         # send modal and wait
         await interaction.response.send_modal(self.__modal)
         await self.__modal.wait()
-        self.stop()
-
-
-class MessageInputModal(ui.Modal):
-    def __init__(
-        self,
-        *,
-        title: str,
-        timeout: float | None = None,
-        custom_id: str,
-        inputs: list[ui.TextInput],
-    ) -> None:
-        super().__init__(title=title, timeout=timeout, custom_id=custom_id)
-        for f in inputs:
-            self.add_item(f)
-
-    async def on_submit(self, interaction: discord.Interaction) -> None:
-        await interaction.response.defer()
         self.stop()
