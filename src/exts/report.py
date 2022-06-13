@@ -6,11 +6,10 @@ from discord.ext import commands
 from dotenv import load_dotenv
 
 from ext_modal.components.modal import MessageInputModal
+from ext_modal.modal_tracker import InteractionModalTracker
 from ext_modal.model.tracked_modal import TrackedModal
 from tools.log_formatter import command_log
 from tools.logger import getMyLogger
-
-from ext_modal.modal_tracker import InteractionModalTracker
 
 
 class Report(commands.Cog):
