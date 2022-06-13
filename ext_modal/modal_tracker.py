@@ -2,8 +2,8 @@ import discord
 from discord import Interaction, InteractionResponded, ui
 
 from ext_modal.components.modal import ModalView
-from model.exception import InteractionExpired
 from ext_modal.model.tracked_modal import TrackedModal
+from model.exception import InteractionExpired
 
 
 class InteractionModalTracker:

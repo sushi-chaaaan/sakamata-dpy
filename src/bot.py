@@ -78,11 +78,12 @@ class ChloeriumBot(commands.Bot):
 
     def load_persistent(self) -> list[discord.ui.View]:
         # import persistent views
-        from components.confirm import ConfirmView  # noqa: F401(load_persistent)
-        from components.inquiry import InquiryView  # noqa: F401(load_persistent)
-        from ext_modal.components.message_input import (  # noqa: F401(load_persistent)
-            MessageInputView,
-        )
+        from components.confirm import \
+            ConfirmView  # noqa: F401(load_persistent)
+        from components.inquiry import \
+            InquiryView  # noqa: F401(load_persistent)
+        from ext_modal.components.message_input import \
+            MessageInputView  # noqa: F401(load_persistent)
 
         # load persistent views
         persistent_views: list[discord.ui.View] = []
