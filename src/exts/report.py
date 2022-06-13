@@ -5,12 +5,12 @@ from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
 
-from components.modal_tracker import MessageInputModal
-from model.tracked_modal import TrackedModal
+from ext_modal.components.modal import MessageInputModal
+from ext_modal.model.tracked_modal import TrackedModal
 from tools.log_formatter import command_log
 from tools.logger import getMyLogger
 
-from .modal_tracker import InteractionModalTracker
+from ext_modal.modal_tracker import InteractionModalTracker
 
 
 class Report(commands.Cog):
@@ -50,7 +50,7 @@ class Report(commands.Cog):
 
         self.logger.info(command_log(name="report_user", author=ctx.author))
 
-        modal = MessageInput(
+        modal = MessageInputModal(
             title=f"{user}を管理者に通報しますか？",
             custom_id="exts.core.report.report_user",
             min_length=1,
@@ -76,7 +76,7 @@ class Report(commands.Cog):
 
         self.logger.info(command_log(name="report_message", author=ctx.author))
 
-        modal = MessageInput(
+        modal = MessageInputModal(
             title="選択したメッセージを管理者に通報しますか？",
             custom_id="exts.core.report.report_message",
             min_length=1,

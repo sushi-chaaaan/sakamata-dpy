@@ -4,13 +4,13 @@ import discord
 from discord import ui
 from dotenv import load_dotenv
 
-from model.tracked_modal import TrackedModal
-from src.exts.modal_tracker import InteractionModalTracker
+from ext_modal.model.tracked_modal import TrackedModal
+from ext_modal.modal_tracker import InteractionModalTracker
 from tools.logger import getMyLogger
 from tools.webhook import post_webhook
 
 from .embeds import EmbedBuilder as EB
-from .message_input import MessageInputModal
+from ext_modal.components.message_input import MessageInputModal
 
 
 class InquiryView(ui.View):

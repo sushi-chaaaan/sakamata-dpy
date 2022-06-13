@@ -5,13 +5,13 @@ from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
 
-from components.modal_tracker import MessageInputModal
-from model.tracked_modal import TrackedModal
+from ext_modal.components.modal import MessageInputModal
+from ext_modal.model.tracked_modal import TrackedModal
 from tools.checker import Checker
 from tools.log_formatter import command_log
 from tools.logger import getMyLogger
 
-from .modal_tracker import InteractionModalTracker
+from ext_modal.modal_tracker import InteractionModalTracker
 
 
 class DMSys(commands.Cog):

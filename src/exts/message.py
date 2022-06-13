@@ -7,7 +7,7 @@ from dispander import dispand
 from dotenv import load_dotenv
 
 from components.embeds import EmbedBuilder as EB
-from components.message_input import MessageInputView
+from ext_modal.components.message_input import MessageInputView
 from tools.checker import Checker
 from tools.log_formatter import command_log
 from tools.logger import getMyLogger

@@ -80,7 +80,7 @@ class ChloeriumBot(commands.Bot):
         # import persistent views
         from components.confirm import ConfirmView  # noqa: F401(load_persistent)
         from components.inquiry import InquiryView  # noqa: F401(load_persistent)
-        from components.message_input import (  # noqa: F401(load_persistent)
+        from ext_modal.components.message_input import (  # noqa: F401(load_persistent)
             MessageInputView,
         )
 

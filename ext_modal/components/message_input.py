@@ -1,11 +1,11 @@
 import discord
 from discord import ui
 
-from model.tracked_modal import TrackedModal
-from src.exts.modal_tracker import InteractionModalTracker
+from ext_modal.model.tracked_modal import TrackedModal
+from ext_modal.modal_tracker import InteractionModalTracker
 
-from .modal_tracker import MessageInputModal
-from .view_handler import to_unavailable
+from .modal import MessageInputModal
+from tools.view_handler import to_unavailable
 
 c_id = ""
 

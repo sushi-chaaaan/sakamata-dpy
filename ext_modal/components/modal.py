@@ -1,7 +1,7 @@
 import discord
 from discord import ButtonStyle, ui
 
-from .view_handler import to_unavailable
+from tools.view_handler import to_unavailable
 
 
 class ModalView(ui.View):
