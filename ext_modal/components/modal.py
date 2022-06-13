@@ -22,7 +22,7 @@ class MessageInputModal(ui.Modal):
         self.stop()
 
 
-# non-direct modeでModal起動用に送信されるView
+# non-direct modeでModal起動用に送信されるView。Trackerから呼び出す前提
 class ModalView(ui.View):
     def __init__(
         self,
