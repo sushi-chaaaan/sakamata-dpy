@@ -22,6 +22,7 @@ class MessageInputModal(ui.Modal):
         self.stop()
 
 
+# non-direct modeでModal起動用に送信されるView
 class ModalView(ui.View):
     def __init__(
         self,
@@ -35,10 +36,9 @@ class ModalView(ui.View):
         self.__interaction = origin_interaction
 
     @ui.button(
-        label="入力",
-        custom_id="message_input_button",
-        style=ButtonStyle.gray,
-        emoji="\N{Pencil}",
+        label="入力(input)",
+        custom_id="ext_modal.components.modal.ModalView.input_button",
+        style=ButtonStyle.blurple,
         row=0,
     )
     async def input_button(self, interaction: discord.Interaction, button: ui.Button):
