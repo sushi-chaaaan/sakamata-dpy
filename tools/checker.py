@@ -34,7 +34,8 @@ class Checker:
         else:
             watch_ids = id
 
-        watch_roles = [r for i in watch_ids if (r := ctx.guild.get_role(i)) is not None]
+        watch_roles = [r for i in watch_ids if (
+            r := ctx.guild.get_role(i)) is not None]
 
         if not watch_roles:
             return False
@@ -96,7 +97,8 @@ class Checker:
         else:
             ids = id
 
-        watch_roles = [r for i in ids if (r := ctx.guild.get_role(i)) is not None]
+        watch_roles = [r for i in ids if (
+            r := ctx.guild.get_role(i)) is not None]
 
         if not watch_roles:
             return False
