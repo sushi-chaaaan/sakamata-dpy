@@ -18,33 +18,29 @@ class InteractionModalTracker:
         direct: bool = False,
     ) -> TrackedModal:
 
+        # interaction is expired
         if self.__interaction.is_expired():
-
-            # check if it is allowed to send as normal message
-            if not ephemeral and not direct:
-
-                # check channel
-                if not isinstance(
+            if (
+                not ephemeral
+                and not direct
+                and isinstance(
                     ch := self.__interaction.channel, discord.abc.Messageable
-                ):
-                    raise InteractionExpired()
-
-                # send as normal message
+                )
+            ):
                 view = ModalView(self.__interaction, modal=self.__modal, timeout=None)
-
                 await ch.send(
                     view=ModalView(self.__interaction, modal=self.__modal, timeout=None)
                 )
                 await view.wait()
                 return TrackedModal(view.__modal)
 
-            else:
-                raise InteractionExpired()
+            # cannot send as normal message
+            raise InteractionExpired()
+
+        # interaction is available
 
         if not direct:
-            # send modal via view
             view = ModalView(self.__interaction, modal=self.__modal, timeout=None)
-
             if self.__interaction.response.is_done():
                 await self.__interaction.followup.send(view=view, ephemeral=ephemeral)
             else:
@@ -54,14 +50,12 @@ class InteractionModalTracker:
             await view.wait()
             return TrackedModal(self.__modal)
 
-        else:
-            # send modal directly
-            if self.__interaction.response.is_done():
-                await self.__interaction.followup.send(
-                    "フォームを送信できません。", ephemeral=ephemeral
-                )
-                raise InteractionResponded(self.__interaction)
-            else:
-                await self.__interaction.response.send_modal(self.__modal)
-                await self.__modal.wait()
-                return TrackedModal(self.__modal)
+        # cannot send modal
+        if self.__interaction.response.is_done():
+            await self.__interaction.followup.send("フォームを送信できません。", ephemeral=ephemeral)
+            raise InteractionResponded(self.__interaction)
+
+        # send modal directly and track it
+        await self.__interaction.response.send_modal(self.__modal)
+        await self.__modal.wait()
+        return TrackedModal(self.__modal)
