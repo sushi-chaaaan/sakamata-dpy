@@ -27,9 +27,11 @@ class InteractionModalTracker:
                     ch := self.__interaction.channel, discord.abc.Messageable
                 )
             ):
-                view = ModalView(self.__interaction, modal=self.__modal, timeout=None)
+                view = ModalView(self.__interaction,
+                                 modal=self.__modal, timeout=None)
                 await ch.send(
-                    view=ModalView(self.__interaction, modal=self.__modal, timeout=None)
+                    view=ModalView(self.__interaction,
+                                   modal=self.__modal, timeout=None)
                 )
                 await view.wait()
                 return TrackedModal(view.__modal)
@@ -40,7 +42,8 @@ class InteractionModalTracker:
         # interaction is available
 
         if not direct:
-            view = ModalView(self.__interaction, modal=self.__modal, timeout=None)
+            view = ModalView(self.__interaction,
+                             modal=self.__modal, timeout=None)
             if self.__interaction.response.is_done():
                 await self.__interaction.followup.send(view=view, ephemeral=ephemeral)
             else:
