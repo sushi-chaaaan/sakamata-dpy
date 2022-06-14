@@ -46,7 +46,8 @@ class ChloeriumBot(commands.Bot):
                 try:
                     await self.load_extension(ext)
                 except Exception as e:
-                    self.logger.error(f"Failed to load extension {ext}", exc_info=e)
+                    self.logger.error(
+                        f"Failed to load extension {ext}", exc_info=e)
                     self.failed_extensions.append(ext)
                 else:
                     self.logger.info(f"Loaded extension {ext}")
@@ -59,7 +60,8 @@ class ChloeriumBot(commands.Bot):
                 try:
                     await self.reload_extension(ext)
                 except Exception as e:
-                    self.logger.error(f"Failed to reload extension {ext}", exc_info=e)
+                    self.logger.error(
+                        f"Failed to reload extension {ext}", exc_info=e)
                 else:
                     self.logger.info(f"Reloaded extension {ext}")
 
@@ -116,7 +118,8 @@ class ChloeriumBot(commands.Bot):
         persistent_views: list[discord.ui.View] = []
 
         # load config
-        conf: dict[str, dict[str, str]] = read_json(r"config/persistent_view.json")
+        conf: dict[str, dict[str, str]] = read_json(
+            r"config/persistent_view.json")
 
         for v in conf.values():
             cls = locals()[v["class"]]
