@@ -46,8 +46,8 @@ class Finder:
                 raise Exception(text)
         return guild
 
+    @staticmethod
     def find_bot_permissions(
-        self,
         guild: discord.Guild,
         place: discord.abc.GuildChannel | discord.Thread,
     ) -> discord.Permissions:

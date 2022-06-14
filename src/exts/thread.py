@@ -182,8 +182,8 @@ class ThreadSys(commands.Cog):
         await interaction.followup.send(content=board_text, view=view, ephemeral=True)
         return
 
+    @staticmethod
     def parse_thread(
-        self,
         channel: discord.TextChannel
         | discord.VoiceChannel
         | discord.StageChannel

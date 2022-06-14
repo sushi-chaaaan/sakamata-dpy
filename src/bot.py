@@ -105,7 +105,8 @@ class ChloeriumBot(commands.Bot):
         else:
             await channel.send(embeds=[embed])
 
-    def load_persistent(self) -> list[discord.ui.View]:
+    @staticmethod
+    def load_persistent() -> list[discord.ui.View]:
         # import persistent views
         from components.confirm import ConfirmView  # noqa: F401
         from components.inquiry import InquiryView  # noqa: F401
