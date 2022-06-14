@@ -19,7 +19,7 @@ class Finder:
         self, channel_id: int, guild: discord.Guild | None = None
     ) -> discord.abc.GuildChannel | discord.abc.PrivateChannel | discord.Thread:
 
-        resolved: discord.Guild | discord.CLi = self.deal_guild(guild)
+        resolved: discord.Guild | discord.Client = self.deal_guild(guild)
         channel = resolved.get_channel(channel_id)
         if not channel:
             try:
