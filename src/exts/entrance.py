@@ -23,7 +23,8 @@ class Entrance(commands.Cog):
         self.logger.info(f"{member} joined")
 
         # get channel
-        channel = self.bot.get_channel(c_id := int(os.environ["ENTRANCE_CHANNEL"]))
+        channel = self.bot.get_channel(
+            c_id := int(os.environ["ENTRANCE_CHANNEL"]))
         if not channel:
             channel = await self.bot.fetch_channel(c_id)
 
@@ -47,7 +48,8 @@ class Entrance(commands.Cog):
             guild = await self.bot.fetch_guild(g_id)
 
         # get channel
-        channel = self.bot.get_channel(c_id := int(os.environ["ENTRANCE_CHANNEL"]))
+        channel = self.bot.get_channel(
+            c_id := int(os.environ["ENTRANCE_CHANNEL"]))
         if not channel:
             channel = await self.bot.fetch_channel(c_id)
 

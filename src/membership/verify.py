@@ -53,7 +53,8 @@ class MemberShip(commands.Cog):
 
     async def do_confirm(self, image_url: str) -> bool:
         # generate confirmation message
-        view = ConfirmView(custom_id="exts.membership.verify.do_confirm", timeout=None)
+        view = ConfirmView(
+            custom_id="exts.membership.verify.do_confirm", timeout=None)
         embed = EB.member_confirm_embed(image_url)
 
         # find channel

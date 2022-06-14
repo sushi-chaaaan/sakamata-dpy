@@ -90,7 +90,8 @@ class WordDetector:
 
     def _detect_server_link(self) -> tuple[Link]:
         return tuple(
-            [Link(content=link) for link in self.server_link.findall(self.content)]
+            [Link(content=link)
+             for link in self.server_link.findall(self.content)]
         )
 
     def find_all(self) -> Detected | None:

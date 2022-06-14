@@ -54,7 +54,8 @@ class Utils(commands.Cog):
         """日付をDiscordで使用できるタイムスタンプに変換します。"""
         # defer and log
         await interaction.response.defer(ephemeral=True)
-        self.logger.info(command_log(name="timestamp", author=interaction.user))
+        self.logger.info(command_log(
+            name="timestamp", author=interaction.user))
 
         # get date
         _date = datetime.strptime(date, "%Y%m%d")
@@ -65,7 +66,8 @@ class Utils(commands.Cog):
 
         # get timestamp
         _dt = _date + delta
-        timestamp = discord.utils.format_dt(_dt.astimezone(timezone.utc), style="f")
+        timestamp = discord.utils.format_dt(
+            _dt.astimezone(timezone.utc), style="f")
 
         # command response
         await interaction.followup.send(timestamp, ephemeral=True)

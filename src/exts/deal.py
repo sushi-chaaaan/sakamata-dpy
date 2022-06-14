@@ -70,7 +70,8 @@ class Deal(commands.Cog):
     ) -> None:
         # defer and log
         await interaction.response.defer(ephemeral=True)
-        self.logger.info(command_log(name="ctx_timeout", author=interaction.user))
+        self.logger.info(command_log(
+            name="ctx_timeout", author=interaction.user))
 
         # timeout
         hammer = Hammer(target, author=interaction.user)
@@ -133,7 +134,8 @@ class Deal(commands.Cog):
         # execute
         if res:
             hammer = Hammer(target, author=interaction.user, reason=reason)
-            response: HammerResponse = await hammer.kick(interaction.guild)  # type: ignore # checked by Discord server side
+            # type: ignore # checked by Discord server side
+            response: HammerResponse = await hammer.kick(interaction.guild)
             await ctx.send(response.message)
             return
 

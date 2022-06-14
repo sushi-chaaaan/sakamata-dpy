@@ -60,7 +60,8 @@ class MessageSys(commands.Cog):
     ):
         """メッセージを送信します。"""
         # log
-        self.logger.info(command_log(name="send_message", author=interaction.user))
+        self.logger.info(command_log(
+            name="send_message", author=interaction.user))
 
         # get context
         ctx = await commands.Context.from_interaction(interaction)
