@@ -1,14 +1,13 @@
 import discord
 from discord.ext import commands
 
-from tools.finder import Finder
-from tools.io import read_json
 from tools.logger import getMyLogger
 from tools.webhook import transfer_message
 
 
 class Listener(commands.Cog):
     def __init__(self, bot: commands.Bot):
+        # init cog
         self.bot = bot
         self.logger = getMyLogger(__name__)
 
@@ -31,15 +30,6 @@ class Listener(commands.Cog):
             message=message,
         )
         return
-
-        # init
-        finder = Finder(self.bot)
-
-        # check category
-        if message.channel.category:
-            return
-
-        # search target
 
 
 async def setup(bot: commands.Bot):

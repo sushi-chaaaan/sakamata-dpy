@@ -13,8 +13,9 @@
         "src.exts.thread",
         "src.exts.utils",
         "src.exts.word_alert",
-        "src.logging.listener",
         "src.membership.verify"
     ],
-    "unused_ext_list": []
+    "unused_ext_list": [
+        "src.logging.listener"
+    ]
 }
