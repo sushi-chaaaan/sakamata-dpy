@@ -1,12 +1,9 @@
 import os
-import platform
 
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
-from model.color import Color
-from tools.dt import dt_to_str
 from tools.finder import Finder
 from tools.io import read_json
 from tools.logger import getMyLogger
@@ -78,12 +75,9 @@ class ChloeriumBot(commands.Bot):
 
     def load_persistent(self) -> list[discord.ui.View]:
         # import persistent views
-        from components.confirm import \
-            ConfirmView  # noqa: F401(load_persistent)
-        from components.inquiry import \
-            InquiryView  # noqa: F401(load_persistent)
-        from ext_modal.components.message_input import \
-            MessageInputView  # noqa: F401(load_persistent)
+        from components.confirm import ConfirmView  # noqa: F401
+        from components.inquiry import InquiryView  # noqa: F401
+        from ext_modal.components.message_input import MessageInputView  # noqa: F401
 
         # load persistent views
         persistent_views: list[discord.ui.View] = []
@@ -113,6 +107,11 @@ class ChloeriumBot(commands.Bot):
             self.failed_views = ["None"]
 
     def boot_embed(self) -> discord.Embed:
+        import platform
+
+        from model.color import Color
+        from tools.dt import dt_to_str
+
         embed = discord.Embed(
             title="Booted",
             description=f"Time: {dt_to_str()}",
