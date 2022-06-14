@@ -65,20 +65,16 @@ class Checker:
             )
 
         try:
-            reaction, user = await self.bot.wait_for(
-                "reaction_add", check=check, timeout=600.0
-            )
+            (
+                reaction,  # reaction:discord.Reaction
+                user,  # user:discord.User | discord.Member
+            ) = await self.bot.wait_for("reaction_add", check=check, timeout=600.0)
         except asyncio.TimeoutError as e:
             await ctx.send(content="タイムアウトしたため処理を停止します。")
             self.logger.info("Confirm timeout", exc_info=e)
             return False
         else:
-            if str(reaction.emoji) == accept_emoji:
-                # accept
-                return True
-            else:
-                # reject
-                return False
+            return bool(str(reaction.emoji) == accept_emoji)
 
     async def check_raw_role(
         self,
@@ -140,12 +136,7 @@ class Checker:
             self.logger.info("Confirm timeout", exc_info=e)
             return False
         else:
-            if payload.emoji.name == accept_emoji:
-                # accept
-                return True
-            else:
-                # reject
-                return False
+            return bool(str(payload.emoji) == accept_emoji)
 
     @staticmethod
     def _check_counts(
@@ -164,10 +155,7 @@ class Checker:
             for r in message.reactions
             if str(r.emoji) == reject_emoji and r.count == stop_num + 1
         ]
-        if executable or cancelable:
-            return True
-        else:
-            return False
+        return bool(executable or cancelable)
 
     @staticmethod
     def check_content_type(
@@ -176,6 +164,4 @@ class Checker:
         if isinstance(valid_content_type, str):
             valid_content_type = [valid_content_type]
 
-        if attachment.content_type not in valid_content_type:
-            return False
-        return True
+        return bool(attachment.content_type in valid_content_type)
