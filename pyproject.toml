@@ -9,7 +9,6 @@ python = "^3.10"
 aiofiles = "^0.8.0"
 discord-ext-ui = "^3.1.9"
 discord-handler = "^0.0.5"
-"discord.py" = {git = "https://github.com/Rapptz/discord.py.git", rev = "06c1f44d749fa66b3b276adb7ee5616922112aaa"}
 dispander = {git = "https://github.com/sushi-chaaaan/dispander.git", rev = "cde35b1ebf9b31c0ebdb03ceafdc32187a6bf714"}
 gspread = "^5.4.0"
 python-dotenv = "^0.20.0"
@@ -20,6 +19,7 @@ orjson = {version = "^3.7.1", optional = true}
 aiodns = {version = "^3.0.0", optional = true}
 Brotli = {version = "^1.0.9", optional = true}
 cchardet = {version = "^2.1.7", optional = true}
+"discord.py" = {git = "https://github.com/Rapptz/discord.py.git"}
 
 [tool.poetry.extras]
 speed = ["orjson","aiodns","Brotli","cchardet"]
