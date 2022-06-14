@@ -38,6 +38,7 @@ class ChloeriumBot(commands.Bot):
         self.ext_list: list[str] = config["ext_list"]
 
     async def load_exts(self, reload: bool = False):
+        # load/reload extensions
 
         if not reload:
             # load extensions
@@ -73,6 +74,36 @@ class ChloeriumBot(commands.Bot):
         except Exception as e:
             self.logger.error(f"Failed to sync command tree: {e}")
 
+    async def setup_view(self):
+        # add persistent_view
+        persistent_views: list[discord.ui.View] = self.load_persistent()
+
+        for v in persistent_views:
+            try:
+                self.add_view(v)
+                self.logger.info(f"Added view {str(v)}")
+            except Exception as e:
+                self.logger.error(
+                    f"Failed to add persistent view {str(v)}",
+                    exc_info=e,
+                )
+                self.failed_views.append(str(v))
+        if not self.failed_views:
+            self.failed_views = ["None"]
+
+    async def send_boot_message(self):
+        # send boot log
+        embed = self.boot_embed()
+        finder = Finder(self)
+        channel = await finder.find_channel(int(os.environ["LOG_CHANNEL"]))
+
+        if not isinstance(channel, discord.abc.Messageable):
+            self.logger.error(
+                f"Failed to get Messageable channel {os.environ['LOG_CHANNEL']}"
+            )
+        else:
+            await channel.send(embeds=[embed])
+
     def load_persistent(self) -> list[discord.ui.View]:
         # import persistent views
         from components.confirm import ConfirmView  # noqa: F401
@@ -82,29 +113,15 @@ class ChloeriumBot(commands.Bot):
         # load persistent views
         persistent_views: list[discord.ui.View] = []
 
-        d: dict[str, dict[str, str]] = read_json(r"config/persistent_view.json")
-        for v in d.values():
+        # load config
+        conf: dict[str, dict[str, str]] = read_json(r"config/persistent_view.json")
+
+        for v in conf.values():
             cls = locals()[v["class"]]
             for c_id in v["custom_id"]:
                 persistent_views.append(cls(custom_id=c_id))
-        return persistent_views
 
-    async def setup_view(self):
-        # add persistent_view
-        persistent_views = self.load_persistent()
-        for v in persistent_views:
-            fv = str(v)
-            try:
-                self.add_view(v)
-                self.logger.info(f"Added view {fv}")
-            except Exception as e:
-                self.logger.error(
-                    f"Failed to add persistent view {fv}",
-                    exc_info=e,
-                )
-                self.failed_views.append(fv)
-        if not self.failed_views:
-            self.failed_views = ["None"]
+        return persistent_views
 
     def boot_embed(self) -> discord.Embed:
         import platform
@@ -145,19 +162,6 @@ class ChloeriumBot(commands.Bot):
             value=f"{discord.__version__}",
         )
         return embed
-
-    async def send_boot_message(self):
-        # send boot log
-        embed = self.boot_embed()
-        finder = Finder(self)
-        channel = await finder.find_channel(int(os.environ["LOG_CHANNEL"]))
-
-        if not isinstance(channel, discord.abc.Messageable):
-            self.logger.error(
-                f"Failed to get Messageable channel {os.environ['LOG_CHANNEL']}"
-            )
-        else:
-            await channel.send(embeds=[embed])
 
     def run(self):
         load_dotenv()
