@@ -15,8 +15,11 @@ from .embeds import EmbedBuilder as EB
 
 class WordAlert(commands.Cog):
     def __init__(self, bot: commands.Bot):
+        # init cog
         self.bot = bot
         load_dotenv()
+
+        # init logger
         self.logger = getMyLogger(__name__)
 
     @commands.Cog.listener("on_message")
@@ -26,10 +29,15 @@ class WordAlert(commands.Cog):
         if self.ignore_message(message):
             return
 
-        finder = Finder(message)
+        # detect word
+        finder = WordDetector(message)
         detected: Detected | None = finder.find_all()
+
+        # ignore if not found
         if not detected:
             return
+
+        # write log and send alert
         self.logger.info(f"{message.author} sent NG word: {detected}")
         embed = EB.word_alert_embed(detected)
         await post_webhook(os.environ["NG_WEBHOOK_URL"], embeds=[embed])
@@ -54,7 +62,7 @@ class WordAlert(commands.Cog):
         return False
 
 
-class Finder:
+class WordDetector:
     def __init__(self, message: discord.Message) -> None:
         self.content = message.content
         self.dict = read_json(r"config/word_alert.json")

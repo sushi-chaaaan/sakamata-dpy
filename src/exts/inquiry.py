@@ -14,8 +14,11 @@ from .embeds import EmbedBuilder as EB
 
 class Inquiry(commands.Cog):
     def __init__(self, bot: commands.Bot):
+        # init cog
         self.bot = bot
         load_dotenv()
+
+        # init logger
         self.logger = getMyLogger(__name__)
 
     @app_commands.command(name="send_inquiry")
@@ -29,9 +32,8 @@ class Inquiry(commands.Cog):
         channel: discord.TextChannel | discord.Thread,
     ):
         """お問い合わせフォームを送信します。"""
-
+        # defer and log
         await interaction.response.defer()
-
         self.logger.info(command_log(name="send_inquiry", author=interaction.user))
 
         # get embed
@@ -40,9 +42,10 @@ class Inquiry(commands.Cog):
         # get view
         view = InquiryView(custom_id="src.exts.inquiry.InquiryView", timeout=None)
 
-        # send
+        # send inquiry
         await channel.send(embeds=[embed], view=view)
 
+        # command response
         await interaction.followup.send(f"{channel.mention}に問い合わせフォームを送信しました。")
         return
 

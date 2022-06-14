@@ -16,13 +16,19 @@ from .embeds import EmbedBuilder
 
 class ThreadSys(commands.Cog):
     def __init__(self, bot: commands.Bot):
+        # init cog
         self.bot = bot
         load_dotenv()
+
+        # init logger
         self.logger = getMyLogger(__name__)
 
     @commands.Cog.listener(name="on_thread_create")
     async def thread_create(self, thread: discord.Thread):
+        # log
         self.logger.info(f"New Thread created: {thread.name}")
+
+        # find channel
         finder = Finder(self.bot)
 
         channel = await finder.find_channel(int(os.environ["LOG_CHANNEL"]))
@@ -33,16 +39,20 @@ class ThreadSys(commands.Cog):
             self.logger.error(f"{str(channel)} is not log channel")
             return
 
+        # generate embed
         embed = EmbedBuilder.on_thread_create_embed(thread)
 
+        # send log
         await channel.send(embeds=[embed])
         return
 
     @commands.Cog.listener(name="on_thread_update")
     async def thread_update(self, before: discord.Thread, after: discord.Thread):
         if after.locked and not before.locked:
+            # do anything when thread is locked
             return
         elif after.archived and not before.archived:
+            # unarchive thread
             await after.edit(archived=False)
             self.logger.info(f"unarchived {after.name}")
             return
@@ -63,13 +73,13 @@ class ThreadSys(commands.Cog):
         role: discord.Role,
     ):
         """特定のロールを持つメンバーをスレッドに一括追加します。"""
-
+        # defer and log
+        await interaction.response.defer(thinking=True)
         self.logger.info(
             command_log(name="add-role-to-thread", author=interaction.user)
         )
 
-        await interaction.response.defer(thinking=True)
-
+        # start adding members
         await interaction.followup.send(content="ロールメンバーの取得を開始します。")
         before_count = len(thread.members)
 
@@ -141,10 +151,9 @@ class ThreadSys(commands.Cog):
         category: discord.CategoryChannel | None = None,
     ):
         """特定カテゴリ内のスレッドとチャンネルの一覧を作成します。"""
-
-        self.logger.info(command_log(name="thread-board", author=interaction.user))
-
+        # defer and log
         await interaction.response.defer(ephemeral=True)
+        self.logger.info(command_log(name="thread-board", author=interaction.user))
 
         # get category
         if not category:
@@ -180,19 +189,30 @@ class ThreadSys(commands.Cog):
         | discord.StageChannel
         | discord.ForumChannel,
     ) -> str:
+        # チャンネルの型から、スレッドの有無を判断してparse
+
+        # スレッドが存在しないチャンネルはchannel.mentionを返す
         if not isinstance(channel, discord.TextChannel):
             return channel.mention
+
+        # スレッドが存在しないまたは、プライベートスレッドしかないテキストチャンネルもchannel.mentionを返す
         if not channel.threads or not (
             escaped_threads := [t for t in channel.threads if not t.is_private()]
         ):
             return channel.mention
+
+        # スレッドがある場合
         threads = sorted(escaped_threads, key=lambda thread: len(thread.name))
+        # 1 thread
         if len(threads) == 1:
             return f"{channel.mention}\n┗{threads[0].mention}"
-        return (
-            "\n┣".join([f"{channel.mention}"] + [t.mention for t in threads[:-1]])
-            + f"\n┗{threads[-1].mention}"
-        )
+
+        # many threads
+        else:
+            return (
+                "\n┣".join([f"{channel.mention}"] + [t.mention for t in threads[:-1]])
+                + f"\n┗{threads[-1].mention}"
+            )
 
 
 async def setup(bot: commands.Bot):

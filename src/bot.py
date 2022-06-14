@@ -40,8 +40,8 @@ class ChloeriumBot(commands.Bot):
     async def load_exts(self, reload: bool = False):
         # load/reload extensions
 
+        # load extensions
         if not reload:
-            # load extensions
             for ext in self.ext_list:
                 try:
                     await self.load_extension(ext)
@@ -53,8 +53,8 @@ class ChloeriumBot(commands.Bot):
             if not self.failed_extensions:
                 self.failed_extensions = ["None"]
 
+        # reload extensions
         else:
-            # reload extensions
             for ext in self.ext_list:
                 try:
                     await self.reload_extension(ext)
@@ -75,9 +75,10 @@ class ChloeriumBot(commands.Bot):
             self.logger.error(f"Failed to sync command tree: {e}")
 
     async def setup_view(self):
-        # add persistent_view
+        # get persistent_view
         persistent_views: list[discord.ui.View] = self.load_persistent()
 
+        # add persistent_view
         for v in persistent_views:
             try:
                 self.add_view(v)

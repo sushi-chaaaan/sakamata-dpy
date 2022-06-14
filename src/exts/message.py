@@ -17,8 +17,11 @@ from .messenger import Messenger
 
 class MessageSys(commands.Cog):
     def __init__(self, bot: commands.Bot):
+        # init cog
         self.bot = bot
         load_dotenv()
+
+        # init logger
         self.logger = getMyLogger(__name__)
 
     @commands.Cog.listener("on_message")
@@ -56,9 +59,10 @@ class MessageSys(commands.Cog):
         attachment: discord.Attachment | None = None,
     ):
         """メッセージを送信します。"""
-
+        # log
         self.logger.info(command_log(name="send_message", author=interaction.user))
 
+        # get context
         ctx = await commands.Context.from_interaction(interaction)
 
         # get text
@@ -100,7 +104,7 @@ class MessageSys(commands.Cog):
             await ctx.send(content="承認されませんでした。\n実行をキャンセルします。")
             return
 
-        # send text (approved)
+        # send text
         messenger = Messenger(ctx, channel)
         await messenger.send_message(content=text, attachment=attachment)
         return

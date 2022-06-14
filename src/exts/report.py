@@ -14,10 +14,14 @@ from tools.logger import getMyLogger
 
 class Report(commands.Cog):
     def __init__(self, bot: commands.Bot):
+        # init cog
         self.bot = bot
         load_dotenv()
+
+        # init logger
         self.logger = getMyLogger(__name__)
 
+        # init context menu
         self.user_ctx_menu_report = app_commands.ContextMenu(
             name="report",
             callback=self.report_user,
@@ -32,6 +36,7 @@ class Report(commands.Cog):
         self.bot.tree.add_command(self.message_ctx_menu_report)
 
     async def cog_unload(self) -> None:
+        # remove context menu
         self.bot.tree.remove_command(
             self.user_ctx_menu_report.name,
             type=self.user_ctx_menu_report.type,
@@ -45,9 +50,11 @@ class Report(commands.Cog):
     async def report_user(
         self, interaction: discord.Interaction, user: discord.Member
     ) -> None:
-        ctx = await commands.Context.from_interaction(interaction)
-
+        # log
         self.logger.info(command_log(name="report_user", author=ctx.author))
+
+        # get context
+        ctx = await commands.Context.from_interaction(interaction)
 
         modal = MessageInputModal(
             title=f"{user}を管理者に通報しますか？",
@@ -71,9 +78,12 @@ class Report(commands.Cog):
     async def report_message(
         self, interaction: discord.Interaction, message: discord.Message
     ) -> None:
-        ctx = await commands.Context.from_interaction(interaction)
 
-        self.logger.info(command_log(name="report_message", author=ctx.author))
+        # log
+        self.logger.info(command_log(name="report_message", author=interaction.user))
+
+        # get context
+        ctx = await commands.Context.from_interaction(interaction)
 
         modal = MessageInputModal(
             title="選択したメッセージを管理者に通報しますか？",

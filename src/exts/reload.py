@@ -11,22 +11,26 @@ from tools.logger import getMyLogger
 
 class Reload(commands.Cog):
     def __init__(self, bot: ChloeriumBot):
+        # init cog
         self.bot = bot
         load_dotenv()
+
+        # init logger
         self.logger = getMyLogger(__name__)
 
     @app_commands.command(name="reload")
     @app_commands.guilds(Object(id=int(os.environ["GUILD_ID"])))
     async def reload(self, interaction: Interaction) -> None:
         # admin only
-
         """Botを落とすことなく機能を再読み込みします。"""
-
-        self.logger.info(command_log(name="reload", author=interaction.user))
+        # defer and log
         await interaction.response.defer(ephemeral=True)
+        self.logger.info(command_log(name="reload", author=interaction.user))
 
+        # reload
         await self.bot.load_exts(reload=True)
 
+        # command response
         await interaction.followup.send("All extensions reloaded", ephemeral=True)
         return
 

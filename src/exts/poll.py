@@ -9,16 +9,20 @@ from tools.logger import getMyLogger
 
 class Poll(commands.Cog):
     def __init__(self, bot: commands.Bot):
+        # init cog
         self.bot = bot
+
+        # init logger
         self.logger = getMyLogger(__name__)
 
     @commands.command(name="poll")
     @commands.guild_only()
     async def poll(self, ctx: commands.Context, title: str, *select: str):
         """投票を作成します。"""
-
+        # log
         self.logger.info(command_log(name="poll", author=ctx.author))
 
+        # too many options
         if (options := len(select)) > 20:
             await ctx.reply("選択肢は最大20個までです。")
             return

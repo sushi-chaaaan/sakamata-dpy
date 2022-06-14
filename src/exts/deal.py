@@ -19,9 +19,14 @@ from .hammer import Hammer
 
 class Deal(commands.Cog):
     def __init__(self, bot: commands.Bot):
+        # init cog
         self.bot = bot
         load_dotenv()
+
+        # init logger
         self.logger = getMyLogger(__name__)
+
+        # init context menu
         self.ctx_menu_user = app_commands.ContextMenu(
             name="user",
             callback=self.ctx_user,
@@ -36,6 +41,7 @@ class Deal(commands.Cog):
         self.bot.tree.add_command(self.ctx_menu_timeout)
 
     async def cog_unload(self) -> None:
+        # remove context menu
         self.bot.tree.remove_command(
             self.ctx_menu_user.name,
             type=self.ctx_menu_user.type,
@@ -49,9 +55,11 @@ class Deal(commands.Cog):
     async def ctx_user(
         self, interaction: discord.Interaction, target: discord.Member
     ) -> None:
+        # defer and log
         await interaction.response.defer(ephemeral=True)
         self.logger.info(command_log(name="ctx_user", author=interaction.user))
 
+        # response
         embed = EmbedBuilder.user_embed(target)
         await interaction.followup.send(embeds=[embed], ephemeral=True)
         return
@@ -60,10 +68,11 @@ class Deal(commands.Cog):
     async def ctx_timeout(
         self, interaction: discord.Interaction, target: discord.Member
     ) -> None:
+        # defer and log
         await interaction.response.defer(ephemeral=True)
-
         self.logger.info(command_log(name="ctx_timeout", author=interaction.user))
 
+        # timeout
         hammer = Hammer(target, author=interaction.user)
         response: HammerResponse = await hammer.timeout()
         await interaction.followup.send(response.message, ephemeral=True)
@@ -79,8 +88,11 @@ class Deal(commands.Cog):
         target: discord.Member | discord.User,
     ):
         """ユーザー情報照会用コマンド"""
+        # defer and log
         await ctx.defer()
         self.logger.info(command_log(name="user", author=ctx.author))
+
+        # response
         embed = EmbedBuilder.user_embed(target)
         await ctx.send(embeds=[embed])
         return
@@ -98,7 +110,7 @@ class Deal(commands.Cog):
         reason: str | None = None,
     ):
         """kick用コマンド"""
-
+        # defer and log
         await interaction.response.defer()
         ctx = await commands.Context.from_interaction(interaction)
 
@@ -154,7 +166,7 @@ class Deal(commands.Cog):
         reason: str | None = None,
     ):
         """BAN用コマンド"""
-
+        # defer and log
         await interaction.response.defer()
         ctx = await commands.Context.from_interaction(interaction)
 
@@ -209,7 +221,7 @@ class Deal(commands.Cog):
         reason: str | None = None,
     ):
         """Timeout用コマンド"""
-
+        # defer and log
         await interaction.response.defer()
         ctx = await commands.Context.from_interaction(interaction)
 

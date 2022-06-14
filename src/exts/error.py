@@ -5,7 +5,10 @@ from tools.logger import getMyLogger
 
 class ErrorCatcher(commands.Cog):
     def __init__(self, bot: commands.Bot):
+        # init cog
         self.bot = bot
+
+        # init logger
         self.logger = getMyLogger(__name__)
 
     @commands.Cog.listener(name="on_error")

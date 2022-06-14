@@ -15,8 +15,11 @@ from tools.logger import getMyLogger
 
 class DMSys(commands.Cog):
     def __init__(self, bot: commands.Bot):
+        # init cog
         self.bot = bot
         load_dotenv()
+
+        # init logger
         self.logger = getMyLogger(__name__)
 
     @app_commands.command(name="send-dm")
@@ -33,11 +36,14 @@ class DMSys(commands.Cog):
         attachment: discord.Attachment | None = None,
     ):
         """DMを送信します。"""
+        # defer and log
+        await interaction.response.defer(thinking=True)
         self.logger.info(command_log(name="send-dm", author=interaction.user))
 
-        await interaction.response.defer(thinking=True)
+        # get context
         ctx = await commands.Context.from_interaction(interaction)
 
+        # get text input
         modal = MessageInputModal(
             title="DM内容入力",
             custom_id="exts.core.dm.send_dm_track_modal",
