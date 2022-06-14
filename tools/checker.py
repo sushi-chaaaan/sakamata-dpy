@@ -154,7 +154,6 @@ class Checker:
         stop_num: int,
     ):
         # convert emoji to str
-
         executable = [
             r.count
             for r in message.reactions
@@ -165,8 +164,6 @@ class Checker:
             for r in message.reactions
             if str(r.emoji) == reject_emoji and r.count == stop_num + 1
         ]
-        # print([r.count for r in message.reactions])
-        # print(executable, cancelable)
         if executable or cancelable:
             return True
         else:
