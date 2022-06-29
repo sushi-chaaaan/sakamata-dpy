@@ -29,9 +29,12 @@ class Reload(commands.Cog):
 
         # reload
         await self.bot.load_exts(reload=True)
-
-        # command response
         await interaction.followup.send("All extensions reloaded", ephemeral=True)
+
+        # reload persistent views
+        await self.bot.setup_view()
+        await interaction.followup.send("All views reloaded", ephemeral=True)
+
         return
 
 

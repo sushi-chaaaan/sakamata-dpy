@@ -1,3 +1,4 @@
+import importlib
 import os
 
 import discord
@@ -107,12 +108,6 @@ class ChloeriumBot(commands.Bot):
 
     @staticmethod
     def load_persistent() -> list[discord.ui.View]:
-        # import persistent views
-        from components.confirm import ConfirmView  # noqa: F401
-        from components.inquiry import InquiryView  # noqa: F401
-        from ext_modal.components.message_input import \
-            MessageInputView  # noqa: F401
-
         # load persistent views
         persistent_views: list[discord.ui.View] = []
 
@@ -120,7 +115,12 @@ class ChloeriumBot(commands.Bot):
         conf: dict[str, dict[str, str]] = read_json(r"config/persistent_view.json")
 
         for v in conf.values():
-            cls = locals()[v["class"]]
+            # config/persistent_view.jsonのpathを参照してmoduleをimport
+            m_path = v["path"]
+            mod = importlib.import_module(m_path)
+
+            # classを取得してinstanceを初期化
+            cls = getattr(mod, v["class"])
             for c_id in v["custom_id"]:
                 persistent_views.append(cls(custom_id=c_id))
 

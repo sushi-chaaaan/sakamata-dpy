@@ -1,17 +1,20 @@
 {
     "confirm": {
+        "path": "components.confirm",
         "class": "ConfirmView",
         "custom_id": [
             "src.exts.membership.verify"
         ]
     },
     "message_input": {
+        "path": "ext_modal.components.message_input",
         "class": "MessageInputView",
         "custom_id": [
             "src.exts.message.send_message"
         ]
     },
     "inquiry": {
+        "path": "components.inquiry",
         "class": "InquiryView",
         "custom_id": [
             "src.exts.inquiry.InquiryView"
