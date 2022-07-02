@@ -1,5 +1,6 @@
 {
     "ext_list": [
+        "src.dashboard.dashboard",
         "src.exts.entrance",
         "src.exts.deal",
         "src.exts.dm",

@@ -27,13 +27,23 @@ class Reload(commands.Cog):
         await interaction.response.defer(ephemeral=True)
         self.logger.info(command_log(name="reload", author=interaction.user))
 
+        await self.do_reload(interaction)
+        return
+
+    async def do_reload(self, interaction: Interaction | None = None):
+        # defer
+        if interaction and not interaction.response.is_done():
+            await interaction.response.defer(ephemeral=True)
+
         # reload
         await self.bot.load_exts(reload=True)
-        await interaction.followup.send("All extensions reloaded", ephemeral=True)
+        if interaction:
+            await interaction.followup.send("All extensions reloaded", ephemeral=True)
 
         # reload persistent views
         await self.bot.setup_view()
-        await interaction.followup.send("All views reloaded", ephemeral=True)
+        if interaction:
+            await interaction.followup.send("All views reloaded", ephemeral=True)
 
         return
 

@@ -16,14 +16,13 @@ class MemberCounter(commands.Cog):
         # init cog
         self.bot = bot
         load_dotenv()
-
-        # init logger
         self.logger = getMyLogger(__name__)
 
+    async def cog_load(self) -> None:
         # init refresh count task
         self.refresh_count.start()
 
-    def cog_unload(self) -> None:
+    async def cog_unload(self) -> None:
         # stop refresh count task
         self.refresh_count.cancel()
 

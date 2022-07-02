@@ -19,11 +19,8 @@ from .hammer import Hammer
 
 class Deal(commands.Cog):
     def __init__(self, bot: commands.Bot):
-        # init cog
         self.bot = bot
         load_dotenv()
-
-        # init logger
         self.logger = getMyLogger(__name__)
 
         # init context menu

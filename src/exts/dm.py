@@ -15,11 +15,8 @@ from tools.logger import getMyLogger
 
 class DMSys(commands.Cog):
     def __init__(self, bot: commands.Bot):
-        # init cog
         self.bot = bot
         load_dotenv()
-
-        # init logger
         self.logger = getMyLogger(__name__)
 
     @app_commands.command(name="send-dm")
