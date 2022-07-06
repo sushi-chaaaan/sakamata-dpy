@@ -46,6 +46,29 @@ class Finder:
                 raise Exception(text)
         return guild
 
+    async def find_role(self, guild_id: int, role_id: int) -> discord.Role:
+        guild = await self.find_guild(guild_id)
+        role = guild.get_role(role_id)
+        if not role:
+            roles = await guild.fetch_roles()
+            role = discord.utils.get(roles, id=role_id)
+            if not role:
+                self.logger.exception(text := ErrorText.notfound.value)
+                raise Exception(text)
+        return role
+
+    async def find_member(self, guild_id: int, user_id: int) -> discord.Member | None:
+        member: discord.Member | None = None
+        guild = await self.find_guild(guild_id)
+        member = guild.get_member(user_id)
+        if not member:
+            try:
+                member = await guild.fetch_member(user_id)
+            except Exception as e:
+                self.logger.exception(ErrorText.notfound.value, exc_info=e)
+                member = None
+        return member
+
     @staticmethod
     def find_bot_permissions(
         guild: discord.Guild,
