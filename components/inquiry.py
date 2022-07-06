@@ -5,8 +5,8 @@ from discord import ui
 from dotenv import load_dotenv
 
 from ext_modal.components.message_input import MessageInputModal
-from ext_modal.modal_tracker import InteractionModalTracker
 from ext_modal.model.tracked_modal import TrackedModal
+from ext_modal.tracker import InteractionModalTracker
 from tools.logger import getMyLogger
 from tools.webhook import post_webhook
 
