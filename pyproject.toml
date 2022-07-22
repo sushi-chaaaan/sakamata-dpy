@@ -7,7 +7,7 @@ authors = ["sushi-chaaaan <sushi_code@outlook.jp>"]
 [tool.poetry.dependencies]
 python = "^3.10"
 aiofiles = "^0.8.0"
-discord-ext-ui = "^3.1.9"
+discord-ext-ui = {git = "https://github.com/sushi-chaaaan/discord-ext-ui.git", rev = "develop"}
 discord-handler = "^0.0.5"
 gspread = "^5.4.0"
 python-dotenv = "^0.20.0"
