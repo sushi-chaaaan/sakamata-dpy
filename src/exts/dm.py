@@ -3,8 +3,11 @@ import os
 import discord
 from discord import app_commands
 from discord.ext import commands
+from discord.ext.ui.provider import InteractionProvider
+from discord.ext.ui.tracker import ViewTracker
 from dotenv import load_dotenv
 
+from components.ui.message_input import MessageInputView
 from tools.checker import Checker
 from tools.log_formatter import command_log
 from tools.logger import getMyLogger
@@ -38,7 +41,13 @@ class DMSys(commands.Cog):
         ctx = await commands.Context.from_interaction(interaction)
 
         # get text input
+        menu = MessageInputView(target=target, title="メッセージ入力", attachment=attachment)
+        tracker = ViewTracker(view=menu, timeout=None)
+        await tracker.track(InteractionProvider(interaction))
 
+        text = ""
+        if menu.execute:
+            text = menu.content
 
         # confirm
         checker = Checker(self.bot)

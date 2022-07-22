@@ -16,8 +16,8 @@ class Checker:
 
     async def check_role(
         self,
-        *,
         ctx: commands.Context,
+        *,
         id: int | list[int],
         header: str,
         text: str | None = None,

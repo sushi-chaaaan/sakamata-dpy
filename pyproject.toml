@@ -7,7 +7,6 @@ authors = ["sushi-chaaaan <sushi_code@outlook.jp>"]
 [tool.poetry.dependencies]
 python = "^3.10"
 aiofiles = "^0.8.0"
-discord-ext-ui = {git = "https://github.com/sushi-chaaaan/discord-ext-ui.git", rev = "develop"}
 discord-handler = "^0.0.5"
 gspread = "^5.4.0"
 python-dotenv = "^0.20.0"
@@ -20,6 +19,7 @@ Brotli = {version = "^1.0.9"}
 cchardet = {version = "^2.1.7"}
 dispander = {git = "https://github.com/sushi-chaaaan/dispander.git", rev = "for2.0"}
 "discord.py" = {git = "https://github.com/Rapptz/discord.py.git", rev = "master", extras = ["voice", "speed"]}
+discord-ext-ui = {git = "https://github.com/sushi-chaaaan/discord-ext-ui.git", rev = "develop"}
 
 [tool.poetry.dev-dependencies]
 black = "^22.3.0"
