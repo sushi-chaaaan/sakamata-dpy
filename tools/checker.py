@@ -23,6 +23,7 @@ class Checker:
         text: str | None = None,
         run_num: int,
         stop_num: int,
+        timeout: float | None = None,
     ) -> bool:
 
         # setup role list
@@ -68,7 +69,7 @@ class Checker:
             (
                 reaction,  # reaction:discord.Reaction
                 user,  # user:discord.User | discord.Member
-            ) = await self.bot.wait_for("reaction_add", check=check, timeout=600.0)
+            ) = await self.bot.wait_for("reaction_add", check=check, timeout=timeout)
         except asyncio.TimeoutError as e:
             await ctx.send(content="タイムアウトしたため処理を停止します。")
             self.logger.info("Confirm timeout", exc_info=e)
@@ -85,6 +86,7 @@ class Checker:
         text: str | None = None,
         run_num: int,
         stop_num: int,
+        timeout: float | None = None,
     ) -> bool:
 
         # setup role list
@@ -129,7 +131,7 @@ class Checker:
 
         try:
             payload: discord.RawReactionActionEvent = await self.bot.wait_for(
-                "raw_reaction_add", check=check, timeout=600.0
+                "raw_reaction_add", check=check, timeout=timeout
             )
         except asyncio.TimeoutError as e:
             await ctx.send(content="タイムアウトしたため処理を停止します。")

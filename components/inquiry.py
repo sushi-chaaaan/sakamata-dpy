@@ -4,9 +4,6 @@ import discord
 from discord import ui
 from dotenv import load_dotenv
 
-from ext_modal.components.message_input import MessageInputModal
-from ext_modal.model.tracked_modal import TrackedModal
-from ext_modal.tracker import InteractionModalTracker
 from tools.logger import getMyLogger
 from tools.webhook import post_webhook
 
@@ -36,21 +33,6 @@ class InquiryView(ui.View):
 
         # get text
 
-        inputs: list[ui.TextInput] = [
-            ui.TextInput(
-                label="お問い合わせ内容を入力してください。",
-                style=discord.TextStyle.paragraph,
-            )
-        ]
-        modal: MessageInputModal = MessageInputModal(
-            title="お問い合わせフォーム",
-            timeout=None,
-            custom_id="components.inquiry.InquiryView.inquiry_button",
-            inputs=inputs,
-        )
-
-        tracker = InteractionModalTracker(modal, interaction=interaction)
-        tracked: TrackedModal = await tracker.track(direct=True, ephemeral=True)
 
         if not (text := tracked.text_inputs["お問い合わせ内容を入力してください。"]):
             return

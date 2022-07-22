@@ -3,18 +3,14 @@ from discord import Interaction, ui
 
 from tools.view_handler import to_unavailable
 
-c_id = ""
-
 
 class ConfirmView(ui.View):
-    def __init__(self, *, custom_id: str, timeout: float | None = None):
+    def __init__(self, *, timeout: float | None = None):
         super().__init__(timeout=timeout)
-        global c_id
-        c_id = custom_id
 
     @ui.button(
         label="承諾",
-        custom_id=c_id + "_accept",
+        custom_id="components.confirm.accept",
         style=discord.ButtonStyle.green,
         row=0,
     )
@@ -26,7 +22,7 @@ class ConfirmView(ui.View):
 
     @ui.button(
         label="拒否",
-        custom_id=c_id + "_reject",
+        custom_id="components.confirm.reject",
         style=discord.ButtonStyle.red,
         row=0,
     )

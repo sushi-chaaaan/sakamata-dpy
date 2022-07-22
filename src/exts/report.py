@@ -4,10 +4,10 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
-
 from ext_modal.components.modal import MessageInputModal
-from ext_modal.modal_tracker import InteractionModalTracker
 from ext_modal.model.tracked_modal import TrackedModal
+from ext_modal.tracker import InteractionModalTracker
+
 from tools.log_formatter import command_log
 from tools.logger import getMyLogger
 
@@ -56,12 +56,6 @@ class Report(commands.Cog):
         # get context
         ctx = await commands.Context.from_interaction(interaction)
 
-        modal = MessageInputModal(
-            title=f"{user}を管理者に通報しますか？",
-            custom_id="exts.core.report.report_user",
-            min_length=1,
-            max_length=2000,
-        )
 
         tracker = InteractionModalTracker(modal, interaction=interaction)
 
@@ -84,13 +78,6 @@ class Report(commands.Cog):
 
         # get context
         ctx = await commands.Context.from_interaction(interaction)
-
-        modal = MessageInputModal(
-            title="選択したメッセージを管理者に通報しますか？",
-            custom_id="exts.core.report.report_message",
-            min_length=1,
-            max_length=2000,
-        )
 
         tracker = InteractionModalTracker(modal, interaction=interaction)
 

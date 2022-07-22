@@ -7,7 +7,6 @@ from dispander import dispand
 from dotenv import load_dotenv
 
 from components.embeds import EmbedBuilder as EB
-from ext_modal.components.message_input import MessageInputView
 from tools.checker import Checker
 from tools.log_formatter import command_log
 from tools.logger import getMyLogger
@@ -66,21 +65,6 @@ class MessageSys(commands.Cog):
         ctx = await commands.Context.from_interaction(interaction)
 
         # get text
-        view = MessageInputView(custom_id="src.exts.message.send_message")
-        await ctx.send(
-            embeds=[
-                EB.message_input_preview_embed(
-                    author=interaction.user, target=channel, command=True
-                )
-            ],
-            view=view,
-        )
-        await view.wait()
-
-        if not view.status:
-            return
-
-        text = view.content
 
         # prepare for do confirm
         checker = Checker(self.bot)
